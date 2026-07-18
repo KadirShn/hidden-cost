@@ -1,94 +1,94 @@
-# Hidden Cost — Codex Master Prompt
+﻿# Hidden Cost â€” Codex Master Prompt
 
-Bu dosyayı Codex/ChatGPT’ye, `docs/PRODUCT_SPEC.md` ile birlikte ver. En iyi sonuç için projeyi tek mesajda tamamen yazdırmak yerine aşağıdaki ana promptu bir kez ver ve ardından faz promptlarını sırayla kullan.
+Bu dosyayÄ± Codex/ChatGPTâ€™ye, `docs/HIDDEN_COST_PRODUCT_SPEC.md` ile birlikte ver. En iyi sonuÃ§ iÃ§in projeyi tek mesajda tamamen yazdÄ±rmak yerine aÅŸaÄŸÄ±daki ana promptu bir kez ver ve ardÄ±ndan faz promptlarÄ±nÄ± sÄ±rayla kullan.
 
 ---
 
 ## 1. Ana prompt
 
 ```text
-Sen bu projede principal seviyesinde bir React Native/Expo geliştiricisi, mobil mimar, ürün mühendisi ve kalite sorumlusu olarak çalışacaksın.
+Sen bu projede principal seviyesinde bir React Native/Expo geliÅŸtiricisi, mobil mimar, Ã¼rÃ¼n mÃ¼hendisi ve kalite sorumlusu olarak Ã§alÄ±ÅŸacaksÄ±n.
 
-Proje adı: Hidden Cost
+Proje adÄ±: Hidden Cost
 
-Amaç:
-Kullanıcının satın almayı düşündüğü bir ürünün etiket fiyatı yerine; başlangıç, finansman, periyodik, kullanıma bağlı maliyetler ve tahmini satış değeri dahil gerçek toplam sahip olma maliyetini hesaplayan profesyonel bir mobil uygulama geliştir.
+AmaÃ§:
+KullanÄ±cÄ±nÄ±n satÄ±n almayÄ± dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼ bir Ã¼rÃ¼nÃ¼n etiket fiyatÄ± yerine; baÅŸlangÄ±Ã§, finansman, periyodik, kullanÄ±ma baÄŸlÄ± maliyetler ve tahmini satÄ±ÅŸ deÄŸeri dahil gerÃ§ek toplam sahip olma maliyetini hesaplayan profesyonel bir mobil uygulama geliÅŸtir.
 
 Platform ve temel teknoloji:
 - React Native
 - Expo CLI; bare React Native CLI kullanma
 - TypeScript strict
 - Expo Router
-- Android öncelikli, iOS uyumlu
+- Android Ã¶ncelikli, iOS uyumlu
 - EAS Development Build
 - Firebase
 - Offline-first SQLite
 - AdMob
 
-Ürünün tam gereksinimleri `docs/PRODUCT_SPEC.md` dosyasındadır. Herhangi bir kod yazmadan önce bu dosyanın tamamını oku. Bu dosya ürün kapsamı ve kabul kriterleri için tek doğruluk kaynağıdır.
+ÃœrÃ¼nÃ¼n tam gereksinimleri `docs/HIDDEN_COST_PRODUCT_SPEC.md` dosyasÄ±ndadÄ±r. Herhangi bir kod yazmadan Ã¶nce bu dosyanÄ±n tamamÄ±nÄ± oku. Bu dosya Ã¼rÃ¼n kapsamÄ± ve kabul kriterleri iÃ§in tek doÄŸruluk kaynaÄŸÄ±dÄ±r.
 
-Çalışma biçimin:
-1. Önce mevcut repoyu incele.
-2. `docs/PRODUCT_SPEC.md` ile repo arasındaki farkları tespit et.
-3. Uygulamaya başlamadan önce kısa fakat somut bir uygulama planı çıkar.
-4. Çalışmayı fazlara ve küçük doğrulanabilir görevlere böl.
-5. İçinde bulunduğun fazın kodunu tamamla.
-6. Her anlamlı değişiklikten sonra typecheck, lint ve ilgili testleri çalıştır.
-7. Hata varsa kök nedenini çöz; testleri atlama, disable etme veya sahte geçiş üretme.
-8. Değişiklik sonunda:
-   - oluşturulan/değiştirilen dosyaları,
-   - mimari kararları,
-   - çalıştırılan komutları,
-   - test sonuçlarını,
+Ã‡alÄ±ÅŸma biÃ§imin:
+1. Ã–nce mevcut repoyu incele.
+2. `docs/HIDDEN_COST_PRODUCT_SPEC.md` ile repo arasÄ±ndaki farklarÄ± tespit et.
+3. Uygulamaya baÅŸlamadan Ã¶nce kÄ±sa fakat somut bir uygulama planÄ± Ã§Ä±kar.
+4. Ã‡alÄ±ÅŸmayÄ± fazlara ve kÃ¼Ã§Ã¼k doÄŸrulanabilir gÃ¶revlere bÃ¶l.
+5. Ä°Ã§inde bulunduÄŸun fazÄ±n kodunu tamamla.
+6. Her anlamlÄ± deÄŸiÅŸiklikten sonra typecheck, lint ve ilgili testleri Ã§alÄ±ÅŸtÄ±r.
+7. Hata varsa kÃ¶k nedenini Ã§Ã¶z; testleri atlama, disable etme veya sahte geÃ§iÅŸ Ã¼retme.
+8. DeÄŸiÅŸiklik sonunda:
+   - oluÅŸturulan/deÄŸiÅŸtirilen dosyalarÄ±,
+   - mimari kararlarÄ±,
+   - Ã§alÄ±ÅŸtÄ±rÄ±lan komutlarÄ±,
+   - test sonuÃ§larÄ±nÄ±,
    - kalan riskleri,
-   - bir sonraki önerilen görevi özetle.
-9. Eksik Firebase veya AdMob credential nedeniyle kodlama durmamalı. `.env.example`, config katmanı, test değerleri ve açık kurulum dokümanı oluştur. Gerçek secret uydurma.
-10. Yalnızca gerçekten kullanıcıdan alınması gereken credential veya mağaza kimliği eksikse bunu açıkça listele. Bunun dışındaki küçük kararları kendin ver.
-11. Mevcut çalışan kodu sebepsiz yeniden yazma.
-12. Büyük çaplı refactor yapmadan önce etkisini açıkla.
-13. Bir faz tamamlanmadan sonraki faza dağılma.
-14. Bir dosyada TODO bırakıyorsan issue/task kimliği ve gerekçesi olmalı. Tamamlandı dediğin özellikte TODO, mock veya placeholder kalmamalı.
-15. Kullanıcı özel olarak istemedikçe git geçmişini silme, force push yapma veya destructive komut çalıştırma.
+   - bir sonraki Ã¶nerilen gÃ¶revi Ã¶zetle.
+9. Eksik Firebase veya AdMob credential nedeniyle kodlama durmamalÄ±. `.env.example`, config katmanÄ±, test deÄŸerleri ve aÃ§Ä±k kurulum dokÃ¼manÄ± oluÅŸtur. GerÃ§ek secret uydurma.
+10. YalnÄ±zca gerÃ§ekten kullanÄ±cÄ±dan alÄ±nmasÄ± gereken credential veya maÄŸaza kimliÄŸi eksikse bunu aÃ§Ä±kÃ§a listele. Bunun dÄ±ÅŸÄ±ndaki kÃ¼Ã§Ã¼k kararlarÄ± kendin ver.
+11. Mevcut Ã§alÄ±ÅŸan kodu sebepsiz yeniden yazma.
+12. BÃ¼yÃ¼k Ã§aplÄ± refactor yapmadan Ã¶nce etkisini aÃ§Ä±kla.
+13. Bir faz tamamlanmadan sonraki faza daÄŸÄ±lma.
+14. Bir dosyada TODO bÄ±rakÄ±yorsan issue/task kimliÄŸi ve gerekÃ§esi olmalÄ±. TamamlandÄ± dediÄŸin Ã¶zellikte TODO, mock veya placeholder kalmamalÄ±.
+15. KullanÄ±cÄ± Ã¶zel olarak istemedikÃ§e git geÃ§miÅŸini silme, force push yapma veya destructive komut Ã§alÄ±ÅŸtÄ±rma.
 
 Zorunlu mimari ilkeler:
-- Feature-first klasörleme kullan.
-- Domain hesaplama motoru React, Expo, Firebase ve UI bağımlılığı taşımamalı.
-- Hesaplama fonksiyonları pure ve deterministik olmalı.
-- UI doğrudan Firestore, Analytics, AdMob veya SQLite çağırmamalı.
-- Repository interface ve adapter yaklaşımı kullan.
-- SQLite ana yerel veri kaynağı, Firestore senkronizasyon/yedekleme katmanı olsun.
-- Yerel kayıt başarılı olmadan UI işlemi başarılı sayılmasın.
-- Senkronizasyon kuyruk tabanlı ve idempotent olsun.
-- Para değerlerini floating point ile doğrudan toplama. Minor unit + decimal yaklaşımı kullan.
-- Satın alma fiyatını ve kredi anaparasını iki kez toplama.
-- Zod şemalarını form, domain ve sınır doğrulamalarında kullan.
+- Feature-first klasÃ¶rleme kullan.
+- Domain hesaplama motoru React, Expo, Firebase ve UI baÄŸÄ±mlÄ±lÄ±ÄŸÄ± taÅŸÄ±mamalÄ±.
+- Hesaplama fonksiyonlarÄ± pure ve deterministik olmalÄ±.
+- UI doÄŸrudan Firestore, Analytics, AdMob veya SQLite Ã§aÄŸÄ±rmamalÄ±.
+- Repository interface ve adapter yaklaÅŸÄ±mÄ± kullan.
+- SQLite ana yerel veri kaynaÄŸÄ±, Firestore senkronizasyon/yedekleme katmanÄ± olsun.
+- Yerel kayÄ±t baÅŸarÄ±lÄ± olmadan UI iÅŸlemi baÅŸarÄ±lÄ± sayÄ±lmasÄ±n.
+- Senkronizasyon kuyruk tabanlÄ± ve idempotent olsun.
+- Para deÄŸerlerini floating point ile doÄŸrudan toplama. Minor unit + decimal yaklaÅŸÄ±mÄ± kullan.
+- SatÄ±n alma fiyatÄ±nÄ± ve kredi anaparasÄ±nÄ± iki kez toplama.
+- Zod ÅŸemalarÄ±nÄ± form, domain ve sÄ±nÄ±r doÄŸrulamalarÄ±nda kullan.
 - TypeScript `any` kullanma.
-- Production loglarında PII, serbest metin veya maliyet tutarı bulunmasın.
-- Tüm kullanıcı metinleri i18n anahtarlarından gelsin.
-- Light/dark tema token tabanlı olsun.
-- Accessibility label ve hata duyurularını unutma.
-- Her ana ekranın loading, empty, error ve offline durumunu tasarla.
-- Reklam yüklenmezse temel uygulama akışı kesinlikle bozulmasın.
-- Debug/preview build’de yalnızca test reklam kimlikleri kullan.
-- Interstitial reklamı hesaplama sihirbazında, ilk oturumda, geri tuşunda veya sonuç açılır açılmaz gösterme.
-- Rewarded reklam yalnızca kullanıcının açık aksiyonu ile gösterilsin.
-- Reklam frekansı Remote Config ile kontrol edilsin.
-- UMP consent ve gizlilik seçeneklerini yeniden açma akışı ekle.
-- Firebase Security Rules ve App Check’i gerçek güvenlik katmanı olarak ele al.
-- Secret veya service account değerlerini client bundle’a koyma.
-- Expo paketlerini `npx expo install` ile uyumlu sürümde kur.
-- Native Firebase ve AdMob nedeniyle Expo Go’ya güvenme; development build kullan.
-- `ios/` ve `android/` klasörlerini elle düzenlemek yerine mümkün olduğunca config plugin ve `app.config.ts` kullan. Zorunlu native değişiklik varsa nedenini belgeleyerek yap.
+- Production loglarÄ±nda PII, serbest metin veya maliyet tutarÄ± bulunmasÄ±n.
+- TÃ¼m kullanÄ±cÄ± metinleri i18n anahtarlarÄ±ndan gelsin.
+- Light/dark tema token tabanlÄ± olsun.
+- Accessibility label ve hata duyurularÄ±nÄ± unutma.
+- Her ana ekranÄ±n loading, empty, error ve offline durumunu tasarla.
+- Reklam yÃ¼klenmezse temel uygulama akÄ±ÅŸÄ± kesinlikle bozulmasÄ±n.
+- Debug/preview buildâ€™de yalnÄ±zca test reklam kimlikleri kullan.
+- Interstitial reklamÄ± hesaplama sihirbazÄ±nda, ilk oturumda, geri tuÅŸunda veya sonuÃ§ aÃ§Ä±lÄ±r aÃ§Ä±lmaz gÃ¶sterme.
+- Rewarded reklam yalnÄ±zca kullanÄ±cÄ±nÄ±n aÃ§Ä±k aksiyonu ile gÃ¶sterilsin.
+- Reklam frekansÄ± Remote Config ile kontrol edilsin.
+- UMP consent ve gizlilik seÃ§eneklerini yeniden aÃ§ma akÄ±ÅŸÄ± ekle.
+- Firebase Security Rules ve App Checkâ€™i gerÃ§ek gÃ¼venlik katmanÄ± olarak ele al.
+- Secret veya service account deÄŸerlerini client bundleâ€™a koyma.
+- Expo paketlerini `npx expo install` ile uyumlu sÃ¼rÃ¼mde kur.
+- Native Firebase ve AdMob nedeniyle Expo Goâ€™ya gÃ¼venme; development build kullan.
+- `ios/` ve `android/` klasÃ¶rlerini elle dÃ¼zenlemek yerine mÃ¼mkÃ¼n olduÄŸunca config plugin ve `app.config.ts` kullan. Zorunlu native deÄŸiÅŸiklik varsa nedenini belgeleyerek yap.
 
-Tercih edilen teknik yığın:
+Tercih edilen teknik yÄ±ÄŸÄ±n:
 - Expo Router
 - expo-sqlite
 - Drizzle ORM ve migration
 - React Hook Form
 - Zod
 - TanStack Query
-- Zustand; yalnızca kısa ömürlü UI state için
-- decimal.js veya eşdeğeri
+- Zustand; yalnÄ±zca kÄ±sa Ã¶mÃ¼rlÃ¼ UI state iÃ§in
+- decimal.js veya eÅŸdeÄŸeri
 - Reanimated
 - Gesture Handler
 - react-native-svg
@@ -113,35 +113,35 @@ Tercih edilen teknik yığın:
 - GitHub Actions
 
 Kod kalitesi:
-- Küçük, isimlendirilmiş ve test edilebilir fonksiyonlar yaz.
-- Gereksiz generic abstraction oluşturma.
-- Tek kullanımlık kod için karmaşık framework üretme.
-- Domain kurallarını ekrana dağıtma.
+- KÃ¼Ã§Ã¼k, isimlendirilmiÅŸ ve test edilebilir fonksiyonlar yaz.
+- Gereksiz generic abstraction oluÅŸturma.
+- Tek kullanÄ±mlÄ±k kod iÃ§in karmaÅŸÄ±k framework Ã¼retme.
+- Domain kurallarÄ±nÄ± ekrana daÄŸÄ±tma.
 - Magic number kullanma.
-- Tarih, para ve locale işlemlerini merkezi utility/value object üzerinden yap.
-- Async hataları tipli error modeline dönüştür.
-- Kullanıcıya teknik hata metni gösterme.
-- Error boundary ve uygulama başlatma hata ekranı oluştur.
-- Büyük dosyaları uygun sorumluluklara böl.
-- Public function ve kritik algoritmalarda kısa açıklayıcı JSDoc kullan.
-- Yorumlar kodun ne yaptığını tekrar etmesin; nedenini anlatsın.
+- Tarih, para ve locale iÅŸlemlerini merkezi utility/value object Ã¼zerinden yap.
+- Async hatalarÄ± tipli error modeline dÃ¶nÃ¼ÅŸtÃ¼r.
+- KullanÄ±cÄ±ya teknik hata metni gÃ¶sterme.
+- Error boundary ve uygulama baÅŸlatma hata ekranÄ± oluÅŸtur.
+- BÃ¼yÃ¼k dosyalarÄ± uygun sorumluluklara bÃ¶l.
+- Public function ve kritik algoritmalarda kÄ±sa aÃ§Ä±klayÄ±cÄ± JSDoc kullan.
+- Yorumlar kodun ne yaptÄ±ÄŸÄ±nÄ± tekrar etmesin; nedenini anlatsÄ±n.
 
-Test zorunlulukları:
-- Hesaplama motoruna kapsamlı unit test yaz.
-- Sıfır faiz ve normal faiz senaryolarını test et.
-- Finansman anaparasının çift sayılmadığını test et.
-- Aylık/yıllık maliyet dönüşümlerini test et.
-- Kullanım bazlı ve yakıt maliyetini test et.
-- Satış değerini test et.
-- Büyük tutar ve yerel sayı formatını test et.
+Test zorunluluklarÄ±:
+- Hesaplama motoruna kapsamlÄ± unit test yaz.
+- SÄ±fÄ±r faiz ve normal faiz senaryolarÄ±nÄ± test et.
+- Finansman anaparasÄ±nÄ±n Ã§ift sayÄ±lmadÄ±ÄŸÄ±nÄ± test et.
+- AylÄ±k/yÄ±llÄ±k maliyet dÃ¶nÃ¼ÅŸÃ¼mlerini test et.
+- KullanÄ±m bazlÄ± ve yakÄ±t maliyetini test et.
+- SatÄ±ÅŸ deÄŸerini test et.
+- BÃ¼yÃ¼k tutar ve yerel sayÄ± formatÄ±nÄ± test et.
 - Repository transaction, migration, soft delete ve sync queue testlerini yaz.
-- Firestore kurallarını emulator ile test et.
-- Form doğrulama ve taslak koruma UI testlerini yaz.
-- En az bir temel Android Maestro akışı ekle.
-- Test başarısızsa testi silme veya anlamsızlaştırma.
+- Firestore kurallarÄ±nÄ± emulator ile test et.
+- Form doÄŸrulama ve taslak koruma UI testlerini yaz.
+- En az bir temel Android Maestro akÄ±ÅŸÄ± ekle.
+- Test baÅŸarÄ±sÄ±zsa testi silme veya anlamsÄ±zlaÅŸtÄ±rma.
 
-Dokümantasyon:
-Aşağıdaki dosyaları oluştur ve kodla birlikte güncel tut:
+DokÃ¼mantasyon:
+AÅŸaÄŸÄ±daki dosyalarÄ± oluÅŸtur ve kodla birlikte gÃ¼ncel tut:
 - README.md
 - docs/ARCHITECTURE.md
 - docs/CALCULATION_ENGINE.md
@@ -153,224 +153,224 @@ Aşağıdaki dosyaları oluştur ve kodla birlikte güncel tut:
 - docs/ADR/0002-money-representation.md
 - docs/ADR/0003-firebase-sync.md
 
-Önemli ürün kararları:
-- MVP kategorileri: otomobil, motosiklet, tekne, elektronik cihaz, abonelik ve özel.
-- Hesaplama akışı adım adım wizard olmalı.
-- Kullanıcı internetsiz hesaplama yapabilmeli.
-- Sonuç ekranında toplam, aylık, kullanım başına maliyet, breakdown, en büyük maliyet sürücüleri ve varsayımlar bulunmalı.
-- Düşük, temel ve yüksek senaryo bulunmalı.
-- En fazla üç proje karşılaştırılmalı.
-- PDF ve görsel paylaşım bulunmalı.
-- Para birimleri farklıysa otomatik kur tahmini yapma.
-- Kullanıcı verileri varsayılan olarak cihazda saklanmalı.
-- Bulut yedekleme açık ve isteğe bağlı olmalı.
-- Analytics’e gerçek maliyet tutarı, proje adı veya serbest metin gönderme.
-- Hesap ve veri silme akışı bulunmalı.
-- Uygulama finansal tavsiye vermediğini açıkça belirtmeli.
+Ã–nemli Ã¼rÃ¼n kararlarÄ±:
+- MVP kategorileri: otomobil, motosiklet, tekne, elektronik cihaz, abonelik ve Ã¶zel.
+- Hesaplama akÄ±ÅŸÄ± adÄ±m adÄ±m wizard olmalÄ±.
+- KullanÄ±cÄ± internetsiz hesaplama yapabilmeli.
+- SonuÃ§ ekranÄ±nda toplam, aylÄ±k, kullanÄ±m baÅŸÄ±na maliyet, breakdown, en bÃ¼yÃ¼k maliyet sÃ¼rÃ¼cÃ¼leri ve varsayÄ±mlar bulunmalÄ±.
+- DÃ¼ÅŸÃ¼k, temel ve yÃ¼ksek senaryo bulunmalÄ±.
+- En fazla Ã¼Ã§ proje karÅŸÄ±laÅŸtÄ±rÄ±lmalÄ±.
+- PDF ve gÃ¶rsel paylaÅŸÄ±m bulunmalÄ±.
+- Para birimleri farklÄ±ysa otomatik kur tahmini yapma.
+- KullanÄ±cÄ± verileri varsayÄ±lan olarak cihazda saklanmalÄ±.
+- Bulut yedekleme aÃ§Ä±k ve isteÄŸe baÄŸlÄ± olmalÄ±.
+- Analyticsâ€™e gerÃ§ek maliyet tutarÄ±, proje adÄ± veya serbest metin gÃ¶nderme.
+- Hesap ve veri silme akÄ±ÅŸÄ± bulunmalÄ±.
+- Uygulama finansal tavsiye vermediÄŸini aÃ§Ä±kÃ§a belirtmeli.
 
-Çalışmaya başlamadan önce şu çıktıyı üret:
-A. Repo durum özeti
-B. Kullanacağın nihai paketler ve nedenleri
-C. Klasör mimarisi
-D. Fazlara ayrılmış görev listesi
-E. İlk fazda değiştireceğin dosyalar
-F. Riskler ve çözüm yaklaşımı
+Ã‡alÄ±ÅŸmaya baÅŸlamadan Ã¶nce ÅŸu Ã§Ä±ktÄ±yÄ± Ã¼ret:
+A. Repo durum Ã¶zeti
+B. KullanacaÄŸÄ±n nihai paketler ve nedenleri
+C. KlasÃ¶r mimarisi
+D. Fazlara ayrÄ±lmÄ±ÅŸ gÃ¶rev listesi
+E. Ä°lk fazda deÄŸiÅŸtireceÄŸin dosyalar
+F. Riskler ve Ã§Ã¶zÃ¼m yaklaÅŸÄ±mÄ±
 
-Bu ilk değerlendirmeden sonra yalnızca Faz 1’i uygula. Faz 1 tamamlandığında dur ve sonuç raporu ver. Sonraki faza kullanıcı yeni prompt verdiğinde geç.
+Bu ilk deÄŸerlendirmeden sonra yalnÄ±zca Faz 1â€™i uygula. Faz 1 tamamlandÄ±ÄŸÄ±nda dur ve sonuÃ§ raporu ver. Sonraki faza kullanÄ±cÄ± yeni prompt verdiÄŸinde geÃ§.
 ```
 
 ---
 
-## 2. Faz promptları
+## 2. Faz promptlarÄ±
 
-Her fazın başında Codex’e ilgili promptu ver. Codex önceki fazın kodunu ve `docs/PRODUCT_SPEC.md` dosyasını yeniden kontrol etmelidir.
+Her fazÄ±n baÅŸÄ±nda Codexâ€™e ilgili promptu ver. Codex Ã¶nceki fazÄ±n kodunu ve `docs/HIDDEN_COST_PRODUCT_SPEC.md` dosyasÄ±nÄ± yeniden kontrol etmelidir.
 
-### Faz 1 — Bootstrap
+### Faz 1 â€” Bootstrap
 
 ```text
-Hidden Cost projesinde Faz 1’i uygula.
+Hidden Cost projesinde Faz 1â€™i uygula.
 
 Hedef:
-Üretim kalitesinde Expo/TypeScript proje iskeletini hazırla; henüz domain özelliklerine girme.
+Ãœretim kalitesinde Expo/TypeScript proje iskeletini hazÄ±rla; henÃ¼z domain Ã¶zelliklerine girme.
 
-Yapılacaklar:
-- Mevcut repo yoksa güncel kararlı `create-expo-app` ile TypeScript ve Expo Router projesi oluştur.
-- Expo CLI kullan; bare RN CLI projesi oluşturma.
-- TypeScript strict ayarlarını etkinleştir.
-- ESLint, Prettier ve import düzenini yapılandır.
+YapÄ±lacaklar:
+- Mevcut repo yoksa gÃ¼ncel kararlÄ± `create-expo-app` ile TypeScript ve Expo Router projesi oluÅŸtur.
+- Expo CLI kullan; bare RN CLI projesi oluÅŸturma.
+- TypeScript strict ayarlarÄ±nÄ± etkinleÅŸtir.
+- ESLint, Prettier ve import dÃ¼zenini yapÄ±landÄ±r.
 - Path alias ekle.
-- `app.config.ts` oluştur.
-- `EXPO_PUBLIC_APP_ENV` tabanlı dev/preview/production config yapısı kur.
-- `.env.example` oluştur; gerçek secret ekleme.
+- `app.config.ts` oluÅŸtur.
+- `EXPO_PUBLIC_APP_ENV` tabanlÄ± dev/preview/production config yapÄ±sÄ± kur.
+- `.env.example` oluÅŸtur; gerÃ§ek secret ekleme.
 - EAS development, preview ve production profillerini ekle.
-- Basit GitHub Actions CI oluştur: install, typecheck, lint, test.
-- Feature-first klasör iskeletini oluştur.
-- Uygulama initialization state yapısını kur.
-- Global error boundary ve güvenli fallback ekranı ekle.
-- README’ye kurulum, development build ve environment adımlarını yaz.
-- `docs/ARCHITECTURE.md` başlangıç belgesini oluştur.
-- Native dependency henüz eklenmemişse Expo Go ile bootstrap çalışabilir; ancak development build geçişini dokümante et.
-- Faz sonunda typecheck, lint ve başlangıç testini çalıştır.
+- Basit GitHub Actions CI oluÅŸtur: install, typecheck, lint, test.
+- Feature-first klasÃ¶r iskeletini oluÅŸtur.
+- Uygulama initialization state yapÄ±sÄ±nÄ± kur.
+- Global error boundary ve gÃ¼venli fallback ekranÄ± ekle.
+- READMEâ€™ye kurulum, development build ve environment adÄ±mlarÄ±nÄ± yaz.
+- `docs/ARCHITECTURE.md` baÅŸlangÄ±Ã§ belgesini oluÅŸtur.
+- Native dependency henÃ¼z eklenmemiÅŸse Expo Go ile bootstrap Ã§alÄ±ÅŸabilir; ancak development build geÃ§iÅŸini dokÃ¼mante et.
+- Faz sonunda typecheck, lint ve baÅŸlangÄ±Ã§ testini Ã§alÄ±ÅŸtÄ±r.
 
 Bu fazda yapma:
-- Firebase bağlantısı
+- Firebase baÄŸlantÄ±sÄ±
 - AdMob
 - Hesaplama motoru
-- Tam UI ekranları
-- SQLite domain şeması
+- Tam UI ekranlarÄ±
+- SQLite domain ÅŸemasÄ±
 
-Çıktı:
-- Dosya değişiklik özeti
-- Çalıştırılan komutlar
+Ã‡Ä±ktÄ±:
+- Dosya deÄŸiÅŸiklik Ã¶zeti
+- Ã‡alÄ±ÅŸtÄ±rÄ±lan komutlar
 - Test/lint/typecheck sonucu
 - Kararlar
 - Kalan riskler
-- Faz 2’ye hazır olup olmadığı
+- Faz 2â€™ye hazÄ±r olup olmadÄ±ÄŸÄ±
 ```
 
-### Faz 2 — Design system, navigasyon ve i18n
+### Faz 2 â€” Design system, navigasyon ve i18n
 
 ```text
-Hidden Cost projesinde Faz 2’yi uygula.
+Hidden Cost projesinde Faz 2â€™yi uygula.
 
-Önce:
-- `docs/PRODUCT_SPEC.md`
+Ã–nce:
+- `docs/HIDDEN_COST_PRODUCT_SPEC.md`
 - `docs/ARCHITECTURE.md`
 - mevcut kod
-dosyalarını incele.
+dosyalarÄ±nÄ± incele.
 
 Hedef:
-Uygulamanın görsel ve navigasyon temelini üretim kalitesinde oluştur.
+UygulamanÄ±n gÃ¶rsel ve navigasyon temelini Ã¼retim kalitesinde oluÅŸtur.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 - Semantik theme token sistemi kur.
-- Light, dark ve system tema seçeneklerini ekle.
-- Reusable UI primitives oluştur:
+- Light, dark ve system tema seÃ§eneklerini ekle.
+- Reusable UI primitives oluÅŸtur:
   Button, IconButton, TextField, MoneyInput, NumberInput, SelectField,
   Card, MetricCard, Chip, Divider, EmptyState, ErrorState, OfflineBanner,
   LoadingSkeleton, ConfirmDialog, StepIndicator.
-- Tasarım bileşenlerinde hardcoded ekran metni kullanma.
-- Expo Router ile onboarding ve tab navigasyon shell’ini kur.
-- Tablar: Ana Sayfa, Hesaplamalar, Karşılaştır, Ayarlar.
-- Türkçe ve İngilizce i18n altyapısını kur.
-- Locale-aware sayı ve para formatlama utility’si ekle.
+- TasarÄ±m bileÅŸenlerinde hardcoded ekran metni kullanma.
+- Expo Router ile onboarding ve tab navigasyon shellâ€™ini kur.
+- Tablar: Ana Sayfa, Hesaplamalar, KarÅŸÄ±laÅŸtÄ±r, Ayarlar.
+- TÃ¼rkÃ§e ve Ä°ngilizce i18n altyapÄ±sÄ±nÄ± kur.
+- Locale-aware sayÄ± ve para formatlama utilityâ€™si ekle.
 - Reduced motion tercihini destekle.
-- Erişilebilirlik label ve focus kurallarını uygula.
-- Responsive küçük telefon düzenini kontrol et.
-- Onboarding ekranlarını gerçek metinlerle oluştur.
-- Ana sayfa için data-independent skeleton ekran oluştur.
-- Ayarlar ekranında dil ve tema değişimini çalıştır.
-- UI primitive’leri için temel testler ekle.
-- Storybook ekleme; bu fazı gereksiz büyütme.
-- Dokümantasyonu güncelle.
+- EriÅŸilebilirlik label ve focus kurallarÄ±nÄ± uygula.
+- Responsive kÃ¼Ã§Ã¼k telefon dÃ¼zenini kontrol et.
+- Onboarding ekranlarÄ±nÄ± gerÃ§ek metinlerle oluÅŸtur.
+- Ana sayfa iÃ§in data-independent skeleton ekran oluÅŸtur.
+- Ayarlar ekranÄ±nda dil ve tema deÄŸiÅŸimini Ã§alÄ±ÅŸtÄ±r.
+- UI primitiveâ€™leri iÃ§in temel testler ekle.
+- Storybook ekleme; bu fazÄ± gereksiz bÃ¼yÃ¼tme.
+- DokÃ¼mantasyonu gÃ¼ncelle.
 
 Kabul:
-- Dil anında değişir.
-- Tema kalıcıdır.
-- Navigation çalışır.
-- Büyük fontta temel ekranlar taşmaz.
-- Typecheck/lint/test geçer.
+- Dil anÄ±nda deÄŸiÅŸir.
+- Tema kalÄ±cÄ±dÄ±r.
+- Navigation Ã§alÄ±ÅŸÄ±r.
+- BÃ¼yÃ¼k fontta temel ekranlar taÅŸmaz.
+- Typecheck/lint/test geÃ§er.
 ```
 
-### Faz 3 — Domain ve hesaplama motoru
+### Faz 3 â€” Domain ve hesaplama motoru
 
 ```text
-Hidden Cost projesinde Faz 3’ü uygula.
+Hidden Cost projesinde Faz 3â€™Ã¼ uygula.
 
 Hedef:
-UI ve Firebase’den tamamen bağımsız, güvenilir ve kapsamlı test edilmiş hesaplama domain’i oluştur.
+UI ve Firebaseâ€™den tamamen baÄŸÄ±msÄ±z, gÃ¼venilir ve kapsamlÄ± test edilmiÅŸ hesaplama domainâ€™i oluÅŸtur.
 
 Zorunlu:
-- `docs/PRODUCT_SPEC.md` içindeki 8, 9, 10, 11 ve 12. bölümleri birebir dikkate al.
-- Para için minor unit + decimal yaklaşımı kullan.
-- `Money` value object oluştur.
-- Currency ISO kodunu taşı.
-- Yerel string parse ile domain hesaplamasını ayır.
-- CostProject, CostItem, FinancingPlan, ResidualValue, Scenario ve CalculationResult tiplerini oluştur.
-- Zod şemalarını yaz.
-- Bir defalık maliyet hesapla.
-- Periyodik maliyetleri aylık eşdeğere çevir.
-- Başlangıç/bitiş ayı olan periyodik maliyeti destekle.
-- Kullanım başına maliyeti hesapla.
-- Yakıt/enerji tüketim formülünü destekle.
-- Sıfır faiz ve amortismanlı kredi formülünü uygula.
-- Kredi anaparasını TCO’ya ikinci kez ekleme.
-- Satış değeri ve satış maliyetini uygula.
-- TCO, aylık maliyet, kullanım başına maliyet, gizli maliyet ve breakdown üret.
-- Düşük/temel/yüksek override senaryosunu uygula.
-- Completeness score ve warning üret.
+- `docs/HIDDEN_COST_PRODUCT_SPEC.md` iÃ§indeki 8, 9, 10, 11 ve 12. bÃ¶lÃ¼mleri birebir dikkate al.
+- Para iÃ§in minor unit + decimal yaklaÅŸÄ±mÄ± kullan.
+- `Money` value object oluÅŸtur.
+- Currency ISO kodunu taÅŸÄ±.
+- Yerel string parse ile domain hesaplamasÄ±nÄ± ayÄ±r.
+- CostProject, CostItem, FinancingPlan, ResidualValue, Scenario ve CalculationResult tiplerini oluÅŸtur.
+- Zod ÅŸemalarÄ±nÄ± yaz.
+- Bir defalÄ±k maliyet hesapla.
+- Periyodik maliyetleri aylÄ±k eÅŸdeÄŸere Ã§evir.
+- BaÅŸlangÄ±Ã§/bitiÅŸ ayÄ± olan periyodik maliyeti destekle.
+- KullanÄ±m baÅŸÄ±na maliyeti hesapla.
+- YakÄ±t/enerji tÃ¼ketim formÃ¼lÃ¼nÃ¼ destekle.
+- SÄ±fÄ±r faiz ve amortismanlÄ± kredi formÃ¼lÃ¼nÃ¼ uygula.
+- Kredi anaparasÄ±nÄ± TCOâ€™ya ikinci kez ekleme.
+- SatÄ±ÅŸ deÄŸeri ve satÄ±ÅŸ maliyetini uygula.
+- TCO, aylÄ±k maliyet, kullanÄ±m baÅŸÄ±na maliyet, gizli maliyet ve breakdown Ã¼ret.
+- DÃ¼ÅŸÃ¼k/temel/yÃ¼ksek override senaryosunu uygula.
+- Completeness score ve warning Ã¼ret.
 - Calculation engine version sabiti ekle.
 - Pure function kullan; React/Firebase/Expo import etme.
-- Kapsamlı unit test yaz.
-- `docs/CALCULATION_ENGINE.md` oluştur; formülleri ve örnekleri açıkla.
-- Golden test fixture’ları ekle.
+- KapsamlÄ± unit test yaz.
+- `docs/CALCULATION_ENGINE.md` oluÅŸtur; formÃ¼lleri ve Ã¶rnekleri aÃ§Ä±kla.
+- Golden test fixtureâ€™larÄ± ekle.
 
-Özellikle test et:
-- Yalnız satın alma fiyatı
+Ã–zellikle test et:
+- YalnÄ±z satÄ±n alma fiyatÄ±
 - 0 faiz
 - Normal faiz
-- Anaparanın çift sayılmaması
-- Aylık/yıllık/üç aylık dönüşüm
-- Kısmi aktif ay
-- Yakıt
-- Sıfır kullanım
-- Satış değeri
-- Büyük tutar
-- TR ve EN giriş parse
+- AnaparanÄ±n Ã§ift sayÄ±lmamasÄ±
+- AylÄ±k/yÄ±llÄ±k/Ã¼Ã§ aylÄ±k dÃ¶nÃ¼ÅŸÃ¼m
+- KÄ±smi aktif ay
+- YakÄ±t
+- SÄ±fÄ±r kullanÄ±m
+- SatÄ±ÅŸ deÄŸeri
+- BÃ¼yÃ¼k tutar
+- TR ve EN giriÅŸ parse
 - Senaryo override
 - Eksik veri warning
 - Rounding
 
-Faz sonunda tüm testleri çalıştır ve örnek bir motosiklet hesabının girdileriyle beklenen çıktıyı raporla.
+Faz sonunda tÃ¼m testleri Ã§alÄ±ÅŸtÄ±r ve Ã¶rnek bir motosiklet hesabÄ±nÄ±n girdileriyle beklenen Ã§Ä±ktÄ±yÄ± raporla.
 ```
 
-### Faz 4 — SQLite, migration ve repository
+### Faz 4 â€” SQLite, migration ve repository
 
 ```text
-Hidden Cost projesinde Faz 4’ü uygula.
+Hidden Cost projesinde Faz 4â€™Ã¼ uygula.
 
 Hedef:
-Offline-first yerel veri katmanını kur.
+Offline-first yerel veri katmanÄ±nÄ± kur.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 - expo-sqlite kur.
 - Uyumluysa Drizzle ORM kullan.
-- Versiyonlanmış migration altyapısı oluştur.
+- VersiyonlanmÄ±ÅŸ migration altyapÄ±sÄ± oluÅŸtur.
 - Tablolar:
   user_profile, projects, cost_items, scenario_overrides,
   template_cache, sync_queue, app_settings, schema_migrations.
-- Repository interface’leri tanımla.
-- SQLite adapter’larını yaz.
+- Repository interfaceâ€™leri tanÄ±mla.
+- SQLite adapterâ€™larÄ±nÄ± yaz.
 - CRUD, draft autosave, duplicate, archive ve soft delete ekle.
 - Transaction kullan.
-- Seed template sistemini oluştur.
-- 6 MVP kategori şablonunu veri olarak ekle.
+- Seed template sistemini oluÅŸtur.
+- 6 MVP kategori ÅŸablonunu veri olarak ekle.
 - Seed idempotent olsun.
-- Query key factory ve TanStack Query hook’larını ekle.
-- UI’ın SQL detayını görmemesini sağla.
-- Sync queue kayıtlarını entity işlemleriyle tutarlı üret.
+- Query key factory ve TanStack Query hookâ€™larÄ±nÄ± ekle.
+- UIâ€™Ä±n SQL detayÄ±nÄ± gÃ¶rmemesini saÄŸla.
+- Sync queue kayÄ±tlarÄ±nÄ± entity iÅŸlemleriyle tutarlÄ± Ã¼ret.
 - Migration/repository testleri yaz.
-- Uygulama başlangıcında migration failure için güvenli hata ekranı oluştur.
-- DB reset yalnızca development araçlarında ve açık aksiyonla olsun.
-- Dokümantasyonu güncelle.
+- Uygulama baÅŸlangÄ±cÄ±nda migration failure iÃ§in gÃ¼venli hata ekranÄ± oluÅŸtur.
+- DB reset yalnÄ±zca development araÃ§larÄ±nda ve aÃ§Ä±k aksiyonla olsun.
+- DokÃ¼mantasyonu gÃ¼ncelle.
 
 Kabul:
-- Uçak modunda proje oluşturulabilir.
-- Uygulama yeniden açılınca kayıt korunur.
+- UÃ§ak modunda proje oluÅŸturulabilir.
+- Uygulama yeniden aÃ§Ä±lÄ±nca kayÄ±t korunur.
 - Autosave veri kaybetmez.
-- Soft delete çalışır.
-- Migration testleri geçer.
+- Soft delete Ã§alÄ±ÅŸÄ±r.
+- Migration testleri geÃ§er.
 ```
 
-### Faz 5 — Ana kullanıcı akışı
+### Faz 5 â€” Ana kullanÄ±cÄ± akÄ±ÅŸÄ±
 
 ```text
-Hidden Cost projesinde Faz 5’i uygula.
+Hidden Cost projesinde Faz 5â€™i uygula.
 
 Hedef:
-Kullanıcının başlangıçtan sonuç ekranına kadar gerçek bir hesaplamayı tamamlamasını sağla.
+KullanÄ±cÄ±nÄ±n baÅŸlangÄ±Ã§tan sonuÃ§ ekranÄ±na kadar gerÃ§ek bir hesaplamayÄ± tamamlamasÄ±nÄ± saÄŸla.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 - Dashboard
 - Template library
 - Template detail
@@ -380,109 +380,109 @@ Yapılacaklar:
 - Saved calculations list
 - Project detail
 - Edit, duplicate, archive, delete
-- Loading, empty, error ve offline durumları
+- Loading, empty, error ve offline durumlarÄ±
 - Formlarda React Hook Form + Zod
-- MoneyInput yerel sayı formatı
+- MoneyInput yerel sayÄ± formatÄ±
 - Step validation
-- Geri dönüşte veri korunması
-- Kaydedilmemiş değişiklik uyarısı
+- Geri dÃ¶nÃ¼ÅŸte veri korunmasÄ±
+- KaydedilmemiÅŸ deÄŸiÅŸiklik uyarÄ±sÄ±
 - Result breakdown
 - Top drivers
 - Completeness indicator
-- Assumptions/formulas expandable bölüm
-- Şimdilik reklam yerleşimi için yalnızca güvenli placeholder container; gerçek reklam ekleme
+- Assumptions/formulas expandable bÃ¶lÃ¼m
+- Åimdilik reklam yerleÅŸimi iÃ§in yalnÄ±zca gÃ¼venli placeholder container; gerÃ§ek reklam ekleme
 - Ekran ve form testleri
-- Türkçe ve İngilizce metinler
+- TÃ¼rkÃ§e ve Ä°ngilizce metinler
 
 Kabul senaryosu:
-Motosiklet şablonu seç, fiyat/finansman/yakıt/bakım/satış değeri gir, sonucu hesapla, kaydet, listeden aç ve düzenle.
+Motosiklet ÅŸablonu seÃ§, fiyat/finansman/yakÄ±t/bakÄ±m/satÄ±ÅŸ deÄŸeri gir, sonucu hesapla, kaydet, listeden aÃ§ ve dÃ¼zenle.
 
-Faz sonunda bu akışı manuel test adımlarıyla raporla.
+Faz sonunda bu akÄ±ÅŸÄ± manuel test adÄ±mlarÄ±yla raporla.
 ```
 
-### Faz 6 — Senaryolar, karşılaştırma ve export
+### Faz 6 â€” Senaryolar, karÅŸÄ±laÅŸtÄ±rma ve export
 
 ```text
-Hidden Cost projesinde Faz 6’yı uygula.
+Hidden Cost projesinde Faz 6â€™yÄ± uygula.
 
 Hedef:
-Karar destek değerini artıran senaryo, karşılaştırma ve paylaşım özelliklerini tamamla.
+Karar destek deÄŸerini artÄ±ran senaryo, karÅŸÄ±laÅŸtÄ±rma ve paylaÅŸÄ±m Ã¶zelliklerini tamamla.
 
-Yapılacaklar:
-- Düşük/temel/yüksek senaryo editörü
-- Senaryo sonuç aralığı
-- En etkili varsayım özeti
-- En fazla üç proje karşılaştırma
-- Farklı süreler için aylık normalize görünüm
-- Farklı currency için uyarı; otomatik kur dönüşümü yapma
-- Farklı usage unit için doğru kısıt
+YapÄ±lacaklar:
+- DÃ¼ÅŸÃ¼k/temel/yÃ¼ksek senaryo editÃ¶rÃ¼
+- Senaryo sonuÃ§ aralÄ±ÄŸÄ±
+- En etkili varsayÄ±m Ã¶zeti
+- En fazla Ã¼Ã§ proje karÅŸÄ±laÅŸtÄ±rma
+- FarklÄ± sÃ¼reler iÃ§in aylÄ±k normalize gÃ¶rÃ¼nÃ¼m
+- FarklÄ± currency iÃ§in uyarÄ±; otomatik kur dÃ¶nÃ¼ÅŸÃ¼mÃ¼ yapma
+- FarklÄ± usage unit iÃ§in doÄŸru kÄ±sÄ±t
 - Accessible breakdown grafikleri
 - PDF raporu
 - Shareable result card
 - expo-print ve expo-sharing
-- Geçici dosya temizliği
+- GeÃ§ici dosya temizliÄŸi
 - Export failure fallback
-- PDF’de yasal uyarı ve calculation engine version
+- PDFâ€™de yasal uyarÄ± ve calculation engine version
 - Unit/UI testleri
-- Docs güncellemesi
+- Docs gÃ¼ncellemesi
 
-Bu fazda gerçek reklam entegrasyonu yapma; rewarded export için interface/policy boundary hazırla.
+Bu fazda gerÃ§ek reklam entegrasyonu yapma; rewarded export iÃ§in interface/policy boundary hazÄ±rla.
 ```
 
-### Faz 7 — Firebase ve senkronizasyon
+### Faz 7 â€” Firebase ve senkronizasyon
 
 ```text
-Hidden Cost projesinde Faz 7’yi uygula.
+Hidden Cost projesinde Faz 7â€™yi uygula.
 
 Hedef:
-Local-first davranışı bozmadan Firebase auth, backup ve sync ekle.
+Local-first davranÄ±ÅŸÄ± bozmadan Firebase auth, backup ve sync ekle.
 
-Yapılacaklar:
-- React Native Firebase’i Expo development build ile yapılandır.
-- app, auth, firestore ve remote-config modüllerini kur.
-- `app.config.ts` ve config plugin ayarlarını kullan.
-- Android google-services yapılandırmasını dokümante et.
-- Gerçek credential uydurma.
+YapÄ±lacaklar:
+- React Native Firebaseâ€™i Expo development build ile yapÄ±landÄ±r.
+- app, auth, firestore ve remote-config modÃ¼llerini kur.
+- `app.config.ts` ve config plugin ayarlarÄ±nÄ± kullan.
+- Android google-services yapÄ±landÄ±rmasÄ±nÄ± dokÃ¼mante et.
+- GerÃ§ek credential uydurma.
 - Anonymous auth ekle.
-- Bulut yedekleme opt-in akışı ekle.
-- Hesap bağlama için mimari ve en az bir gerçek provider akışı ekle; mümkünse Google.
-- SQLite -> sync queue -> Firestore worker oluştur.
+- Bulut yedekleme opt-in akÄ±ÅŸÄ± ekle.
+- Hesap baÄŸlama iÃ§in mimari ve en az bir gerÃ§ek provider akÄ±ÅŸÄ± ekle; mÃ¼mkÃ¼nse Google.
+- SQLite -> sync queue -> Firestore worker oluÅŸtur.
 - Retry ve exponential backoff.
 - Idempotent upsert/delete.
-- App foreground ve network geri geldiğinde sync.
+- App foreground ve network geri geldiÄŸinde sync.
 - Sync status UI.
 - Soft delete senkronizasyonu.
-- Last-write-wins/revision yaklaşımını uygula ve conflict’e açık model bırak.
-- Remote Config default’larını ekle.
+- Last-write-wins/revision yaklaÅŸÄ±mÄ±nÄ± uygula ve conflictâ€™e aÃ§Ä±k model bÄ±rak.
+- Remote Config defaultâ€™larÄ±nÄ± ekle.
 - Firebase Emulator Suite config.
 - Firestore rules ve rules testleri.
-- `docs/FIREBASE_SETUP.md` oluştur.
-- Account/cloud data deletion callable function veya güvenli backend akışı ekle.
-- Local-only kullanım credential olmadan çalışmaya devam etsin.
+- `docs/FIREBASE_SETUP.md` oluÅŸtur.
+- Account/cloud data deletion callable function veya gÃ¼venli backend akÄ±ÅŸÄ± ekle.
+- Local-only kullanÄ±m credential olmadan Ã§alÄ±ÅŸmaya devam etsin.
 
 Kabul:
-- Offline proje oluşturulur.
+- Offline proje oluÅŸturulur.
 - Online olunca sync olur.
-- İkinci kullanıcı aynı veriye erişemez.
-- Firebase kapalı/hatalıysa local hesaplama çalışır.
+- Ä°kinci kullanÄ±cÄ± aynÄ± veriye eriÅŸemez.
+- Firebase kapalÄ±/hatalÄ±ysa local hesaplama Ã§alÄ±ÅŸÄ±r.
 ```
 
-### Faz 8 — AdMob ve consent
+### Faz 8 â€” AdMob ve consent
 
 ```text
-Hidden Cost projesinde Faz 8’i uygula.
+Hidden Cost projesinde Faz 8â€™i uygula.
 
 Hedef:
-Kullanıcı deneyimini bozmayan, policy-aware reklam altyapısı ekle.
+KullanÄ±cÄ± deneyimini bozmayan, policy-aware reklam altyapÄ±sÄ± ekle.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 - react-native-google-mobile-ads kur.
-- Expo config plugin ve development build yapılandır.
-- Debug/preview için yalnızca test IDs.
-- Production IDs environment üzerinden.
+- Expo config plugin ve development build yapÄ±landÄ±r.
+- Debug/preview iÃ§in yalnÄ±zca test IDs.
+- Production IDs environment Ã¼zerinden.
 - UMP consent flow.
-- Ayarlarda privacy options/consent formunu yeniden açma.
-- AdsPolicyService oluştur.
+- Ayarlarda privacy options/consent formunu yeniden aÃ§ma.
+- AdsPolicyService oluÅŸtur.
 - Remote Config:
   ads_enabled,
   native_ads_enabled,
@@ -490,155 +490,155 @@ Yapılacaklar:
   rewarded_export_enabled,
   interstitial_min_completed_calculations,
   interstitial_cooldown_minutes.
-- Native ad yalnızca içerikli dashboard/template alanında.
-- Rewarded ad kullanıcı PDF/gelişmiş export seçtiğinde açık opt-in ile.
-- Interstitial ilk oturumda ve wizard’da kesinlikle yok.
-- Interstitial başlangıç eşiği ve cooldown uygula.
-- Reklam yüklenmezse özelliklerin güvenli fallback’i olsun.
-- Consent olmadan yanlış reklam isteği gönderme.
-- Ad event analytics ekle; maliyet verisi gönderme.
+- Native ad yalnÄ±zca iÃ§erikli dashboard/template alanÄ±nda.
+- Rewarded ad kullanÄ±cÄ± PDF/geliÅŸmiÅŸ export seÃ§tiÄŸinde aÃ§Ä±k opt-in ile.
+- Interstitial ilk oturumda ve wizardâ€™da kesinlikle yok.
+- Interstitial baÅŸlangÄ±Ã§ eÅŸiÄŸi ve cooldown uygula.
+- Reklam yÃ¼klenmezse Ã¶zelliklerin gÃ¼venli fallbackâ€™i olsun.
+- Consent olmadan yanlÄ±ÅŸ reklam isteÄŸi gÃ¶nderme.
+- Ad event analytics ekle; maliyet verisi gÃ¶nderme.
 - Testler ve mockable ad adapter.
-- `docs/ADMOB_SETUP.md` ve policy checklist oluştur.
+- `docs/ADMOB_SETUP.md` ve policy checklist oluÅŸtur.
 
 Kabul:
 - Test build live ad istemez.
-- Reklam kapalı Remote Config ile tamamen devre dışı kalır.
-- Rewarded reddedilince uygulama çökmez.
-- Interstitial hesaplamayı bölmez.
-- Temel hesaplama reklama bağımlı değildir.
+- Reklam kapalÄ± Remote Config ile tamamen devre dÄ±ÅŸÄ± kalÄ±r.
+- Rewarded reddedilince uygulama Ã§Ã¶kmez.
+- Interstitial hesaplamayÄ± bÃ¶lmez.
+- Temel hesaplama reklama baÄŸÄ±mlÄ± deÄŸildir.
 ```
 
-### Faz 9 — Analytics, Crashlytics, App Check ve privacy
+### Faz 9 â€” Analytics, Crashlytics, App Check ve privacy
 
 ```text
-Hidden Cost projesinde Faz 9’u uygula.
+Hidden Cost projesinde Faz 9â€™u uygula.
 
 Hedef:
-Observability, abuse protection ve privacy kontrollerini üretim seviyesine getir.
+Observability, abuse protection ve privacy kontrollerini Ã¼retim seviyesine getir.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 - Firebase Analytics merkezi adapter.
-- `docs/PRODUCT_SPEC.md` analytics event listesini uygula.
-- Maliyet tutarı, title, note, e-mail veya serbest metin gönderilmediğini test et.
-- Crashlytics adapter ve release davranışı.
+- `docs/HIDDEN_COST_PRODUCT_SPEC.md` analytics event listesini uygula.
+- Maliyet tutarÄ±, title, note, e-mail veya serbest metin gÃ¶nderilmediÄŸini test et.
+- Crashlytics adapter ve release davranÄ±ÅŸÄ±.
 - Log redaction.
 - Typed error codes.
 - App Check:
   Android Play Integrity,
   development debug provider,
-  enforcement açmadan önce güvenli dokümantasyon.
-- Analytics consent ayarı.
+  enforcement aÃ§madan Ã¶nce gÃ¼venli dokÃ¼mantasyon.
+- Analytics consent ayarÄ±.
 - Ads privacy options.
 - Local data export.
 - Local data delete.
 - Account + cloud data delete.
 - Legal screens.
 - Privacy checklist.
-- Crash/test eventlerini yalnız development menüsünde tut.
-- `docs/PRIVACY_CHECKLIST.md` güncelle.
+- Crash/test eventlerini yalnÄ±z development menÃ¼sÃ¼nde tut.
+- `docs/PRIVACY_CHECKLIST.md` gÃ¼ncelle.
 
 Kabul:
-- Kullanıcı analytics tercihini değiştirebilir.
-- Hesap silme çalışır.
-- Hassas değer telemetry’ye gitmez.
-- App Check development ve production config’i ayrıdır.
+- KullanÄ±cÄ± analytics tercihini deÄŸiÅŸtirebilir.
+- Hesap silme Ã§alÄ±ÅŸÄ±r.
+- Hassas deÄŸer telemetryâ€™ye gitmez.
+- App Check development ve production configâ€™i ayrÄ±dÄ±r.
 ```
 
-### Faz 10 — Quality pass
+### Faz 10 â€” Quality pass
 
 ```text
-Hidden Cost projesinde Faz 10’u uygula.
+Hidden Cost projesinde Faz 10â€™u uygula.
 
 Hedef:
-Release öncesi erişilebilirlik, performans ve test kalitesini tamamla.
+Release Ã¶ncesi eriÅŸilebilirlik, performans ve test kalitesini tamamla.
 
-Yapılacaklar:
-- Tüm ekranları büyük font ile kontrol et.
-- Screen reader label’ları.
+YapÄ±lacaklar:
+- TÃ¼m ekranlarÄ± bÃ¼yÃ¼k font ile kontrol et.
+- Screen reader labelâ€™larÄ±.
 - Focus ve form error announcements.
 - Reduced motion.
 - Color-independent chart labels.
 - Render profiling.
-- Liste performansı.
+- Liste performansÄ±.
 - App startup profiling.
 - Sync ve ad failure chaos testleri.
 - Unit/integration/UI testlerini tamamla.
 - Android Maestro temel E2E.
 - Firebase rules testleri.
-- CI’ı tamamen yeşil yap.
-- Dead code, TODO, console ve unused dependency temizliği.
-- README ve architecture docs güncelle.
-- Bilinen sınırlamaları dürüstçe yaz.
+- CIâ€™Ä± tamamen yeÅŸil yap.
+- Dead code, TODO, console ve unused dependency temizliÄŸi.
+- README ve architecture docs gÃ¼ncelle.
+- Bilinen sÄ±nÄ±rlamalarÄ± dÃ¼rÃ¼stÃ§e yaz.
 
 Kabul:
-- Typecheck, lint ve tüm otomatik testler geçer.
-- Release build açılır.
-- Offline ana akış çalışır.
-- E2E temel yolculuk geçer.
+- Typecheck, lint ve tÃ¼m otomatik testler geÃ§er.
+- Release build aÃ§Ä±lÄ±r.
+- Offline ana akÄ±ÅŸ Ã§alÄ±ÅŸÄ±r.
+- E2E temel yolculuk geÃ§er.
 ```
 
-### Faz 11 — Google Play release hazırlığı
+### Faz 11 â€” Google Play release hazÄ±rlÄ±ÄŸÄ±
 
 ```text
-Hidden Cost projesinde Faz 11’i uygula.
+Hidden Cost projesinde Faz 11â€™i uygula.
 
 Hedef:
-Android internal testing için release hazırlığını tamamla.
+Android internal testing iÃ§in release hazÄ±rlÄ±ÄŸÄ±nÄ± tamamla.
 
-Yapılacaklar:
-- app identifier ve versioning kontrolü
+YapÄ±lacaklar:
+- app identifier ve versioning kontrolÃ¼
 - EAS production profile
 - Android App Bundle
-- Signing ve credential dokümantasyonu
+- Signing ve credential dokÃ¼mantasyonu
 - Production Firebase project kontrol listesi
 - Production AdMob app/ad unit kontrol listesi
-- Test device ayarlarının temizlenmesi
-- App Check rollout planı
-- Remote Config güvenli default’ları
-- Privacy policy URL placeholder kontrolü
+- Test device ayarlarÄ±nÄ±n temizlenmesi
+- App Check rollout planÄ±
+- Remote Config gÃ¼venli defaultâ€™larÄ±
+- Privacy policy URL placeholder kontrolÃ¼
 - Account deletion URL/flow
-- Data Safety için veri envanteri
-- Store listing taslağı:
+- Data Safety iÃ§in veri envanteri
+- Store listing taslaÄŸÄ±:
   short description,
   full description,
   feature bullets,
   screenshot plan,
   release notes
 - Internal testing smoke test listesi
-- Crashlytics/Analytics doğrulama
+- Crashlytics/Analytics doÄŸrulama
 - `docs/RELEASE_CHECKLIST.md`
-- Production build komutları
-- Rollback planı
+- Production build komutlarÄ±
+- Rollback planÄ±
 - EAS Update uygunluk notu
 
-Gerçek mağaza yayını veya credential değişikliği kullanıcı onayı olmadan yapma. Hazırlık ve doğrulamayı tamamla, eksik kullanıcı girdilerini açık bir checklist olarak ver.
+GerÃ§ek maÄŸaza yayÄ±nÄ± veya credential deÄŸiÅŸikliÄŸi kullanÄ±cÄ± onayÄ± olmadan yapma. HazÄ±rlÄ±k ve doÄŸrulamayÄ± tamamla, eksik kullanÄ±cÄ± girdilerini aÃ§Ä±k bir checklist olarak ver.
 ```
 
 ---
 
-## 3. Hata düzeltme promptu
+## 3. Hata dÃ¼zeltme promptu
 
-Codex bir faz sonunda sorun bıraktığında:
+Codex bir faz sonunda sorun bÄ±raktÄ±ÄŸÄ±nda:
 
 ```text
-Hidden Cost reposunda yeni özellik ekleme. Önce mevcut başarısızlıkları düzelt.
+Hidden Cost reposunda yeni Ã¶zellik ekleme. Ã–nce mevcut baÅŸarÄ±sÄ±zlÄ±klarÄ± dÃ¼zelt.
 
-Şunları çalıştır ve sonuçlarını incele:
+ÅunlarÄ± Ã§alÄ±ÅŸtÄ±r ve sonuÃ§larÄ±nÄ± incele:
 - typecheck
 - lint
 - unit tests
 - ilgili integration/rules tests
-- mümkünse Android development/release build doğrulaması
+- mÃ¼mkÃ¼nse Android development/release build doÄŸrulamasÄ±
 
 Kurallar:
-- Testi silme, skip etme veya assertion’ı anlamsızlaştırma.
-- Type safety’yi `any`, `as unknown as` veya geniş ts-ignore ile aşma.
-- Çalışan özelliği mock ile değiştirme.
-- Firebase/AdMob credential eksikse test adapter/config fallback oluştur; gerçek secret uydurma.
-- Kök nedeni bul.
-- Minimum ve temiz düzeltmeyi yap.
+- Testi silme, skip etme veya assertionâ€™Ä± anlamsÄ±zlaÅŸtÄ±rma.
+- Type safetyâ€™yi `any`, `as unknown as` veya geniÅŸ ts-ignore ile aÅŸma.
+- Ã‡alÄ±ÅŸan Ã¶zelliÄŸi mock ile deÄŸiÅŸtirme.
+- Firebase/AdMob credential eksikse test adapter/config fallback oluÅŸtur; gerÃ§ek secret uydurma.
+- KÃ¶k nedeni bul.
+- Minimum ve temiz dÃ¼zeltmeyi yap.
 - Regression testi ekle.
-- Sonunda neden bozulduğunu, nasıl düzeldiğini ve hangi komutların geçtiğini raporla.
+- Sonunda neden bozulduÄŸunu, nasÄ±l dÃ¼zeldiÄŸini ve hangi komutlarÄ±n geÃ§tiÄŸini raporla.
 ```
 
 ---
@@ -646,92 +646,92 @@ Kurallar:
 ## 4. Kod inceleme promptu
 
 ```text
-Hidden Cost reposunu senior production review standardıyla incele. Yeni özellik yazmadan önce bulguları önem sırasına göre listele.
+Hidden Cost reposunu senior production review standardÄ±yla incele. Yeni Ã¶zellik yazmadan Ã¶nce bulgularÄ± Ã¶nem sÄ±rasÄ±na gÃ¶re listele.
 
-Özellikle ara:
-- Yanlış TCO veya finansman formülü
-- Floating point para hataları
-- Kredi anaparasının çift sayılması
-- UI içinde domain logic
-- UI içinde doğrudan Firebase/SQLite/AdMob çağrısı
-- Offline veri kaybı
+Ã–zellikle ara:
+- YanlÄ±ÅŸ TCO veya finansman formÃ¼lÃ¼
+- Floating point para hatalarÄ±
+- Kredi anaparasÄ±nÄ±n Ã§ift sayÄ±lmasÄ±
+- UI iÃ§inde domain logic
+- UI iÃ§inde doÄŸrudan Firebase/SQLite/AdMob Ã§aÄŸrÄ±sÄ±
+- Offline veri kaybÄ±
 - Sync race condition
 - Idempotency problemi
-- Firestore rules açığı
-- PII veya maliyet tutarının Analytics/Crashlytics’e gitmesi
-- Live ad ID’nin debug build’de kullanılması
-- Consent ve privacy options eksikliği
-- Interstitial’ın uygunsuz yerde gösterilmesi
-- Account deletion eksikliği
+- Firestore rules aÃ§Ä±ÄŸÄ±
+- PII veya maliyet tutarÄ±nÄ±n Analytics/Crashlyticsâ€™e gitmesi
+- Live ad IDâ€™nin debug buildâ€™de kullanÄ±lmasÄ±
+- Consent ve privacy options eksikliÄŸi
+- Interstitialâ€™Ä±n uygunsuz yerde gÃ¶sterilmesi
+- Account deletion eksikliÄŸi
 - Migration riski
-- Accessibility eksikliği
+- Accessibility eksikliÄŸi
 - Memory leak ve gereksiz render
 - Eksik error/loading/empty/offline state
-- Testlerde sahte güven
+- Testlerde sahte gÃ¼ven
 
 Her bulguda:
-- önem derecesi,
-- dosya ve satır,
-- neden problem olduğu,
-- kullanıcı etkisi,
-- önerilen çözüm,
+- Ã¶nem derecesi,
+- dosya ve satÄ±r,
+- neden problem olduÄŸu,
+- kullanÄ±cÄ± etkisi,
+- Ã¶nerilen Ã§Ã¶zÃ¼m,
 - gerekli regression testi
 bulunsun.
 
-İnceleme bittikten sonra yalnızca kritik ve yüksek bulguları düzelt. Sonra typecheck, lint ve testleri çalıştır.
+Ä°nceleme bittikten sonra yalnÄ±zca kritik ve yÃ¼ksek bulgularÄ± dÃ¼zelt. Sonra typecheck, lint ve testleri Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## 5. UI iyileştirme promptu
+## 5. UI iyileÅŸtirme promptu
 
 ```text
-Hidden Cost uygulamasının UI/UX kalitesini artır; ürün kapsamını büyütme.
+Hidden Cost uygulamasÄ±nÄ±n UI/UX kalitesini artÄ±r; Ã¼rÃ¼n kapsamÄ±nÄ± bÃ¼yÃ¼tme.
 
 Hedef:
-Profesyonel, güven veren ve veriyi kolay okutan bir finans/karar destek deneyimi.
+Profesyonel, gÃ¼ven veren ve veriyi kolay okutan bir finans/karar destek deneyimi.
 
 Kurallar:
 - Mevcut theme token sistemini kullan.
 - Hardcoded renk ve metin ekleme.
-- Hesaplama wizard’ını sadeleştir.
+- Hesaplama wizardâ€™Ä±nÄ± sadeleÅŸtir.
 - Bir ekranda tek ana CTA.
-- Form yardım metinlerini kısa tut.
-- Para alanlarını locale-aware yap.
-- Kullanıcının veri kaybetmesini engelle.
-- Sonuç ekranında önce üç temel metrik, sonra breakdown, sonra varsayımlar.
-- Grafikleri dekorasyon için değil karar desteği için kullan.
-- Büyük font, screen reader ve reduced motion desteğini koru.
-- Reklam alanını ana aksiyonlardan uzak tut.
-- Empty/loading/error/offline durumlarını tasarla.
-- Yeni ağır UI kütüphanesi ekleme.
-- Animasyonları kısa, işlevsel ve iptal edilebilir tut.
+- Form yardÄ±m metinlerini kÄ±sa tut.
+- Para alanlarÄ±nÄ± locale-aware yap.
+- KullanÄ±cÄ±nÄ±n veri kaybetmesini engelle.
+- SonuÃ§ ekranÄ±nda Ã¶nce Ã¼Ã§ temel metrik, sonra breakdown, sonra varsayÄ±mlar.
+- Grafikleri dekorasyon iÃ§in deÄŸil karar desteÄŸi iÃ§in kullan.
+- BÃ¼yÃ¼k font, screen reader ve reduced motion desteÄŸini koru.
+- Reklam alanÄ±nÄ± ana aksiyonlardan uzak tut.
+- Empty/loading/error/offline durumlarÄ±nÄ± tasarla.
+- Yeni aÄŸÄ±r UI kÃ¼tÃ¼phanesi ekleme.
+- AnimasyonlarÄ± kÄ±sa, iÅŸlevsel ve iptal edilebilir tut.
 
-Önce mevcut ekranları UX sorunlarıyla listele. Sonra en yüksek etkili düzeltmeleri uygula ve screenshot/test planı sun.
+Ã–nce mevcut ekranlarÄ± UX sorunlarÄ±yla listele. Sonra en yÃ¼ksek etkili dÃ¼zeltmeleri uygula ve screenshot/test planÄ± sun.
 ```
 
 ---
 
-## 6. Codex’e verilmemesi gereken belirsiz prompt örnekleri
+## 6. Codexâ€™e verilmemesi gereken belirsiz prompt Ã¶rnekleri
 
-Bunları kullanma:
+BunlarÄ± kullanma:
 
 ```text
-Bu uygulamanın tamamını yap.
+Bu uygulamanÄ±n tamamÄ±nÄ± yap.
 Firebase ekle.
-Daha güzel yap.
+Daha gÃ¼zel yap.
 Reklam koy.
 Profesyonel mimari kur.
-Tüm bugları düzelt.
+TÃ¼m buglarÄ± dÃ¼zelt.
 ```
 
-Bunun yerine faz promptlarını kullan. Her fazın net kapsamı, kabul kriteri ve test zorunluluğu bulunmalıdır.
+Bunun yerine faz promptlarÄ±nÄ± kullan. Her fazÄ±n net kapsamÄ±, kabul kriteri ve test zorunluluÄŸu bulunmalÄ±dÄ±r.
 
 ---
 
-## 7. Kullanıcıdan sonradan gerekecek gerçek değerler
+## 7. KullanÄ±cÄ±dan sonradan gerekecek gerÃ§ek deÄŸerler
 
-Codex bu değerleri uydurmamalıdır:
+Codex bu deÄŸerleri uydurmamalÄ±dÄ±r:
 
 - Android package name
 - iOS bundle identifier
@@ -743,33 +743,33 @@ Codex bu değerleri uydurmamalıdır:
 - SHA-1/SHA-256 fingerprints
 - AdMob Android/iOS app IDs
 - AdMob production ad unit IDs
-- Google Play signing/keystore işlemleri
+- Google Play signing/keystore iÅŸlemleri
 - Privacy policy URL
 - Support e-mail
 - App icon, splash ve store graphics
-- Gerçek premium product IDs
-- Production App Check rollout kararı
+- GerÃ§ek premium product IDs
+- Production App Check rollout kararÄ±
 
-Bu değerler eksikken proje test config ve açık dokümantasyonla geliştirilmeye devam etmelidir.
+Bu deÄŸerler eksikken proje test config ve aÃ§Ä±k dokÃ¼mantasyonla geliÅŸtirilmeye devam etmelidir.
 
 ---
 
-## 8. Her faz sonunda beklenen rapor formatı
+## 8. Her faz sonunda beklenen rapor formatÄ±
 
 ```text
 ## Tamamlananlar
 - ...
 
-## Değiştirilen dosyalar
-- path: açıklama
+## DeÄŸiÅŸtirilen dosyalar
+- path: aÃ§Ä±klama
 
 ## Mimari kararlar
 - ...
 
-## Çalıştırılan komutlar
+## Ã‡alÄ±ÅŸtÄ±rÄ±lan komutlar
 - ...
 
-## Doğrulama
+## DoÄŸrulama
 - Typecheck:
 - Lint:
 - Unit tests:
@@ -779,9 +779,10 @@ Bu değerler eksikken proje test config ve açık dokümantasyonla geliştirilme
 ## Kalan riskler
 - ...
 
-## Kullanıcıdan gereken değerler
+## KullanÄ±cÄ±dan gereken deÄŸerler
 - ...
 
-## Sonraki önerilen faz
+## Sonraki Ã¶nerilen faz
 - ...
 ```
+

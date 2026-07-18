@@ -5,3 +5,5 @@ coverage
 android
 ios
 *.lock
+.env.example
+assets
