@@ -17,6 +17,13 @@ export {
 } from './calculation/types';
 export { compareProjects } from './comparison';
 export type { ComparisonEntry, ComparisonResult, ComparisonWarning } from './comparison';
+export { analyzeScenarios } from './scenario-analysis';
+export type {
+  ScenarioAnalysis,
+  ScenarioImpact,
+  ScenarioOverrideInput,
+  ScenarioOverrideValue,
+} from './scenario-analysis';
 export { Money, MoneyCurrencyMismatchError } from './money';
 export {
   AssumptionSetSchema,

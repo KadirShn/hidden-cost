@@ -43,5 +43,6 @@ credential is included.
 
 ## Deferred work
 
-Low/base/high scenario editing, comparisons, PDF, sharing, Firebase synchronization, analytics,
-consent, and real advertising stay in their designated later phases.
+Firebase synchronization, analytics, consent, and real advertising stay in their designated later
+phases. Scenario editing, comparisons, PDF, and result-card sharing are documented in
+[Scenarios, comparison, and export](EXPORT_AND_COMPARISON.md).

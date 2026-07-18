@@ -43,6 +43,100 @@ export class SQLiteScenarioRepository<TRunResult> implements ScenarioRepository 
       .map(fromRow);
   }
 
+  replace(
+    projectId: string,
+    scenario: ScenarioOverrideRecord['scenario'],
+    inputs: ScenarioOverrideRecord[],
+  ): ScenarioOverrideRecord[] {
+    if (inputs.some((input) => input.projectId !== projectId || input.scenario !== scenario)) {
+      throw new Error('Scenario replacement contains mismatched records');
+    }
+
+    return this.db.transaction((tx) => {
+      const existingRows = tx
+        .select()
+        .from(scenarioOverridesTable)
+        .where(
+          and(
+            eq(scenarioOverridesTable.projectId, projectId),
+            eq(scenarioOverridesTable.scenario, scenario),
+          ),
+        )
+        .all();
+      const retainedPaths = new Set(inputs.map(({ path }) => path));
+      const now = this.dependencies.now();
+
+      for (const existing of existingRows) {
+        if (!existing.deletedAt && !retainedPaths.has(existing.path)) {
+          tx.update(scenarioOverridesTable)
+            .set({
+              deletedAt: now,
+              updatedAt: now,
+              syncStatus: 'pending',
+              revision: existing.revision + 1,
+              deviceId: this.dependencies.deviceId,
+            })
+            .where(eq(scenarioOverridesTable.id, existing.id))
+            .run();
+          enqueueSync(tx, this.dependencies, 'scenario_override', existing.id, 'delete', {
+            id: existing.id,
+            deletedAt: now,
+            revision: existing.revision + 1,
+            deviceId: this.dependencies.deviceId,
+          });
+        }
+      }
+
+      return inputs.map((input) => {
+        const existing = existingRows.find(({ path }) => path === input.path);
+        const revision = (existing?.revision ?? 0) + 1;
+        const record: ScenarioOverrideRecord = {
+          ...input,
+          id: existing?.id ?? input.id,
+          createdAt: existing?.createdAt ?? input.createdAt,
+          updatedAt: now,
+          deletedAt: undefined,
+        };
+        tx.insert(scenarioOverridesTable)
+          .values({
+            id: record.id,
+            projectId,
+            scenario,
+            path: record.path,
+            valueJson: JSON.stringify(record.value),
+            createdAt: record.createdAt,
+            updatedAt: now,
+            deletedAt: null,
+            syncStatus: 'pending',
+            revision,
+            deviceId: this.dependencies.deviceId,
+          })
+          .onConflictDoUpdate({
+            target: [
+              scenarioOverridesTable.projectId,
+              scenarioOverridesTable.scenario,
+              scenarioOverridesTable.path,
+            ],
+            set: {
+              valueJson: JSON.stringify(record.value),
+              updatedAt: now,
+              deletedAt: null,
+              syncStatus: 'pending',
+              revision,
+              deviceId: this.dependencies.deviceId,
+            },
+          })
+          .run();
+        enqueueSync(tx, this.dependencies, 'scenario_override', record.id, 'upsert', {
+          ...record,
+          revision,
+          deviceId: this.dependencies.deviceId,
+        });
+        return record;
+      });
+    });
+  }
+
   upsert(input: ScenarioOverrideRecord): ScenarioOverrideRecord {
     return this.db.transaction((tx) => {
       const existing = tx

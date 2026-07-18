@@ -6,9 +6,9 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 5 connects the offline-first data layer and pure calculation engine to the main product flow:
-dashboard, template library, eight-step calculation wizard, result visualization, saved projects,
-and project actions. Firebase and real advertising remain outside this phase.
+Phase 6 adds sparse low/base/high scenarios, two-to-three project comparison, accessible comparison
+graphics, PDF reports, and shareable result cards to the offline-first main flow. Firebase and real
+advertising remain outside this phase.
 
 ## Technology
 
@@ -21,6 +21,7 @@ and project actions. Firebase and real advertising remain outside this phase.
 - `decimal.js` and Zod for pure domain arithmetic and validation
 - Expo SQLite, Drizzle ORM, and TanStack Query for offline-first local data
 - React Hook Form and Zod for localized, step-based calculation forms
+- `expo-print`, `expo-sharing`, and `expo-file-system` for guarded export and cleanup
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
 
@@ -47,7 +48,7 @@ in the client bundle and must never contain secrets.
 
 ## Running the app
 
-The Phase 5 app initializes its versioned Expo SQLite database and built-in templates before routes
+The Phase 6 app initializes its versioned Expo SQLite database and built-in templates before routes
 render. Local project operations require no account or network connection:
 
 ```bash
@@ -105,7 +106,7 @@ src/utils/                       Locale-aware presentation formatters
 src/config/                      Validated public runtime configuration
 src/domain/                      Pure money, validation, calculation, scenario, and comparison rules
 src/data/                        SQLite, migrations, repositories, seeds, and Query hooks
-src/services/                    Replaceable external services (future phase)
+src/services/export/             PDF/share adapters and export access policy
 docs/                            Product and architecture documentation
 ```
 
@@ -117,14 +118,16 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - Onboarding: welcome, local-data/privacy summary, language and theme preferences
 - Tabs: Home, Calculations, Compare, Settings
 - Flow stack: templates, template detail, wizard, result, and project detail
+- Scenario editor: sparse low/high overrides for a project
 - Each tab owns a nested Stack; focused calculation routes use a shared root flow Stack.
 
-## Known Phase 5 limitations
+## Known Phase 6 limitations
 
-- Low/high scenario editing, project comparison, PDF, and sharing remain in Phase 6.
 - Sync queue processing and cloud conflict handling are deferred to the Firebase phase.
 - Firebase and AdMob are not configured; the result screen only renders a non-interactive reserved
   container.
+- The Phase 6 export policy grants free access. A rewarded provider can replace it in Phase 8
+  without changing report generation or screen code.
 
 ## Documentation
 
@@ -134,6 +137,7 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - [Calculation engine](docs/CALCULATION_ENGINE.md)
 - [Offline-first data layer](docs/DATA_LAYER.md)
 - [Main calculation flow](docs/MAIN_FLOW.md)
+- [Scenarios, comparison, and export](docs/EXPORT_AND_COMPARISON.md)
 - [Firebase setup](docs/FIREBASE_SETUP.md)
 - [AdMob setup](docs/ADMOB_SETUP.md)
 - [Privacy checklist](docs/PRIVACY_CHECKLIST.md)

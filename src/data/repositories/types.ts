@@ -115,6 +115,11 @@ export interface ProjectRepository {
 
 export interface ScenarioRepository {
   list(projectId: string): ScenarioOverrideRecord[];
+  replace(
+    projectId: string,
+    scenario: ScenarioOverrideRecord['scenario'],
+    overrides: ScenarioOverrideRecord[],
+  ): ScenarioOverrideRecord[];
   upsert(override: ScenarioOverrideRecord): ScenarioOverrideRecord;
   softDelete(id: string): void;
 }

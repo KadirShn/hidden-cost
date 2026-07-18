@@ -23,6 +23,23 @@ export function useUpsertScenarioOverride(projectId: string) {
   });
 }
 
+export function useReplaceScenarioOverrides(projectId: string) {
+  const { scenarios } = useRepositories();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      scenario,
+      overrides,
+    }: {
+      scenario: ScenarioOverrideRecord['scenario'];
+      overrides: ScenarioOverrideRecord[];
+    }) => scenarios.replace(projectId, scenario, overrides),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: scenarioKeys.project(projectId) });
+    },
+  });
+}
+
 export function useDeleteScenarioOverride(projectId: string) {
   const { scenarios } = useRepositories();
   const queryClient = useQueryClient();

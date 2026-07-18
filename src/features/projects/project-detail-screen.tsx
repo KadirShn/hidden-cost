@@ -17,7 +17,9 @@ import {
   useSoftDeleteProject,
 } from '@/data/query/project-hooks';
 import { calculateCostProject } from '@/domain';
+import { ProjectExportActions } from '@/features/export/project-export-actions';
 import { ResultSummary } from '@/features/results/result-summary';
+import { ScenarioSummary } from '@/features/scenarios/scenario-summary';
 import { useTheme } from '@/hooks/use-theme';
 
 type ConfirmAction = 'archive' | 'delete' | null;
@@ -82,6 +84,8 @@ export function ProjectDetailScreen() {
         />
       </View>
       <ResultSummary result={result} />
+      <ScenarioSummary bundle={bundle} />
+      <ProjectExportActions bundle={bundle} />
       {actionError ? (
         <AppText accessibilityLiveRegion="assertive" tone="danger">
           {t('projects.actionError')}

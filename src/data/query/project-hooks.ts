@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { projectKeys } from '@/data/query/query-keys';
 import { useRepositories } from '@/data/repositories/repository-provider';
@@ -22,6 +22,16 @@ export function useProject(projectId: string) {
   return useQuery({
     queryKey: projectKeys.detail(projectId),
     queryFn: () => projects.getBundle(projectId),
+  });
+}
+
+export function useProjectBundles(projectIds: string[]) {
+  const { projects } = useRepositories();
+  return useQueries({
+    queries: projectIds.map((projectId) => ({
+      queryKey: projectKeys.detail(projectId),
+      queryFn: () => projects.getBundle(projectId),
+    })),
   });
 }
 

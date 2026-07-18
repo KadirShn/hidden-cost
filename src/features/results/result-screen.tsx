@@ -10,6 +10,8 @@ import { ErrorState } from '@/components/ui/error-state';
 import { LoadingSkeleton } from '@/components/ui/loading-skeleton';
 import { useProject, useUpdateProject } from '@/data/query/project-hooks';
 import { calculateCostProject } from '@/domain';
+import { ProjectExportActions } from '@/features/export/project-export-actions';
+import { ScenarioSummary } from '@/features/scenarios/scenario-summary';
 import { useTheme } from '@/hooks/use-theme';
 
 import { ResultSummary } from './result-summary';
@@ -54,6 +56,8 @@ export function ResultScreen() {
       <Stack.Screen options={{ title: t('result.title') }} />
       <AppText variant="title">{bundle.project.title}</AppText>
       <ResultSummary result={result} />
+      <ScenarioSummary bundle={bundle} />
+      <ProjectExportActions bundle={bundle} />
       <AdPlaceholder label={t('ads.placeholder')} />
       {updateProject.isError ? (
         <AppText accessibilityLiveRegion="assertive" tone="danger">
