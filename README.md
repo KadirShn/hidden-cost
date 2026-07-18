@@ -6,17 +6,20 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 1 (bootstrap) establishes the Expo SDK 57, TypeScript, environment, quality, CI, and
-application-initialization foundations. Calculation features, SQLite, Firebase, AdMob, and the full
-product UI are intentionally not part of this phase.
+Phase 2 establishes the design system, onboarding, four-tab navigation, Turkish/English
+localization, persistent theme preferences, and reusable UI primitives. Calculation features,
+domain persistence, Firebase, and AdMob remain outside this phase.
 
 ## Technology
 
 - Expo SDK 57 and React Native 0.86
 - TypeScript in strict mode
 - Expo Router with routes under `src/app`
+- `expo-localization`, i18next, and react-i18next
+- Semantic light/dark theme tokens with a persistent system/light/dark preference
+- `expo-sqlite/localStorage` for small application preferences only
 - EAS Build profiles for development, preview, and production
-- ESLint, Prettier, and Jest
+- ESLint, Prettier, Jest, and React Native Testing Library
 
 ## Requirements
 
@@ -39,10 +42,10 @@ EXPO_PUBLIC_APP_ENV=development
 Allowed values are `development`, `preview`, and `production`. Public Expo variables are embedded
 in the client bundle and must never contain secrets.
 
-## Running the bootstrap app
+## Running the app
 
-The Phase 1 app can run in Expo Go because Firebase, AdMob, and SQLite domain infrastructure have
-not been added:
+The Phase 2 app runs in Expo Go. SQLite is used only through its localStorage polyfill for language,
+theme, and onboarding preferences; no domain schema or migration exists yet:
 
 ```bash
 npm start
@@ -82,8 +85,15 @@ GitHub Actions runs install, typecheck, lint, and tests for pull requests and pu
 
 ```text
 src/app/                         Expo Router routes and layouts
-src/components/                  Shared presentation components
+src/components/ui/               Shared UI primitives
+src/components/layout/           Responsive route layout helpers
 src/features/app-initialization/ Bootstrap application state
+src/features/onboarding/         Onboarding presentation shell
+src/features/settings/           Persistent settings context
+src/i18n/                        Turkish/English resources
+src/theme/                       Semantic tokens and theme provider
+src/store/                       Small preference storage
+src/utils/                       Locale-aware presentation formatters
 src/config/                      Validated public runtime configuration
 src/domain/                      Pure domain rules (future phase)
 src/data/                        Infrastructure adapters (future phase)
@@ -94,13 +104,18 @@ docs/                            Product and architecture documentation
 UI code must not call Firebase, SQLite, analytics, or advertising providers directly. See
 [Architecture](docs/ARCHITECTURE.md) for dependency rules.
 
-## Known Phase 1 limitations
+## Navigation
 
-- The current screens are the Expo starter UI, not the Hidden Cost product UI.
+- Onboarding: welcome, local-data/privacy summary, language and theme preferences
+- Tabs: Home, Calculations, Compare, Settings
+- Each tab owns a nested Stack so titles and future detail routes have independent histories.
+
+## Known Phase 2 limitations
+
 - There is no calculation engine or persistent domain data.
-- Firebase, AdMob, and SQLite are not configured.
-- App identifiers, EAS project ID, store credentials, and production service configuration are not
-  present.
+- Home, calculations, and comparison screens are data-independent shells.
+- Firebase and AdMob are not configured.
+- The SQLite domain schema is intentionally deferred to Phase 4.
 
 ## Documentation
 

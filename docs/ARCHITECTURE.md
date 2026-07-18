@@ -2,9 +2,10 @@
 
 ## Status and scope
 
-This document records the Phase 1 architecture baseline. The repository contains the application
-bootstrap only; calculation, persistence, synchronization, analytics, and advertising integrations
-remain explicitly outside this phase.
+This document records the Phase 2 architecture baseline. The repository now contains application
+bootstrap, design tokens, localization, onboarding, navigation, and small persisted preferences.
+Calculation, domain persistence, synchronization, analytics, and advertising integrations remain
+explicitly outside this phase.
 
 ## Goals
 
@@ -30,23 +31,65 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 1 directory boundaries
+## Phase 2 directory boundaries
 
 ```text
 src/
   app/                         Expo Router route and layout modules only
-  components/                  Shared presentation and feedback components
+    (onboarding)/              Three-step onboarding stack
+    (tabs)/                    Four native tabs with nested stacks
+  components/                  Shared presentation components
     feedback/                  Initialization and fatal-error states
+    layout/                    Responsive screen and stack helpers
+    ui/                        Provider-independent UI primitives
   config/                      Validated public runtime configuration
   features/
     app-initialization/        Bootstrap state and initialization boundary
+    onboarding/                Onboarding presentation composition
+    settings/                  Persistent settings context
+  i18n/                        Turkish and English resource dictionaries
+  store/                       Small key-value settings storage
+  theme/                       Semantic tokens and theme provider
+  utils/                       Locale-aware presentation formatting
   domain/                      Pure business rules in later phases
   data/                        Repository implementations in later phases
   services/                    Replaceable provider adapters in later phases
 ```
 
-The existing Expo starter screens remain in place until the design-system and navigation phase.
-They do not establish product-domain behavior.
+The Expo starter routes and components have been removed. Phase 2 screens are product-aware shells
+but intentionally contain no calculation or persistence domain behavior.
+
+## Navigation
+
+The root Stack owns the initial redirect, onboarding group, and tab group. The tab group defines
+four static native destinations: Home, Calculations, Compare, and Settings. Each tab is a directory
+with its own nested Stack, preserving independent navigation history and native headers.
+
+Onboarding completion is a persisted boolean preference. Until it is set, the root index redirects
+to the welcome screen; completion replaces the route with Home.
+
+## Theme and localization
+
+The theme layer exposes semantic tokens rather than component-specific colors. It supports
+`system`, `light`, and `dark` preferences while resolving one active theme for both application UI
+and Expo Router's navigation theme.
+
+Turkish and English strings live in separate i18next resources. Components accept translated labels
+from their callers and do not own screen copy. Locale-aware number and currency formatting remains a
+presentation concern and is separate from the future Money domain value object.
+
+## Preference persistence
+
+Language, theme, and onboarding state use the synchronous `expo-sqlite/localStorage` polyfill. This
+is intentionally not the Phase 4 domain database: it has no tables, migrations, repositories, seed
+data, or project entities. Phase 4 will introduce those behind the data boundary.
+
+## UI primitives
+
+The UI layer includes Button, IconButton, TextField, MoneyInput, NumberInput, SelectField, Card,
+MetricCard, Chip, Divider, EmptyState, ErrorState, OfflineBanner, LoadingSkeleton, ConfirmDialog, and
+StepIndicator. Primitives enforce minimum touch targets, semantic accessibility roles, scalable
+text, and theme tokens. Loading animation observes the operating system's reduced-motion setting.
 
 ## Application initialization
 

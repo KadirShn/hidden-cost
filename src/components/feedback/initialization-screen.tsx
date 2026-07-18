@@ -1,27 +1,21 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useTheme } from '@/hooks/use-theme';
 
-export function InitializationScreen() {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme === 'dark' ? 'dark' : 'light'];
+export function InitializationScreen({ label }: { label: string }) {
+  const theme = useTheme();
 
   return (
     <View
-      accessibilityLabel="Hidden Cost is preparing"
+      accessibilityLabel={label}
       accessibilityRole="progressbar"
-      style={[styles.container, { backgroundColor: colors.background }]}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <ActivityIndicator color={colors.text} size="large" />
+      <ActivityIndicator color={theme.colors.accent} size="large" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
+  container: { alignItems: 'center', flex: 1, justifyContent: 'center' },
 });

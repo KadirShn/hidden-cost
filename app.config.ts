@@ -22,6 +22,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: 'Hidden Cost',
     slug: 'hidden-cost',
+    plugins: [...(config.plugins ?? []), 'expo-localization', 'expo-sqlite'],
     extra: {
       ...config.extra,
       appEnvironment,
