@@ -2,10 +2,9 @@
 
 ## Status and scope
 
-This document records the Phase 2 architecture baseline. The repository now contains application
-bootstrap, design tokens, localization, onboarding, navigation, and small persisted preferences.
-Calculation, domain persistence, synchronization, analytics, and advertising integrations remain
-explicitly outside this phase.
+This document records the Phase 3 architecture baseline. The repository contains the application
+shell plus a pure, versioned, validated calculation domain. Domain persistence, synchronization,
+analytics, and advertising integrations remain explicitly outside this phase.
 
 ## Goals
 
@@ -31,7 +30,7 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 2 directory boundaries
+## Phase 3 directory boundaries
 
 ```text
 src/
@@ -51,13 +50,13 @@ src/
   store/                       Small key-value settings storage
   theme/                       Semantic tokens and theme provider
   utils/                       Locale-aware presentation formatting
-  domain/                      Pure business rules in later phases
+  domain/                      Pure money, schemas, calculation, scenarios, and comparison
   data/                        Repository implementations in later phases
   services/                    Replaceable provider adapters in later phases
 ```
 
-The Expo starter routes and components have been removed. Phase 2 screens are product-aware shells
-but intentionally contain no calculation or persistence domain behavior.
+The Phase 2 screens remain product-aware shells and intentionally do not call the Phase 3 engine
+yet. That application-layer wiring belongs to a later user-flow phase.
 
 ## Navigation
 
@@ -76,7 +75,8 @@ and Expo Router's navigation theme.
 
 Turkish and English strings live in separate i18next resources. Components accept translated labels
 from their callers and do not own screen copy. Locale-aware number and currency formatting remains a
-presentation concern and is separate from the future Money domain value object.
+presentation concern. Localized money input is converted to canonical minor units before it reaches
+the `Money` value object.
 
 ## Preference persistence
 
@@ -134,11 +134,17 @@ credentials, or store credentials.
 SQLite will remain the primary source of truth; Firestore will be optional backup and
 synchronization infrastructure.
 
-## Money representation (future Phase 3+)
+## Money representation and calculation domain
 
-Persist ISO 4217 currency codes and integer minor-unit values. Use decimal arithmetic in the pure
-calculation engine and locale-aware formatting only in the presentation layer. Financing principal
-must never be counted twice in total cost of ownership.
+Money carries an ISO 4217 code and an arbitrary-precision Decimal minor-unit value. Persisted inputs
+and serialized outputs are integer minor-unit strings, avoiding JavaScript safe-integer limits.
+Fractional intermediate minor units are rounded once with half-up semantics at output boundaries.
+
+Zod schemas validate projects, items, financing, residual value, assumptions, scenarios, inputs,
+and results. The engine is a deterministic pure function. It calculates initial, recurring, usage,
+fuel/energy, financing, residual, TCO, derived metrics, breakdown, completeness, and warnings.
+Financing principal and down payment are not added to TCO because purchase price already includes
+them. See [Calculation Engine](CALCULATION_ENGINE.md) for the complete formula contract.
 
 ## Advertising boundary (future Phase 8)
 

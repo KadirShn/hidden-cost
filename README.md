@@ -6,9 +6,9 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 2 establishes the design system, onboarding, four-tab navigation, Turkish/English
-localization, persistent theme preferences, and reusable UI primitives. Calculation features,
-domain persistence, Firebase, and AdMob remain outside this phase.
+Phase 3 adds a pure, versioned calculation domain with decimal minor-unit money, Zod validation,
+financing, residual value, scenarios, completeness scoring, comparison rules, and golden tests.
+Domain persistence, Firebase, and AdMob remain outside this phase.
 
 ## Technology
 
@@ -18,6 +18,7 @@ domain persistence, Firebase, and AdMob remain outside this phase.
 - `expo-localization`, i18next, and react-i18next
 - Semantic light/dark theme tokens with a persistent system/light/dark preference
 - `expo-sqlite/localStorage` for small application preferences only
+- `decimal.js` and Zod for pure domain arithmetic and validation
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
 
@@ -44,7 +45,7 @@ in the client bundle and must never contain secrets.
 
 ## Running the app
 
-The Phase 2 app runs in Expo Go. SQLite is used only through its localStorage polyfill for language,
+The Phase 3 app runs in Expo Go. SQLite is used only through its localStorage polyfill for language,
 theme, and onboarding preferences; no domain schema or migration exists yet:
 
 ```bash
@@ -95,7 +96,7 @@ src/theme/                       Semantic tokens and theme provider
 src/store/                       Small preference storage
 src/utils/                       Locale-aware presentation formatters
 src/config/                      Validated public runtime configuration
-src/domain/                      Pure domain rules (future phase)
+src/domain/                      Pure money, validation, calculation, scenario, and comparison rules
 src/data/                        Infrastructure adapters (future phase)
 src/services/                    Replaceable external services (future phase)
 docs/                            Product and architecture documentation
@@ -110,10 +111,11 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - Tabs: Home, Calculations, Compare, Settings
 - Each tab owns a nested Stack so titles and future detail routes have independent histories.
 
-## Known Phase 2 limitations
+## Known Phase 3 limitations
 
-- There is no calculation engine or persistent domain data.
-- Home, calculations, and comparison screens are data-independent shells.
+- The calculation domain is not wired to the Phase 2 screens yet.
+- There is no persistent domain data; calculation inputs are in-memory values.
+- Home, calculations, and comparison screens remain data-independent shells.
 - Firebase and AdMob are not configured.
 - The SQLite domain schema is intentionally deferred to Phase 4.
 

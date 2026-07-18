@@ -24,6 +24,14 @@ export function formatCurrency(value: number, currency: string, locale: AppLocal
 }
 
 export function parseLocalizedNumber(input: string, locale: AppLocale): number | null {
+  const normalized = normalizeLocalizedDecimal(input, locale);
+  if (normalized === null) return null;
+
+  const value = Number(normalized);
+  return Number.isFinite(value) ? value : null;
+}
+
+export function normalizeLocalizedDecimal(input: string, locale: AppLocale): string | null {
   const parts = new Intl.NumberFormat(getLocaleTag(locale)).formatToParts(12345.6);
   const group = parts.find((part) => part.type === 'group')?.value ?? ',';
   const decimal = parts.find((part) => part.type === 'decimal')?.value ?? '.';
@@ -34,8 +42,5 @@ export function parseLocalizedNumber(input: string, locale: AppLocale): number |
     .replace(decimal, '.')
     .replaceAll(/[^0-9+.-]/g, '');
 
-  if (!normalized) return null;
-
-  const value = Number(normalized);
-  return Number.isFinite(value) ? value : null;
+  return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalized) ? normalized : null;
 }
