@@ -1,5 +1,7 @@
 import type { SyncQueueRecord } from '@/data/repositories/types';
 
+import type { RemoteConfigValues } from './remote-config-defaults';
+
 export type CloudUser = {
   uid: string;
   isAnonymous: boolean;
@@ -16,7 +18,7 @@ export interface FirebaseClient {
   signInAnonymously(): Promise<CloudUser>;
   linkGoogleAccount(): Promise<CloudUser>;
   applyMutation(uid: string, record: SyncQueueRecord): Promise<CloudMutationResult>;
-  initializeRemoteConfig(): Promise<void>;
+  initializeRemoteConfig(): Promise<RemoteConfigValues>;
   deleteAccountAndCloudData(): Promise<void>;
 }
 

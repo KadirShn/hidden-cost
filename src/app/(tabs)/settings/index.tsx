@@ -1,12 +1,14 @@
 import Constants from 'expo-constants';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Switch, View } from 'react-native';
 
 import { Screen } from '@/components/layout/screen';
 import { AppText } from '@/components/ui/app-text';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
 import { SelectField } from '@/components/ui/select-field';
+import { useAds } from '@/features/ads/use-ads';
 import { CloudBackupSettings } from '@/features/cloud-backup/cloud-backup-settings';
 import { DeveloperDatabaseTools } from '@/features/developer-tools/database-tools';
 import { useSettings } from '@/features/settings/use-settings';
@@ -17,7 +19,15 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
-  const { locale, setLocale, themePreference, setThemePreference } = useSettings();
+  const ads = useAds();
+  const {
+    locale,
+    setLocale,
+    themePreference,
+    setThemePreference,
+    adAnalyticsConsent,
+    setAdAnalyticsConsent,
+  } = useSettings();
 
   return (
     <Screen>
@@ -62,6 +72,41 @@ export default function SettingsScreen() {
             selectedAccessibilityLabel={t('accessibility.selected')}
             value={themePreference}
           />
+        </Card>
+      </View>
+
+      <View style={{ gap: theme.spacing.md }}>
+        <AppText variant="subtitle">{t('ads.privacySection')}</AppText>
+        <Card>
+          <AppText variant="label">{t('ads.privacyOptionsTitle')}</AppText>
+          <AppText selectable tone="secondary">
+            {t('ads.privacyOptionsBody')}
+          </AppText>
+          <Button
+            disabled={!ads.privacyOptionsAvailable}
+            label={t('ads.openPrivacyOptions')}
+            onPress={() => void ads.openPrivacyOptions()}
+            variant="secondary"
+          />
+          {!ads.privacyOptionsAvailable ? (
+            <AppText tone="secondary" variant="helper">
+              {t('ads.privacyOptionsUnavailable')}
+            </AppText>
+          ) : null}
+          <Divider />
+          <View
+            style={{ flexDirection: 'row', gap: theme.spacing.md, justifyContent: 'space-between' }}
+          >
+            <View style={{ flex: 1, gap: theme.spacing.xs }}>
+              <AppText variant="label">{t('ads.analyticsTitle')}</AppText>
+              <AppText tone="secondary">{t('ads.analyticsBody')}</AppText>
+            </View>
+            <Switch
+              accessibilityLabel={t('ads.analyticsTitle')}
+              onValueChange={setAdAnalyticsConsent}
+              value={adAnalyticsConsent}
+            />
+          </View>
         </Card>
       </View>
 

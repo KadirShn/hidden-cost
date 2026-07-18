@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Screen } from '@/components/layout/screen';
-import { AdPlaceholder } from '@/components/ui/ad-placeholder';
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/ui/error-state';
@@ -48,7 +47,7 @@ export function ResultScreen() {
   const result = calculateCostProject({ project: bundle.project, costItems: bundle.costItems });
   const save = async () => {
     await updateProject.mutateAsync({ ...bundle.project, status: 'complete' });
-    router.replace(`/project/${id}` as Href);
+    router.replace(`/project/${id}?completed=1` as Href);
   };
 
   return (
@@ -58,7 +57,6 @@ export function ResultScreen() {
       <ResultSummary result={result} />
       <ScenarioSummary bundle={bundle} />
       <ProjectExportActions bundle={bundle} />
-      <AdPlaceholder label={t('ads.placeholder')} />
       {updateProject.isError ? (
         <AppText accessibilityLiveRegion="assertive" tone="danger">
           {t('result.saveError')}

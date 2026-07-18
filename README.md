@@ -6,9 +6,9 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 7 adds optional anonymous Firebase backup, Google account linking, revision-aware queue sync,
-Remote Config defaults, Emulator Suite security rules, and secure cloud-account deletion while
-preserving SQLite-first behavior. Real advertising remains outside this phase.
+Phase 8 adds a Remote Config controlled, UMP consent-first advertising boundary with test-only
+development inventory, content-scoped native ads, opt-in rewarded export, and strictly gated
+post-result interstitials while preserving SQLite-first behavior and ad-independent calculations.
 
 ## Technology
 
@@ -24,6 +24,7 @@ preserving SQLite-first behavior. Real advertising remains outside this phase.
 - `expo-print`, `expo-sharing`, and `expo-file-system` for guarded export and cleanup
 - React Native Firebase with Expo development builds for opt-in Auth, Firestore, Functions, and
   Remote Config
+- `react-native-google-mobile-ads` with UMP consent and test-only non-production inventory
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
 
@@ -124,14 +125,14 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - Scenario editor: sparse low/high overrides for a project
 - Each tab owns a nested Stack; focused calculation routes use a shared root flow Stack.
 
-## Known Phase 7 limitations
+## Known Phase 8 limitations
 
 - Inbound cloud restore and the interactive conflict-resolution screen remain future work; a newer
   cloud revision is preserved and exposed as `conflict` instead of being overwritten.
-- Real Firebase credentials are intentionally absent. Without build-time configuration the app
-  remains local-only. AdMob is not configured.
-- The Phase 6 export policy grants free access. A rewarded provider can replace it in Phase 8
-  without changing report generation or screen code.
+- Real Firebase credentials and production AdMob identifiers are intentionally absent. Without
+  build-time configuration the app remains local-only and all advertising defaults to disabled.
+- Store console declarations, production UMP messages, and Remote Config rollout remain operator
+  steps documented in the setup and policy checklist.
 
 ## Documentation
 
@@ -144,6 +145,7 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - [Scenarios, comparison, and export](docs/EXPORT_AND_COMPARISON.md)
 - [Firebase setup](docs/FIREBASE_SETUP.md)
 - [AdMob setup](docs/ADMOB_SETUP.md)
+- [Advertising policy checklist](docs/AD_POLICY_CHECKLIST.md)
 - [Privacy checklist](docs/PRIVACY_CHECKLIST.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)
 

@@ -281,7 +281,23 @@ export const tr = {
     openProject: 'Projeyi aç',
     saveError: 'Sonuç kaydedilemedi. Tekrar dene.',
   },
-  ads: { placeholder: 'Ayrılmış içerik alanı — reklam SDK’sı etkin değil' },
+  ads: {
+    sponsored: 'Sponsorlu',
+    privacySection: 'Reklam gizliliği',
+    privacyOptionsTitle: 'Gizlilik seçenekleri',
+    privacyOptionsBody:
+      'Google UMP izin formundaki reklam gizliliği tercihlerini buradan yeniden açabilirsin.',
+    openPrivacyOptions: 'Gizlilik seçeneklerini aç',
+    privacyOptionsUnavailable: 'Bu cihaz ve bölge için yeniden açılması gereken bir form yok.',
+    analyticsTitle: 'Anonim reklam tanılama verileri',
+    analyticsBody:
+      'Yalnızca yükleme, gösterim, tıklama ve hata olaylarını gönderir; hesaplama veya maliyet verisi göndermez.',
+    rewardedTitle: 'Reklam izleyerek dışa aktar',
+    rewardedBody:
+      'PDF veya gelişmiş rapor dışa aktarımını açmak için isteğe bağlı reklamı izleyebilirsin. Reklam yüklenemezse dışa aktarım ücretsiz devam eder.',
+    watchRewarded: 'Reklamı izle',
+    rewardCancelled: 'Reklam izleme iptal edildi; verilerin ve hesaplaman değişmedi.',
+  },
   projects: {
     searchLabel: 'Hesaplama ara',
     filters: { all: 'Tümü', draft: 'Taslaklar', complete: 'Kayıtlı', archived: 'Arşiv' },
@@ -439,7 +455,7 @@ export const tr = {
     aboutSection: 'Uygulama',
     versionLabel: 'Sürüm',
     phaseLabel: 'Mevcut kapsam',
-    phaseValue: 'Faz 7 — Local-first Firebase yedekleme ve senkronizasyon',
+    phaseValue: 'Faz 8 — İzin odaklı ve policy-aware reklam altyapısı',
     developerSection: 'Geliştirici araçları',
     resetDatabaseTitle: 'Yerel veritabanını sıfırla',
     resetDatabaseHelp:

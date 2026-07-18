@@ -8,6 +8,12 @@ export type RuntimeConfig = Readonly<{
     emulatorHost: string;
     googleWebClientId?: string;
   }>;
+  ads: Readonly<{
+    testMode: boolean;
+    nativeUnitId?: string;
+    interstitialUnitId?: string;
+    rewardedUnitId?: string;
+  }>;
 }>;
 
 export const runtimeConfig: RuntimeConfig = Object.freeze({
@@ -19,5 +25,11 @@ export const runtimeConfig: RuntimeConfig = Object.freeze({
       process.env.EXPO_PUBLIC_FIREBASE_USE_EMULATORS === 'true',
     emulatorHost: process.env.EXPO_PUBLIC_FIREBASE_EMULATOR_HOST ?? '10.0.2.2',
     googleWebClientId: process.env.EXPO_PUBLIC_FIREBASE_GOOGLE_WEB_CLIENT_ID || undefined,
+  }),
+  ads: Object.freeze({
+    testMode: process.env.EXPO_PUBLIC_APP_ENV !== 'production',
+    nativeUnitId: process.env.EXPO_PUBLIC_ADMOB_NATIVE_UNIT_ID || undefined,
+    interstitialUnitId: process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID || undefined,
+    rewardedUnitId: process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID || undefined,
   }),
 });

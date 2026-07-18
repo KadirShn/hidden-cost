@@ -12,6 +12,7 @@ import { LoadingSkeleton } from '@/components/ui/loading-skeleton';
 import { OfflineBanner } from '@/components/ui/offline-banner';
 import { TextField } from '@/components/ui/text-field';
 import { useTemplates } from '@/data/query/template-hooks';
+import { NativeAdSlot } from '@/features/ads/native-ad-slot';
 import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -78,16 +79,19 @@ export function TemplateLibraryScreen() {
           title={t('templatesScreen.errorTitle')}
         />
       ) : filtered.length ? (
-        filtered.map((template) => (
-          <TemplateCard
-            key={template.id}
-            description={t(template.descriptionKey)}
-            openLabel={t('common.open')}
-            onPress={() => router.push(`/templates/${template.id}` as Href)}
-            template={template}
-            title={t(template.titleKey)}
-          />
-        ))
+        <>
+          {filtered.map((template) => (
+            <TemplateCard
+              key={template.id}
+              description={t(template.descriptionKey)}
+              openLabel={t('common.open')}
+              onPress={() => router.push(`/templates/${template.id}` as Href)}
+              template={template}
+              title={t(template.titleKey)}
+            />
+          ))}
+          <NativeAdSlot hasContent placement="template_library" />
+        </>
       ) : (
         <EmptyState
           message={t('templatesScreen.emptyBody')}

@@ -12,6 +12,7 @@ import { LoadingSkeleton } from '@/components/ui/loading-skeleton';
 import { OfflineBanner } from '@/components/ui/offline-banner';
 import { useProjects } from '@/data/query/project-hooks';
 import { useTemplates } from '@/data/query/template-hooks';
+import { NativeAdSlot } from '@/features/ads/native-ad-slot';
 import { ProjectCard } from '@/features/projects/project-card';
 import { useSettings } from '@/features/settings/use-settings';
 import { TemplateCard } from '@/features/templates/template-card';
@@ -82,6 +83,11 @@ export function DashboardScreen() {
         </AppText>
         <AppText selectable>{t('home.insight')}</AppText>
       </Card>
+
+      <NativeAdSlot
+        hasContent={Boolean(templates.data?.length || projects.data?.length)}
+        placement="dashboard"
+      />
 
       <View style={{ gap: theme.spacing.md }}>
         <AppText variant="subtitle">{t('home.recentTitle')}</AppText>

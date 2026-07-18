@@ -283,7 +283,22 @@ export const en = {
     openProject: 'Open project',
     saveError: 'The result could not be saved. Try again.',
   },
-  ads: { placeholder: 'Reserved content area — no ad SDK is active' },
+  ads: {
+    sponsored: 'Sponsored',
+    privacySection: 'Ad privacy',
+    privacyOptionsTitle: 'Privacy options',
+    privacyOptionsBody: 'Reopen the Google UMP form to review your advertising privacy choices.',
+    openPrivacyOptions: 'Open privacy options',
+    privacyOptionsUnavailable: 'There is no form to reopen for this device and region.',
+    analyticsTitle: 'Anonymous ad diagnostics',
+    analyticsBody:
+      'Sends only load, impression, click, and error events; calculation and cost data are never sent.',
+    rewardedTitle: 'Export with an optional ad',
+    rewardedBody:
+      'You can choose to watch an ad before a PDF or advanced report export. If the ad cannot load, export continues for free.',
+    watchRewarded: 'Watch ad',
+    rewardCancelled: 'The ad was cancelled; your data and calculation were not changed.',
+  },
   projects: {
     searchLabel: 'Search calculations',
     filters: { all: 'All', draft: 'Drafts', complete: 'Saved', archived: 'Archived' },
@@ -441,7 +456,7 @@ export const en = {
     aboutSection: 'Application',
     versionLabel: 'Version',
     phaseLabel: 'Current scope',
-    phaseValue: 'Phase 7 — Local-first Firebase backup and sync',
+    phaseValue: 'Phase 8 — Consent-first, policy-aware advertising',
     developerSection: 'Developer tools',
     resetDatabaseTitle: 'Reset local database',
     resetDatabaseHelp: 'Available only in development. This permanently removes local projects.',

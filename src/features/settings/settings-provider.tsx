@@ -1,6 +1,7 @@
 import { createContext, useCallback, useMemo, type PropsWithChildren } from 'react';
 
 import { getInitialLocale, i18n, isAppLocale, type AppLocale } from '@/i18n';
+import { setAdEventAnalyticsEnabled } from '@/services/ads/send-ad-event';
 import { usePersistentSetting } from '@/store/settings-store';
 import type { ThemePreference } from '@/theme/tokens';
 
@@ -11,6 +12,8 @@ type SettingsContextValue = Readonly<{
   setThemePreference: (theme: ThemePreference) => void;
   onboardingCompleted: boolean;
   completeOnboarding: () => void;
+  adAnalyticsConsent: boolean;
+  setAdAnalyticsConsent: (enabled: boolean) => void;
 }>;
 
 export const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -36,6 +39,11 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     'false',
     isBooleanSetting,
   );
+  const [adAnalyticsValue, setAdAnalyticsValue] = usePersistentSetting(
+    'settings.adAnalyticsConsent',
+    'false',
+    isBooleanSetting,
+  );
 
   const setLocale = useCallback(
     (nextLocale: AppLocale) => {
@@ -45,6 +53,13 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     [persistLocale],
   );
   const completeOnboarding = useCallback(() => setOnboardingValue('true'), [setOnboardingValue]);
+  const setAdAnalyticsConsent = useCallback(
+    (enabled: boolean) => {
+      setAdAnalyticsValue(String(enabled) as 'true' | 'false');
+      void setAdEventAnalyticsEnabled(enabled);
+    },
+    [setAdAnalyticsValue],
+  );
   const value = useMemo<SettingsContextValue>(
     () => ({
       locale,
@@ -53,8 +68,19 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       setThemePreference,
       onboardingCompleted: onboardingValue === 'true',
       completeOnboarding,
+      adAnalyticsConsent: adAnalyticsValue === 'true',
+      setAdAnalyticsConsent,
     }),
-    [completeOnboarding, locale, onboardingValue, setLocale, setThemePreference, themePreference],
+    [
+      adAnalyticsValue,
+      completeOnboarding,
+      locale,
+      onboardingValue,
+      setAdAnalyticsConsent,
+      setLocale,
+      setThemePreference,
+      themePreference,
+    ],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

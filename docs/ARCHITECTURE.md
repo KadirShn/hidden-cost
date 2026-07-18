@@ -2,10 +2,10 @@
 
 ## Status and scope
 
-This document records the Phase 7 architecture baseline. The application connects its Expo
+This document records the Phase 8 architecture baseline. The application connects its Expo
 Router screens to the pure calculation domain through an offline-first repository layer. Remote
-Firebase backup/synchronization is optional and adapter-bound. Analytics collection and advertising
-integrations remain outside this phase.
+Firebase backup/synchronization is optional and adapter-bound. Advertising is isolated behind a
+consent-aware adapter and policy service; safe defaults keep every format disabled.
 
 ## Goals
 
@@ -31,7 +31,7 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 7 directory boundaries
+## Phase 8 directory boundaries
 
 ```text
 src/
@@ -173,17 +173,20 @@ fuel/energy, financing, residual, TCO, derived metrics, breakdown, completeness,
 Financing principal and down payment are not added to TCO because purchase price already includes
 them. See [Calculation Engine](CALCULATION_ENGINE.md) for the complete formula contract.
 
-## Advertising boundary (future Phase 8)
+## Advertising boundary
 
-Screens will not load or show ads directly. A policy service will decide consent, placement,
-frequency, and cooldown. Ad failures must never block the base application.
+`AdsPolicyService` decides the Remote Config kill switch, current UMP permission, placement,
+first-session exclusion, completed-calculation threshold, and cooldown. The Google SDK is confined
+to platform adapters/components; web and unsupported builds receive no-op implementations.
 
-Phase 6 includes only a non-interactive, accessibility-hidden layout reservation. It imports no ad
-SDK, requests no consent, and performs no network operation.
+Native inventory is allowed only after meaningful dashboard/template content exists. Rewarded
+inventory requires an export-specific user opt-in and fails open to free export on no-fill/load
+failure. Interstitial checks occur only after a result is persisted and project detail is visible;
+they never run in onboarding, the first session, or the wizard.
 
-`ExportAccessPolicy` is the only rewarded-export boundary. The Phase 6 implementation grants free
-access and imports no advertising code. A future rewarded provider can return a per-operation
-authorization without coupling ads to PDF generation or project persistence.
+Ad event analytics has a separate default-off user permission. Its typed payload permits format,
+placement, event, and bounded SDK error only. Domain inputs, project metadata, currency, and cost
+results cannot enter the event contract. Ad failures must never block the base application.
 
 ## Quality gates
 

@@ -4,6 +4,7 @@ import {
   type CloudUser,
   type FirebaseClient,
 } from './contracts';
+import { REMOTE_CONFIG_DEFAULTS, type RemoteConfigValues } from './remote-config-defaults';
 
 class DisabledFirebaseClient implements FirebaseClient {
   readonly configured = false;
@@ -29,8 +30,8 @@ class DisabledFirebaseClient implements FirebaseClient {
     throw new FirebaseUnavailableError();
   }
 
-  async initializeRemoteConfig(): Promise<void> {
-    return Promise.resolve();
+  async initializeRemoteConfig(): Promise<RemoteConfigValues> {
+    return REMOTE_CONFIG_DEFAULTS;
   }
 
   async deleteAccountAndCloudData(): Promise<void> {
