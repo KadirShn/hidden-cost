@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
+  DatabaseInitializationError,
   initializeApplication,
   type AppInitializationResult,
 } from '@/features/app-initialization/initialize-application';
@@ -8,7 +9,7 @@ import {
 export type AppInitializationState =
   | Readonly<{ status: 'initializing' }>
   | Readonly<{ status: 'ready'; result: AppInitializationResult }>
-  | Readonly<{ status: 'error' }>;
+  | Readonly<{ status: 'error'; kind: 'database' | 'unknown' }>;
 
 export function useAppInitialization() {
   const [attempt, setAttempt] = useState(0);
@@ -21,8 +22,12 @@ export function useAppInitialization() {
       .then((result) => {
         if (isActive) setState({ status: 'ready', result });
       })
-      .catch(() => {
-        if (isActive) setState({ status: 'error' });
+      .catch((error: unknown) => {
+        if (isActive)
+          setState({
+            status: 'error',
+            kind: error instanceof DatabaseInitializationError ? 'database' : 'unknown',
+          });
       });
 
     return () => {

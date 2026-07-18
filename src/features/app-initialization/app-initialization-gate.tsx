@@ -19,12 +19,13 @@ export function AppInitializationGate({ children }: PropsWithChildren) {
   if (state.status === 'initializing')
     return <InitializationScreen label={t('app.initializing')} />;
   if (state.status === 'error') {
+    const isDatabaseFailure = state.kind === 'database';
     return (
       <FatalErrorScreen
         actionLabel={t('common.retry')}
-        message={t('app.fatalMessage')}
+        message={t(isDatabaseFailure ? 'app.databaseFailureMessage' : 'app.fatalMessage')}
         onRetry={retry}
-        title={t('app.fatalTitle')}
+        title={t(isDatabaseFailure ? 'app.databaseFailureTitle' : 'app.fatalTitle')}
       />
     );
   }

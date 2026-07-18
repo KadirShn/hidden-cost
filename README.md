@@ -6,9 +6,9 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 3 adds a pure, versioned calculation domain with decimal minor-unit money, Zod validation,
-financing, residual value, scenarios, completeness scoring, comparison rules, and golden tests.
-Domain persistence, Firebase, and AdMob remain outside this phase.
+Phase 5 connects the offline-first data layer and pure calculation engine to the main product flow:
+dashboard, template library, eight-step calculation wizard, result visualization, saved projects,
+and project actions. Firebase and real advertising remain outside this phase.
 
 ## Technology
 
@@ -19,6 +19,8 @@ Domain persistence, Firebase, and AdMob remain outside this phase.
 - Semantic light/dark theme tokens with a persistent system/light/dark preference
 - `expo-sqlite/localStorage` for small application preferences only
 - `decimal.js` and Zod for pure domain arithmetic and validation
+- Expo SQLite, Drizzle ORM, and TanStack Query for offline-first local data
+- React Hook Form and Zod for localized, step-based calculation forms
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
 
@@ -45,8 +47,8 @@ in the client bundle and must never contain secrets.
 
 ## Running the app
 
-The Phase 3 app runs in Expo Go. SQLite is used only through its localStorage polyfill for language,
-theme, and onboarding preferences; no domain schema or migration exists yet:
+The Phase 5 app initializes its versioned Expo SQLite database and built-in templates before routes
+render. Local project operations require no account or network connection:
 
 ```bash
 npm start
@@ -91,13 +93,18 @@ src/components/layout/           Responsive route layout helpers
 src/features/app-initialization/ Bootstrap application state
 src/features/onboarding/         Onboarding presentation shell
 src/features/settings/           Persistent settings context
+src/features/calculation-wizard/ Step validation, mapping, and draft persistence
+src/features/dashboard/          Local-first dashboard composition
+src/features/projects/           Saved calculation list and project actions
+src/features/results/            Accessible result visualization
+src/features/templates/          Template library and detail flow
 src/i18n/                        Turkish/English resources
 src/theme/                       Semantic tokens and theme provider
 src/store/                       Small preference storage
 src/utils/                       Locale-aware presentation formatters
 src/config/                      Validated public runtime configuration
 src/domain/                      Pure money, validation, calculation, scenario, and comparison rules
-src/data/                        Infrastructure adapters (future phase)
+src/data/                        SQLite, migrations, repositories, seeds, and Query hooks
 src/services/                    Replaceable external services (future phase)
 docs/                            Product and architecture documentation
 ```
@@ -109,15 +116,15 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 
 - Onboarding: welcome, local-data/privacy summary, language and theme preferences
 - Tabs: Home, Calculations, Compare, Settings
-- Each tab owns a nested Stack so titles and future detail routes have independent histories.
+- Flow stack: templates, template detail, wizard, result, and project detail
+- Each tab owns a nested Stack; focused calculation routes use a shared root flow Stack.
 
-## Known Phase 3 limitations
+## Known Phase 5 limitations
 
-- The calculation domain is not wired to the Phase 2 screens yet.
-- There is no persistent domain data; calculation inputs are in-memory values.
-- Home, calculations, and comparison screens remain data-independent shells.
-- Firebase and AdMob are not configured.
-- The SQLite domain schema is intentionally deferred to Phase 4.
+- Low/high scenario editing, project comparison, PDF, and sharing remain in Phase 6.
+- Sync queue processing and cloud conflict handling are deferred to the Firebase phase.
+- Firebase and AdMob are not configured; the result screen only renders a non-interactive reserved
+  container.
 
 ## Documentation
 
@@ -125,6 +132,8 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - [Architecture](docs/ARCHITECTURE.md)
 - [Codex master prompt](docs/HIDDEN_COST_CODEX_MASTER_PROMPT.md)
 - [Calculation engine](docs/CALCULATION_ENGINE.md)
+- [Offline-first data layer](docs/DATA_LAYER.md)
+- [Main calculation flow](docs/MAIN_FLOW.md)
 - [Firebase setup](docs/FIREBASE_SETUP.md)
 - [AdMob setup](docs/ADMOB_SETUP.md)
 - [Privacy checklist](docs/PRIVACY_CHECKLIST.md)

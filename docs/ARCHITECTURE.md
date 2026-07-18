@@ -2,9 +2,10 @@
 
 ## Status and scope
 
-This document records the Phase 3 architecture baseline. The repository contains the application
-shell plus a pure, versioned, validated calculation domain. Domain persistence, synchronization,
-analytics, and advertising integrations remain explicitly outside this phase.
+This document records the Phase 5 architecture baseline. The application now connects its Expo
+Router screens to the pure calculation domain through an offline-first repository layer. Remote
+synchronization, analytics, comparison/export, and advertising integrations remain outside this
+phase.
 
 ## Goals
 
@@ -30,7 +31,7 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 3 directory boundaries
+## Phase 5 directory boundaries
 
 ```text
 src/
@@ -46,23 +47,32 @@ src/
     app-initialization/        Bootstrap state and initialization boundary
     onboarding/                Onboarding presentation composition
     settings/                  Persistent settings context
+    calculation-wizard/        RHF form, Zod steps, autosave, domain mapping
+    dashboard/                 Dashboard Query composition
+    templates/                 Template library and detail
+    projects/                  Saved list, detail, and lifecycle actions
+    results/                   Accessible calculation result presentation
   i18n/                        Turkish and English resource dictionaries
   store/                       Small key-value settings storage
   theme/                       Semantic tokens and theme provider
   utils/                       Locale-aware presentation formatting
   domain/                      Pure money, schemas, calculation, scenarios, and comparison
-  data/                        Repository implementations in later phases
+  data/                        Database, migrations, repositories, templates, and query hooks
   services/                    Replaceable provider adapters in later phases
 ```
 
-The Phase 2 screens remain product-aware shells and intentionally do not call the Phase 3 engine
-yet. That application-layer wiring belongs to a later user-flow phase.
+Feature screens consume TanStack Query hooks and repository interfaces. Routes remain thin exports,
+and the domain remains unaware of React, Expo, Query, or SQLite.
 
 ## Navigation
 
 The root Stack owns the initial redirect, onboarding group, and tab group. The tab group defines
 four static native destinations: Home, Calculations, Compare, and Settings. Each tab is a directory
 with its own nested Stack, preserving independent navigation history and native headers.
+
+A root `(flow)` Stack owns template library/detail, wizard, result, and project detail routes. This
+keeps focused tasks outside the tab route files while preserving platform back behavior and direct
+dynamic project links.
 
 Onboarding completion is a persisted boolean preference. Until it is set, the root index redirects
 to the welcome screen; completion replaces the route with Home.
@@ -78,11 +88,16 @@ from their callers and do not own screen copy. Locale-aware number and currency 
 presentation concern. Localized money input is converted to canonical minor units before it reaches
 the `Money` value object.
 
+The calculation wizard keeps localized strings in React Hook Form, validates each of eight steps
+with locale-aware Zod schemas, and maps only normalized values into the domain. A debounced raw form
+snapshot is stored through `AppSettingsRepository`; it is flushed on backgrounding and navigation.
+Final project and cost-item updates use one repository transaction.
+
 ## Preference persistence
 
-Language, theme, and onboarding state use the synchronous `expo-sqlite/localStorage` polyfill. This
-is intentionally not the Phase 4 domain database: it has no tables, migrations, repositories, seed
-data, or project entities. Phase 4 will introduce those behind the data boundary.
+Language, theme, and onboarding state continue using the synchronous `expo-sqlite/localStorage`
+polyfill. Project data uses the separate versioned `hidden-cost.db`; the `app_settings` table is
+available for database-scoped settings without coupling presentation code to SQL.
 
 ## UI primitives
 
@@ -99,8 +114,8 @@ The root Expo Router layout owns two independent failure paths:
 2. Expo Router's root `ErrorBoundary` catches render failures and presents a safe retry action.
 
 The user-facing fallback does not display stack traces, exception messages, credentials, or user
-data. Future initialization tasks such as migrations must be added behind the feature boundary and
-must fail without deleting local data.
+data. Database migrations and template seed now run behind this boundary and fail without deleting
+local data.
 
 ## Environment configuration
 
@@ -122,17 +137,18 @@ configuration is intentionally deferred to their designated phases.
 The repository does not define real application identifiers, an EAS project ID, signing
 credentials, or store credentials.
 
-## Local-first data flow (future Phase 4+)
+## Local-first data flow
 
 1. The user changes a project.
 2. A repository validates and writes the change to SQLite in a transaction.
-3. A synchronization queue operation is created.
+3. A synchronization queue operation is created in the same transaction.
 4. The UI renders from local data.
 5. A worker sends queued operations to Firestore when allowed and available.
 6. Failed operations use bounded exponential backoff.
 
-SQLite will remain the primary source of truth; Firestore will be optional backup and
-synchronization infrastructure.
+SQLite is the primary source of truth; Firestore remains optional future backup and synchronization
+infrastructure. Routes and UI depend on repository interfaces and TanStack Query hooks, never SQL.
+See [Offline-first data layer](DATA_LAYER.md) for schema and migration rules.
 
 ## Money representation and calculation domain
 
@@ -150,6 +166,9 @@ them. See [Calculation Engine](CALCULATION_ENGINE.md) for the complete formula c
 
 Screens will not load or show ads directly. A policy service will decide consent, placement,
 frequency, and cooldown. Ad failures must never block the base application.
+
+Phase 5 includes only a non-interactive, accessibility-hidden layout reservation. It imports no ad
+SDK, requests no consent, and performs no network operation.
 
 ## Quality gates
 
