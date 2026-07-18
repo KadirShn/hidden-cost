@@ -1,56 +1,82 @@
-# Welcome to your Expo app 👋
+# Hidden Cost
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Hidden Cost is an offline-first mobile decision-support application that calculates the real total cost of ownership of products and services—not just their purchase price.
 
-## Get started
+## Project status
 
-1. Install dependencies
+🚧 Active development — initial architecture and product planning.
 
-   ```bash
-   npm install
-   ```
+## Planned MVP
 
-2. Start the app
+- React Native + Expo + TypeScript
+- Expo Router
+- Offline-first SQLite
+- Firebase authentication and optional cloud backup
+- Car, motorcycle, boat, electronics, subscription and custom templates
+- Low/base/high scenarios
+- Comparison of up to three projects
+- PDF and shareable result exports
+- Turkish and English
+- Light and dark themes
+- Privacy-aware AdMob monetization
 
-   ```bash
-   npx expo start
-   ```
+## Architecture
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+app/                  Expo Router routes
+src/
+  components/         Shared UI
+  features/           Product features
+  domain/             Pure business rules and calculations
+  data/               SQLite, Firebase, repositories and migrations
+  services/           Analytics, ads, crash reporting and export
+  theme/              Design tokens
+  i18n/               Localization
+docs/                 Product and technical documentation
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Important boundaries:
 
-### Other setup steps
+- UI does not call Firebase, SQLite or AdMob directly.
+- The calculation engine has no React, Expo or Firebase dependencies.
+- SQLite is the primary local data source.
+- Firebase is an optional synchronization and backup layer.
+- Monetary calculations avoid native floating-point accumulation.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+See [Product Specification](docs/PRODUCT_SPEC.md) and [Architecture](docs/ARCHITECTURE.md).
 
-## Learn more
+## Getting started
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install
+npx expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+After native Firebase and AdMob modules are added, use an Expo development build rather than Expo Go.
 
-## Join the community
+## Quality commands
 
-Join our community of developers creating universal apps.
+```bash
+npm run typecheck
+npm run lint
+npm test
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Documentation
+
+- [Product specification](docs/PRODUCT_SPEC.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Calculation engine](docs/CALCULATION_ENGINE.md)
+- [Firebase setup](docs/FIREBASE_SETUP.md)
+- [AdMob setup](docs/ADMOB_SETUP.md)
+- [Privacy checklist](docs/PRIVACY_CHECKLIST.md)
+- [Release checklist](docs/RELEASE_CHECKLIST.md)
+- [Codex master prompt](docs/CODEX_MASTER_PROMPT.md)
+
+## Disclaimer
+
+Hidden Cost provides estimates based on user-entered assumptions. It does not provide financial, legal, tax or investment advice.
+
+## License
+
+MIT.
