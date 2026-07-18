@@ -401,6 +401,7 @@ export class SQLiteProjectRepository<TRunResult> implements ProjectRepository {
         .run();
       enqueueSync(tx, this.dependencies, 'cost_item', id, 'delete', {
         id,
+        projectId: existing.projectId,
         deletedAt,
         revision: existing.revision + 1,
         deviceId: this.dependencies.deviceId,
@@ -538,6 +539,7 @@ export class SQLiteProjectRepository<TRunResult> implements ProjectRepository {
           .run();
         enqueueSync(tx, this.dependencies, 'cost_item', item.id, 'delete', {
           id: item.id,
+          projectId: id,
           deletedAt,
           revision: item.revision + 1,
           deviceId: this.dependencies.deviceId,
@@ -556,6 +558,7 @@ export class SQLiteProjectRepository<TRunResult> implements ProjectRepository {
           .run();
         enqueueSync(tx, this.dependencies, 'scenario_override', scenario.id, 'delete', {
           id: scenario.id,
+          projectId: id,
           deletedAt,
           revision: scenario.revision + 1,
           deviceId: this.dependencies.deviceId,

@@ -14,7 +14,7 @@ export class DatabaseInitializationError extends Error {
 }
 
 export async function initializeApplication(
-  config: RuntimeConfig = runtimeConfig,
+  config: Pick<RuntimeConfig, 'appEnvironment'> = runtimeConfig,
   databaseInitializer: () => DatabaseServices = initializeDatabase,
 ): Promise<AppInitializationResult> {
   try {

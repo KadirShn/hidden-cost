@@ -7,6 +7,7 @@ import { AppText } from '@/components/ui/app-text';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
 import { SelectField } from '@/components/ui/select-field';
+import { CloudBackupSettings } from '@/features/cloud-backup/cloud-backup-settings';
 import { DeveloperDatabaseTools } from '@/features/developer-tools/database-tools';
 import { useSettings } from '@/features/settings/use-settings';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
@@ -21,6 +22,8 @@ export default function SettingsScreen() {
   return (
     <Screen>
       <DeveloperDatabaseTools />
+
+      <CloudBackupSettings />
 
       <View style={{ gap: theme.spacing.md }}>
         <AppText variant="subtitle">{t('settings.appearanceSection')}</AppText>

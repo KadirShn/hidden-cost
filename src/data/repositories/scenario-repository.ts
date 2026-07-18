@@ -80,6 +80,7 @@ export class SQLiteScenarioRepository<TRunResult> implements ScenarioRepository 
             .run();
           enqueueSync(tx, this.dependencies, 'scenario_override', existing.id, 'delete', {
             id: existing.id,
+            projectId,
             deletedAt: now,
             revision: existing.revision + 1,
             deviceId: this.dependencies.deviceId,
@@ -218,6 +219,7 @@ export class SQLiteScenarioRepository<TRunResult> implements ScenarioRepository 
         .run();
       enqueueSync(tx, this.dependencies, 'scenario_override', id, 'delete', {
         id,
+        projectId: existing.projectId,
         deletedAt,
         revision: existing.revision + 1,
         deviceId: this.dependencies.deviceId,

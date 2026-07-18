@@ -2,9 +2,10 @@
 
 ## Status and scope
 
-This document records the Phase 6 architecture baseline. The application connects its Expo
+This document records the Phase 7 architecture baseline. The application connects its Expo
 Router screens to the pure calculation domain through an offline-first repository layer. Remote
-synchronization, analytics, and advertising integrations remain outside this phase.
+Firebase backup/synchronization is optional and adapter-bound. Analytics collection and advertising
+integrations remain outside this phase.
 
 ## Goals
 
@@ -30,7 +31,7 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 6 directory boundaries
+## Phase 7 directory boundaries
 
 ```text
 src/
@@ -54,6 +55,7 @@ src/
     scenarios/                 Sparse override editor and sensitivity summary
     comparison/                Two-to-three project decision support
     export/                    Export action presentation
+    cloud-backup/              Opt-in auth, sync state, and Settings UI
   i18n/                        Turkish and English resource dictionaries
   store/                       Small key-value settings storage
   theme/                       Semantic tokens and theme provider
@@ -62,6 +64,7 @@ src/
   data/                        Database, migrations, repositories, templates, and query hooks
   services/
     export/                    HTML reports, native adapter, and access policy
+    firebase/                  Platform client, queue worker, backoff, defaults
 ```
 
 Feature screens consume TanStack Query hooks and repository interfaces. Routes remain thin exports,
@@ -152,8 +155,10 @@ credentials, or store credentials.
 5. A worker sends queued operations to Firestore when allowed and available.
 6. Failed operations use bounded exponential backoff.
 
-SQLite is the primary source of truth; Firestore remains optional future backup and synchronization
-infrastructure. Routes and UI depend on repository interfaces and TanStack Query hooks, never SQL.
+SQLite is the primary source of truth; Firestore is an optional backup adapter. Repositories create
+queue intents transactionally. The worker runs only after opt-in and auth, uses idempotent
+revision-aware transactions, synchronizes soft-delete tombstones, and never blocks local writes.
+Routes and UI depend on repository/service contexts, never Firestore or SQL.
 See [Offline-first data layer](DATA_LAYER.md) for schema and migration rules.
 
 ## Money representation and calculation domain

@@ -6,9 +6,9 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 6 adds sparse low/base/high scenarios, two-to-three project comparison, accessible comparison
-graphics, PDF reports, and shareable result cards to the offline-first main flow. Firebase and real
-advertising remain outside this phase.
+Phase 7 adds optional anonymous Firebase backup, Google account linking, revision-aware queue sync,
+Remote Config defaults, Emulator Suite security rules, and secure cloud-account deletion while
+preserving SQLite-first behavior. Real advertising remains outside this phase.
 
 ## Technology
 
@@ -22,6 +22,8 @@ advertising remain outside this phase.
 - Expo SQLite, Drizzle ORM, and TanStack Query for offline-first local data
 - React Hook Form and Zod for localized, step-based calculation forms
 - `expo-print`, `expo-sharing`, and `expo-file-system` for guarded export and cleanup
+- React Native Firebase with Expo development builds for opt-in Auth, Firestore, Functions, and
+  Remote Config
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
 
@@ -48,7 +50,7 @@ in the client bundle and must never contain secrets.
 
 ## Running the app
 
-The Phase 6 app initializes its versioned Expo SQLite database and built-in templates before routes
+The Phase 7 app initializes its versioned Expo SQLite database and built-in templates before routes
 render. Local project operations require no account or network connection:
 
 ```bash
@@ -107,6 +109,7 @@ src/config/                      Validated public runtime configuration
 src/domain/                      Pure money, validation, calculation, scenario, and comparison rules
 src/data/                        SQLite, migrations, repositories, seeds, and Query hooks
 src/services/export/             PDF/share adapters and export access policy
+src/services/firebase/           Optional native Firebase adapter and sync worker
 docs/                            Product and architecture documentation
 ```
 
@@ -121,11 +124,12 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - Scenario editor: sparse low/high overrides for a project
 - Each tab owns a nested Stack; focused calculation routes use a shared root flow Stack.
 
-## Known Phase 6 limitations
+## Known Phase 7 limitations
 
-- Sync queue processing and cloud conflict handling are deferred to the Firebase phase.
-- Firebase and AdMob are not configured; the result screen only renders a non-interactive reserved
-  container.
+- Inbound cloud restore and the interactive conflict-resolution screen remain future work; a newer
+  cloud revision is preserved and exposed as `conflict` instead of being overwritten.
+- Real Firebase credentials are intentionally absent. Without build-time configuration the app
+  remains local-only. AdMob is not configured.
 - The Phase 6 export policy grants free access. A rewarded provider can replace it in Phase 8
   without changing report generation or screen code.
 

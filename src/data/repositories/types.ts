@@ -98,6 +98,13 @@ export type SyncQueueRecord = {
   lastError?: string;
 };
 
+export type SyncQueueSummary = {
+  pending: number;
+  failed: number;
+  conflicts: number;
+  nextAttemptAt?: string;
+};
+
 export interface ProjectRepository {
   list(options?: ProjectListOptions): CostProject[];
   getById(id: string): CostProject | null;
@@ -141,6 +148,8 @@ export interface AppSettingsRepository {
 
 export interface SyncQueueRepository {
   listReady(now?: string): SyncQueueRecord[];
-  recordFailure(id: string, errorCode: string, nextAttemptAt: string): void;
-  remove(id: string): void;
+  getSummary(): SyncQueueSummary;
+  complete(record: SyncQueueRecord): void;
+  recordFailure(record: SyncQueueRecord, errorCode: string, nextAttemptAt: string): void;
+  recordConflict(record: SyncQueueRecord): void;
 }

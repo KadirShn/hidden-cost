@@ -390,6 +390,36 @@ export const tr = {
     emptyTitle: 'Karşılaştırmaya hazır değil',
     emptyBody: 'Toplam ve aylık maliyetleri karşılaştırmak için en az iki hesaplama oluştur.',
   },
+  cloudBackup: {
+    section: 'Yedekleme ve senkronizasyon',
+    title: 'Bulut yedekleme',
+    description:
+      'İsteğe bağlı Firebase yedeklemesi. Kapalı veya kullanılamaz olduğunda yerel hesaplamalar çalışmaya devam eder.',
+    unavailable:
+      'Bu build içinde Firebase bilgileri yapılandırılmamış. Yerel verilerin kullanılabilir durumda.',
+    neverSynced: 'Hiçbir zaman',
+    lastSync: 'Son başarılı senkronizasyon: {{date}}',
+    syncNow: 'Şimdi senkronize et',
+    linkGoogle: 'Google hesabını bağla',
+    google: 'Google hesabı',
+    anonymousAccount: 'Bu kurulumdaki anonim Firebase hesabıyla korunuyor.',
+    linkedAccount: 'Bağlı hesap: {{account}}',
+    error: 'Bulut işlemi başarısız oldu. Yerel veri değiştirilmedi ve kullanılabilir kalacak.',
+    deleteCloudAccount: 'Bulut hesabını ve veriyi sil',
+    deleteTitle: 'Bulut hesabı silinsin mi?',
+    deleteMessage:
+      'Backend, Firebase hesabını ve bulut verilerini kalıcı olarak silecek. Bu cihazdaki hesaplamalar yerel olarak kalır.',
+    deleteConfirm: 'Bulut verisini sil',
+    status: {
+      unavailable: 'Bulut servisleri kullanılamıyor',
+      local_only: 'Yalnız yerel mod · {{count}} değişiklik bekliyor',
+      connecting: 'Güvenli bağlantı kuruluyor…',
+      idle: 'Güncel · {{count}} değişiklik bekliyor',
+      syncing: '{{count}} değişiklik senkronize ediliyor…',
+      error: 'Hata sonrası senkronizasyon bekliyor · {{count}} değişiklik',
+      conflict: 'Daha yeni bulut revizyonu inceleme bekliyor · {{count}} değişiklik',
+    },
+  },
   settings: {
     appearanceSection: 'Görünüm ve dil',
     languageLabel: 'Dil',
@@ -409,7 +439,7 @@ export const tr = {
     aboutSection: 'Uygulama',
     versionLabel: 'Sürüm',
     phaseLabel: 'Mevcut kapsam',
-    phaseValue: 'Faz 6 — Senaryo, karşılaştırma ve dışa aktarma',
+    phaseValue: 'Faz 7 — Local-first Firebase yedekleme ve senkronizasyon',
     developerSection: 'Geliştirici araçları',
     resetDatabaseTitle: 'Yerel veritabanını sıfırla',
     resetDatabaseHelp:

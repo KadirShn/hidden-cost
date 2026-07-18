@@ -1,0 +1,159 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function owns(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function validCommon(userId) {
+      return request.resource.data.ownerId == userId
+        && request.resource.data.revision is int
+        && request.resource.data.revision >= 1
+        && request.resource.data.updatedAt is string
+        && request.resource.data.updatedAt.size() <= 40
+        && request.resource.data.deviceId is string
+        && request.resource.data.deviceId.size() <= 128
+        && request.resource.data.schemaVersion is int
+        && request.resource.data.schemaVersion >= 1;
+    }
+
+    function validUpdate(userId) {
+      return validCommon(userId)
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.revision >= resource.data.revision;
+    }
+
+    function validProject(userId) {
+      return validCommon(userId)
+        && request.resource.data.keys().hasOnly([
+          'id', 'ownerId', 'localOwnerId', 'title', 'category', 'templateId',
+          'templateVersion', 'currency', 'purchasePriceMinor', 'ownershipMonths',
+          'usagePerMonth', 'usageUnit', 'status', 'financing', 'residualValue',
+          'assumptions', 'notes', 'createdAt', 'updatedAt', 'deletedAt',
+          'syncStatus', 'schemaVersion', 'revision', 'deviceId'
+        ])
+        && (
+          ('deletedAt' in request.resource.data && request.resource.data.deletedAt is string)
+          || (
+            request.resource.data.id is string
+            && request.resource.data.id.size() <= 128
+            && request.resource.data.title is string
+            && request.resource.data.title.size() <= 160
+            && request.resource.data.currency is string
+            && request.resource.data.currency.size() == 3
+            && request.resource.data.ownershipMonths is int
+            && request.resource.data.ownershipMonths >= 1
+            && request.resource.data.ownershipMonths <= 1200
+          )
+        );
+    }
+
+    function validCostItem(userId, projectId) {
+      return validCommon(userId)
+        && request.resource.data.projectId == projectId
+        && request.resource.data.keys().hasOnly([
+          'id', 'projectId', 'ownerId', 'type', 'key', 'label', 'amountMinor',
+          'frequency', 'costPerUnitMinor', 'unit', 'consumptionPer100Units',
+          'unitPriceMinor', 'startsAtMonth', 'endsAtMonth', 'isTemplateDefault',
+          'isEnabled', 'sortOrder', 'createdAt', 'updatedAt', 'deletedAt',
+          'schemaVersion', 'revision', 'deviceId'
+        ])
+        && (
+          ('deletedAt' in request.resource.data && request.resource.data.deletedAt is string)
+          || (
+            request.resource.data.id is string
+            && request.resource.data.id.size() <= 128
+            && request.resource.data.label is string
+            && request.resource.data.label.size() <= 160
+          )
+        );
+    }
+
+    function validScenario(userId, projectId) {
+      return validCommon(userId)
+        && request.resource.data.projectId == projectId
+        && request.resource.data.keys().hasOnly([
+          'id', 'projectId', 'ownerId', 'scenario', 'path', 'value',
+          'createdAt', 'updatedAt', 'deletedAt', 'schemaVersion', 'revision', 'deviceId'
+        ])
+        && (
+          ('deletedAt' in request.resource.data && request.resource.data.deletedAt is string)
+          || (
+            request.resource.data.scenario in ['low', 'high']
+            && request.resource.data.path is string
+            && request.resource.data.path.size() <= 240
+          )
+        );
+    }
+
+    match /users/{userId} {
+      allow read: if owns(userId);
+      allow write: if false;
+
+      match /projects/{projectId} {
+        allow read: if owns(userId);
+        allow create: if owns(userId) && validProject(userId);
+        allow update: if owns(userId) && validProject(userId) && validUpdate(userId);
+        allow delete: if false;
+
+        match /costItems/{itemId} {
+          allow read: if owns(userId);
+          allow create: if owns(userId) && validCostItem(userId, projectId);
+          allow update: if owns(userId)
+            && validCostItem(userId, projectId)
+            && validUpdate(userId);
+          allow delete: if false;
+        }
+
+        match /scenarioOverrides/{overrideId} {
+          allow read: if owns(userId);
+          allow create: if owns(userId) && validScenario(userId, projectId);
+          allow update: if owns(userId)
+            && validScenario(userId, projectId)
+            && validUpdate(userId);
+          allow delete: if false;
+        }
+      }
+
+      match /settings/profile {
+        allow read: if owns(userId);
+        allow create: if owns(userId)
+          && validCommon(userId)
+          && request.resource.data.keys().hasOnly([
+            'id', 'ownerId', 'authType', 'displayName', 'email', 'locale',
+            'defaultCurrency', 'theme', 'cloudBackupEnabled', 'analyticsConsent',
+            'adsConsentStatus', 'createdAt', 'updatedAt', 'schemaVersion',
+            'revision', 'deviceId'
+          ]);
+        allow update: if owns(userId)
+          && validUpdate(userId)
+          && request.resource.data.keys().hasOnly([
+            'id', 'ownerId', 'authType', 'displayName', 'email', 'locale',
+            'defaultCurrency', 'theme', 'cloudBackupEnabled', 'analyticsConsent',
+            'adsConsentStatus', 'createdAt', 'updatedAt', 'schemaVersion',
+            'revision', 'deviceId'
+          ]);
+        allow delete: if false;
+      }
+    }
+
+    match /publicTemplates/{templateId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /publicTemplateVersions/{versionId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -9,9 +9,12 @@
 4. Six built-in template records are inserted idempotently.
 5. Repository services become available to the application.
 6. UI code reads and mutates through TanStack Query hooks; it never imports SQLite or Drizzle.
+7. After explicit cloud opt-in, a Firebase adapter processes ready synchronization intents.
 
 The database is the local source of truth. Query caching is configured with `networkMode: always`,
-so local reads and mutations are not paused in airplane mode. Firebase is not part of this phase.
+so local reads and mutations are not paused in airplane mode. Firebase never replaces SQLite as the
+primary source. Without Firebase configuration or network access, queue records remain local and
+calculation behavior is unchanged.
 Metro treats SQLite's WASM module as an asset for web bundles. A deployed web host must additionally
 provide Expo SQLite's required COOP/COEP headers; native Android/iOS storage does not require them.
 
@@ -58,11 +61,14 @@ duplicate, archive, item/project soft delete, and bundle reads.
 Entity changes and sync queue intent are written in the same transaction. The queue has one pending
 record per entity; repeated autosaves replace its payload with the latest revision instead of
 creating an unbounded backlog. Delete intent replaces a pending upsert. Queue payloads include the
-entity revision and device ID. No network sender exists yet.
+entity revision and device ID. The opt-in worker sends these intents through a platform Firebase
+adapter only after auth and network checks.
 
-Soft-deleted rows keep `deleted_at` and remain available for future synchronization. Default
-repository queries exclude them. Physical cleanup and account deletion are separate, explicit
-future policies.
+Soft-deleted rows keep `deleted_at` and remain available for synchronization. Default repository
+queries exclude them. Successful sync atomically removes the queue record and marks the entity
+`synced`. Failures mark it `failed` and schedule bounded exponential retry. A newer cloud revision
+marks it `conflict` and blocks automatic overwrite. Firestore receives soft-delete tombstones;
+physical cloud cleanup is performed only by the authenticated account-deletion callable.
 
 ## Template seed
 
