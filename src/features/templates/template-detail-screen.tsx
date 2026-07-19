@@ -1,4 +1,5 @@
 import { type Href, Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Screen } from '@/components/layout/screen';
@@ -10,6 +11,7 @@ import { LoadingSkeleton } from '@/components/ui/loading-skeleton';
 import { useCreateProject } from '@/data/query/project-hooks';
 import { useTemplate } from '@/data/query/template-hooks';
 import { createProjectDraft } from '@/features/calculation-wizard/form-mapper';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 export function TemplateDetailScreen() {
   const { id = '' } = useLocalSearchParams<{ id: string }>();
@@ -17,6 +19,12 @@ export function TemplateDetailScreen() {
   const router = useRouter();
   const template = useTemplate(id);
   const createProject = useCreateProject();
+
+  useEffect(() => {
+    if (template.data) {
+      void telemetry.track('template_viewed', { source_screen: 'template_detail' });
+    }
+  }, [template.data]);
 
   if (template.isPending) {
     return (
@@ -40,6 +48,7 @@ export function TemplateDetailScreen() {
 
   const data = template.data;
   const start = async () => {
+    void telemetry.track('calculation_started', { source_screen: 'template_detail' });
     const created = await createProject.mutateAsync({
       project: createProjectDraft(data, t(data.titleKey)),
     });

@@ -53,22 +53,22 @@ export function NativeAdSlot({ placement, hasContent }: Props) {
         }
         loadedAd = ad;
         setNativeAd(ad);
-        if (settingsStore.get('settings.adAnalyticsConsent') === 'true') {
+        if (settingsStore.get('settings.analyticsConsent') === 'true') {
           void sendAdEvent({ name: 'load', format: 'native', placement });
         }
         ad.addAdEventListener(NativeAdEventType.IMPRESSION, () => {
-          if (settingsStore.get('settings.adAnalyticsConsent') === 'true') {
+          if (settingsStore.get('settings.analyticsConsent') === 'true') {
             void sendAdEvent({ name: 'impression', format: 'native', placement });
           }
         });
         ad.addAdEventListener(NativeAdEventType.CLICKED, () => {
-          if (settingsStore.get('settings.adAnalyticsConsent') === 'true') {
+          if (settingsStore.get('settings.analyticsConsent') === 'true') {
             void sendAdEvent({ name: 'click', format: 'native', placement });
           }
         });
       })
       .catch(() => {
-        if (settingsStore.get('settings.adAnalyticsConsent') === 'true') {
+        if (settingsStore.get('settings.analyticsConsent') === 'true') {
           void sendAdEvent({
             name: 'error',
             format: 'native',

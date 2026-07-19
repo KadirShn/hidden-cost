@@ -11,6 +11,8 @@ import { SelectField } from '@/components/ui/select-field';
 import { useAds } from '@/features/ads/use-ads';
 import { CloudBackupSettings } from '@/features/cloud-backup/cloud-backup-settings';
 import { DeveloperDatabaseTools } from '@/features/developer-tools/database-tools';
+import { DeveloperObservabilityTools } from '@/features/developer-tools/observability-tools';
+import { PrivacyControls } from '@/features/privacy/privacy-controls';
 import { useSettings } from '@/features/settings/use-settings';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useTheme } from '@/hooks/use-theme';
@@ -25,15 +27,18 @@ export default function SettingsScreen() {
     setLocale,
     themePreference,
     setThemePreference,
-    adAnalyticsConsent,
-    setAdAnalyticsConsent,
+    analyticsConsent,
+    setAnalyticsConsent,
   } = useSettings();
 
   return (
     <Screen>
       <DeveloperDatabaseTools />
+      <DeveloperObservabilityTools />
 
       <CloudBackupSettings />
+
+      <PrivacyControls />
 
       <View style={{ gap: theme.spacing.md }}>
         <AppText variant="subtitle">{t('settings.appearanceSection')}</AppText>
@@ -103,8 +108,8 @@ export default function SettingsScreen() {
             </View>
             <Switch
               accessibilityLabel={t('ads.analyticsTitle')}
-              onValueChange={setAdAnalyticsConsent}
-              value={adAnalyticsConsent}
+              onValueChange={setAnalyticsConsent}
+              value={analyticsConsent}
             />
           </View>
         </Card>

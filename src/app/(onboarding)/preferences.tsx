@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { SelectField } from '@/components/ui/select-field';
 import { OnboardingPage } from '@/features/onboarding/onboarding-page';
 import { useSettings } from '@/features/settings/use-settings';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 export default function PreferencesScreen() {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function PreferencesScreen() {
       eyebrow={t('onboarding.preferences.eyebrow')}
       onPrimaryPress={() => {
         completeOnboarding();
+        void telemetry.track('onboarding_completed', { locale, source_screen: 'onboarding' });
         router.replace('/home' as Href);
       }}
       onSecondaryPress={() => router.back()}

@@ -2,7 +2,8 @@ import { createContext, useCallback, useMemo, type PropsWithChildren } from 'rea
 
 import { getInitialLocale, i18n, isAppLocale, type AppLocale } from '@/i18n';
 import { setAdEventAnalyticsEnabled } from '@/services/ads/send-ad-event';
-import { usePersistentSetting } from '@/store/settings-store';
+import { telemetry } from '@/services/observability/telemetry-service';
+import { settingsStore , usePersistentSetting } from '@/store/settings-store';
 import type { ThemePreference } from '@/theme/tokens';
 
 type SettingsContextValue = Readonly<{
@@ -12,8 +13,8 @@ type SettingsContextValue = Readonly<{
   setThemePreference: (theme: ThemePreference) => void;
   onboardingCompleted: boolean;
   completeOnboarding: () => void;
-  adAnalyticsConsent: boolean;
-  setAdAnalyticsConsent: (enabled: boolean) => void;
+  analyticsConsent: boolean;
+  setAnalyticsConsent: (enabled: boolean) => void;
 }>;
 
 export const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -39,9 +40,9 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     'false',
     isBooleanSetting,
   );
-  const [adAnalyticsValue, setAdAnalyticsValue] = usePersistentSetting(
-    'settings.adAnalyticsConsent',
-    'false',
+  const [analyticsValue, setAnalyticsValue] = usePersistentSetting(
+    'settings.analyticsConsent',
+    settingsStore.get('settings.adAnalyticsConsent') === 'true' ? 'true' : 'false',
     isBooleanSetting,
   );
 
@@ -53,12 +54,14 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     [persistLocale],
   );
   const completeOnboarding = useCallback(() => setOnboardingValue('true'), [setOnboardingValue]);
-  const setAdAnalyticsConsent = useCallback(
+  const setAnalyticsConsent = useCallback(
     (enabled: boolean) => {
-      setAdAnalyticsValue(String(enabled) as 'true' | 'false');
+      setAnalyticsValue(String(enabled) as 'true' | 'false');
+      settingsStore.set('settings.analyticsConsentVersion', '1');
       void setAdEventAnalyticsEnabled(enabled);
+      void telemetry.track('consent_status_updated', { source_screen: 'settings' });
     },
-    [setAdAnalyticsValue],
+    [setAnalyticsValue],
   );
   const value = useMemo<SettingsContextValue>(
     () => ({
@@ -68,15 +71,15 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       setThemePreference,
       onboardingCompleted: onboardingValue === 'true',
       completeOnboarding,
-      adAnalyticsConsent: adAnalyticsValue === 'true',
-      setAdAnalyticsConsent,
+      analyticsConsent: analyticsValue === 'true',
+      setAnalyticsConsent,
     }),
     [
-      adAnalyticsValue,
+      analyticsValue,
       completeOnboarding,
       locale,
       onboardingValue,
-      setAdAnalyticsConsent,
+      setAnalyticsConsent,
       setLocale,
       setThemePreference,
       themePreference,

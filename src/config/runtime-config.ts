@@ -14,6 +14,12 @@ export type RuntimeConfig = Readonly<{
     interstitialUnitId?: string;
     rewardedUnitId?: string;
   }>;
+  observability: Readonly<{
+    analyticsEnabled: boolean;
+    crashlyticsEnabled: boolean;
+    appCheckEnabled: boolean;
+    appCheckProvider: 'debug' | 'playIntegrity';
+  }>;
 }>;
 
 export const runtimeConfig: RuntimeConfig = Object.freeze({
@@ -31,5 +37,14 @@ export const runtimeConfig: RuntimeConfig = Object.freeze({
     nativeUnitId: process.env.EXPO_PUBLIC_ADMOB_NATIVE_UNIT_ID || undefined,
     interstitialUnitId: process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID || undefined,
     rewardedUnitId: process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID || undefined,
+  }),
+  observability: Object.freeze({
+    analyticsEnabled: process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true',
+    crashlyticsEnabled:
+      process.env.EXPO_PUBLIC_APP_ENV === 'production' &&
+      process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true',
+    appCheckEnabled: process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true',
+    appCheckProvider:
+      process.env.EXPO_PUBLIC_APP_ENV === 'production' ? 'playIntegrity' : 'debug',
   }),
 });

@@ -23,6 +23,8 @@ import type { ProjectBundle } from '@/data/repositories/types';
 import { useSettings } from '@/features/settings/use-settings';
 import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
+import { ownershipMonthBucket } from '@/services/observability/analytics-contracts';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 import { clearWizardDraft, readWizardDraft, writeWizardDraft } from './draft-store';
 import { formToProjectBundle, projectBundleToForm } from './form-mapper';
@@ -127,6 +129,15 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   const totalSteps = wizardStepFields.length;
   const currency = bundle.project.currency;
 
+  useEffect(() => {
+    void telemetry.track('calculation_step_viewed', {
+      step_name: `step_${step}`,
+      locale,
+      is_offline: isOffline,
+      source_screen: 'wizard',
+    });
+  }, [isOffline, locale, step]);
+
   const flushDraft = useCallback(() => {
     if (!latestValues.current) return;
     if (timer.current) clearTimeout(timer.current);
@@ -161,6 +172,11 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
         text: t('forms.leave'),
         style: 'destructive',
         onPress: () => {
+          void telemetry.track('calculation_abandoned', {
+            step_name: `step_${step}`,
+            is_offline: isOffline,
+            source_screen: 'wizard',
+          });
           flushDraft();
           setAllowNavigation(true);
           setTimeout(() => navigation.dispatch(data.action), 0);
@@ -173,6 +189,11 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
     const fields = wizardStepFields[step] as readonly FieldPath<WizardFormValues>[];
     const valid = fields.length ? await form.trigger([...fields], { shouldFocus: true }) : true;
     if (valid) {
+      void telemetry.track('calculation_step_completed', {
+        step_name: `step_${step}`,
+        is_offline: isOffline,
+        source_screen: 'wizard',
+      });
       flushDraft();
       setStep((value) => Math.min(value + 1, totalSteps - 1));
     }
@@ -184,6 +205,12 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
       fuel: t('costItems.fuel'),
     });
     await saveBundle.mutateAsync(nextBundle);
+    void telemetry.track('calculation_completed', {
+      ownership_month_bucket: ownershipMonthBucket(nextBundle.project.ownershipMonths),
+      locale,
+      is_offline: isOffline,
+      source_screen: 'wizard',
+    });
     clearWizardDraft(settings, bundle.project.id);
     setAllowNavigation(true);
     setTimeout(() => router.replace(`/result/${bundle.project.id}` as Href), 0);

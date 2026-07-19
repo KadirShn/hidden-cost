@@ -23,6 +23,7 @@ import { ProjectExportActions } from '@/features/export/project-export-actions';
 import { ResultSummary } from '@/features/results/result-summary';
 import { ScenarioSummary } from '@/features/scenarios/scenario-summary';
 import { useTheme } from '@/hooks/use-theme';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 type ConfirmAction = 'archive' | 'delete' | null;
 
@@ -81,11 +82,15 @@ export function ProjectDetailScreen() {
       projectId: id,
       title: t('projects.copyTitle', { title: bundle.project.title }),
     });
+    void telemetry.track('project_duplicated', { source_screen: 'project_detail' });
     router.push(`/project/${copy.project.id}` as Href);
   };
   const confirm = async () => {
     if (confirmAction === 'archive') await archive.mutateAsync(id);
-    if (confirmAction === 'delete') await remove.mutateAsync(id);
+    if (confirmAction === 'delete') {
+      await remove.mutateAsync(id);
+      void telemetry.track('project_deleted', { source_screen: 'project_detail' });
+    }
     setConfirmAction(null);
     router.replace('/calculations' as Href);
   };

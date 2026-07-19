@@ -6,9 +6,9 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 8 adds a Remote Config controlled, UMP consent-first advertising boundary with test-only
-development inventory, content-scoped native ads, opt-in rewarded export, and strictly gated
-post-result interstitials while preserving SQLite-first behavior and ad-independent calculations.
+Phase 9 adds allowlisted Firebase Analytics, production-only Crashlytics, environment-separated App
+Check, log redaction, typed error codes, legal screens, and local/cloud data controls while
+preserving SQLite-first behavior and ad-independent calculations.
 
 ## Technology
 
@@ -25,6 +25,7 @@ post-result interstitials while preserving SQLite-first behavior and ad-independ
 - React Native Firebase with Expo development builds for opt-in Auth, Firestore, Functions, and
   Remote Config
 - `react-native-google-mobile-ads` with UMP consent and test-only non-production inventory
+- React Native Firebase Analytics, Crashlytics, and App Check behind central adapters
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
 
@@ -125,7 +126,7 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - Scenario editor: sparse low/high overrides for a project
 - Each tab owns a nested Stack; focused calculation routes use a shared root flow Stack.
 
-## Known Phase 8 limitations
+## Known Phase 9 limitations
 
 - Inbound cloud restore and the interactive conflict-resolution screen remain future work; a newer
   cloud revision is preserved and exposed as `conflict` instead of being overwritten.
@@ -146,6 +147,7 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - [Firebase setup](docs/FIREBASE_SETUP.md)
 - [AdMob setup](docs/ADMOB_SETUP.md)
 - [Advertising policy checklist](docs/AD_POLICY_CHECKLIST.md)
+- [App Check setup](docs/APP_CHECK_SETUP.md)
 - [Privacy checklist](docs/PRIVACY_CHECKLIST.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)
 

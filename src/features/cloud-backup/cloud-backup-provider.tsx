@@ -17,6 +17,8 @@ import { useNetworkStatus } from '@/hooks/use-network-status';
 import type { CloudUser } from '@/services/firebase/contracts';
 import { firebaseClient } from '@/services/firebase/firebase-client';
 import { FirebaseSyncWorker } from '@/services/firebase/sync-worker';
+import type { AppErrorCode } from '@/services/observability/errors';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 const BACKUP_ENABLED_KEY = 'cloudBackup.enabled';
 const LAST_SYNC_KEY = 'cloudBackup.lastSyncAt';
@@ -32,7 +34,7 @@ export type CloudBackupContextValue = {
   status: CloudBackupStatus;
   summary: SyncQueueSummary;
   lastSyncAt?: string;
-  errorCode?: string;
+  errorCode?: AppErrorCode;
   setEnabled: (enabled: boolean) => Promise<void>;
   syncNow: () => Promise<void>;
   linkGoogle: () => Promise<void>;
@@ -43,7 +45,7 @@ export const CloudBackupContext = createContext<CloudBackupContextValue | null>(
 
 export function CloudBackupProvider({ children }: PropsWithChildren) {
   const repositories = useRepositories();
-  const { locale, themePreference } = useSettings();
+  const { analyticsConsent, locale, themePreference } = useSettings();
   const { isOffline } = useNetworkStatus();
   const [enabled, setEnabledState] = useState(
     () => repositories.settings.get<boolean>(BACKUP_ENABLED_KEY) ?? false,
@@ -58,7 +60,7 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
   const [lastSyncAt, setLastSyncAt] = useState<string | undefined>(
     () => repositories.settings.get<string>(LAST_SYNC_KEY) ?? undefined,
   );
-  const [errorCode, setErrorCode] = useState<string>();
+  const [errorCode, setErrorCode] = useState<AppErrorCode>();
   const worker = useMemo(
     () => new FirebaseSyncWorker(repositories.syncQueue, firebaseClient),
     [repositories.syncQueue],
@@ -89,8 +91,9 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
         setStatus('idle');
       }
     } catch {
+      void telemetry.track('sync_failed', { is_offline: isOffline, source_screen: 'sync_worker' });
       refreshSummary();
-      setErrorCode('sync/unavailable');
+      setErrorCode('sync/failed');
       setStatus('error');
     }
   }, [enabled, isOffline, refreshSummary, repositories.settings, worker]);
@@ -106,7 +109,7 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
         defaultCurrency: 'TRY',
         theme: themePreference,
         cloudBackupEnabled,
-        analyticsConsent: false,
+        analyticsConsent,
         adsConsentStatus: 'unknown',
         createdAt: now,
         updatedAt: now,
@@ -114,7 +117,7 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
         deviceId: defaultRepositoryDependencies.deviceId,
       });
     },
-    [locale, repositories.userProfiles, themePreference],
+    [analyticsConsent, locale, repositories.userProfiles, themePreference],
   );
   const setEnabled = useCallback(
     async (nextEnabled: boolean) => {
@@ -122,24 +125,25 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
       if (nextEnabled) {
         if (!firebaseClient.configured) {
           setStatus('unavailable');
-          setErrorCode('firebase/not-configured');
+          setErrorCode('firebase/unavailable');
           return;
         }
         setStatus('connecting');
         try {
+          if (!firebaseClient.currentUser()) {
+            void telemetry.track('sign_in_started', { source_screen: 'cloud_backup' });
+          }
           const nextUser =
             firebaseClient.currentUser() ?? (await firebaseClient.signInAnonymously());
+          void telemetry.track('sign_in_completed', { source_screen: 'cloud_backup' });
           setUser(nextUser);
           upsertProfile(nextUser, true);
           repositories.settings.set(BACKUP_ENABLED_KEY, true);
           setEnabledState(true);
           setStatus('idle');
-        } catch (error) {
-          setErrorCode(
-            typeof error === 'object' && error && 'code' in error && typeof error.code === 'string'
-              ? error.code
-              : 'auth/anonymous-failed',
-          );
+          void telemetry.track('cloud_backup_enabled', { source_screen: 'settings' });
+        } catch {
+          setErrorCode('firebase/unavailable');
           setStatus('error');
         }
       } else {
@@ -157,17 +161,15 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
     setStatus('connecting');
     setErrorCode(undefined);
     try {
+      void telemetry.track('sign_in_started', { source_screen: 'cloud_backup' });
       const linked = await firebaseClient.linkGoogleAccount();
+      void telemetry.track('sign_in_completed', { source_screen: 'cloud_backup' });
       setUser(linked);
       upsertProfile(linked, true);
       setStatus('idle');
       await syncNow();
-    } catch (error) {
-      setErrorCode(
-        typeof error === 'object' && error && 'code' in error && typeof error.code === 'string'
-          ? error.code
-          : 'auth/google-link-failed',
-      );
+    } catch {
+      setErrorCode('firebase/unavailable');
       setStatus('error');
     }
   }, [syncNow, upsertProfile]);
@@ -175,17 +177,15 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
     setStatus('connecting');
     setErrorCode(undefined);
     try {
+      void telemetry.track('account_deletion_started', { source_screen: 'settings' });
       await firebaseClient.deleteAccountAndCloudData();
+      void telemetry.track('account_deletion_completed', { source_screen: 'settings' });
       repositories.settings.set(BACKUP_ENABLED_KEY, false);
       setEnabledState(false);
       setUser(null);
       setStatus(firebaseClient.configured ? 'local_only' : 'unavailable');
-    } catch (error) {
-      setErrorCode(
-        typeof error === 'object' && error && 'code' in error && typeof error.code === 'string'
-          ? error.code
-          : 'account/delete-failed',
-      );
+    } catch {
+      setErrorCode('account/delete_failed');
       setStatus('error');
     }
   }, [repositories.settings]);

@@ -43,6 +43,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ? [
         '@react-native-firebase/app',
         '@react-native-firebase/auth',
+        '@react-native-firebase/app-check',
+        '@react-native-firebase/crashlytics',
         [
           '@react-native-firebase/analytics',
           {
@@ -59,6 +61,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 'RNFBAnalytics',
                 'RNFBApp',
                 'RNFBAuth',
+                'RNFBAppCheck',
+                'RNFBCrashlytics',
                 'RNFBFirestore',
                 'RNFBFunctions',
                 'RNFBRemoteConfig',

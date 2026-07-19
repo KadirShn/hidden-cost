@@ -13,6 +13,7 @@ import {
   buildComparisonReportHtml,
   type ComparisonReportViewModel,
 } from '@/services/export/report-html';
+import { telemetry } from '@/services/observability/telemetry-service';
 import { formatMinorCurrency, getLocaleTag } from '@/utils/format';
 
 export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[] }) {
@@ -63,6 +64,7 @@ export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[
     setOutcome(null);
     setCancelled(false);
     try {
+      void telemetry.track('pdf_export_started', { locale, source_screen: 'compare' });
       if (ads.rewardedExportEnabled) {
         const reward = await ads.requestRewardedExport(true);
         if (reward === 'dismissed') {
@@ -77,6 +79,8 @@ export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[
           t('export.comparisonReportTitle'),
         ),
       );
+      void telemetry.track('pdf_export_completed', { locale, source_screen: 'compare' });
+      void telemetry.track('share_completed', { locale, source_screen: 'compare' });
     } catch {
       setError(true);
     } finally {

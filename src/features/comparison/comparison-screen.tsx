@@ -1,5 +1,5 @@
 import { Decimal } from 'decimal.js';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Switch, View } from 'react-native';
 
@@ -16,6 +16,8 @@ import { calculateCostProject, compareProjects, type ComparisonEntry } from '@/d
 import { ComparisonExportActions } from '@/features/export/comparison-export-actions';
 import { useSettings } from '@/features/settings/use-settings';
 import { useTheme } from '@/hooks/use-theme';
+import { projectCountBucket } from '@/services/observability/analytics-contracts';
+import { telemetry } from '@/services/observability/telemetry-service';
 import { formatMinorCurrency, parseLocalizedNumber } from '@/utils/format';
 
 function ComparisonBar({
@@ -187,6 +189,7 @@ export function ComparisonScreen() {
   const [limitMessage, setLimitMessage] = useState(false);
   const [normalize, setNormalize] = useState(false);
   const [normalizeMonthsText, setNormalizeMonthsText] = useState('36');
+  const lastComparisonKey = useRef('');
   const bundles = useProjectBundles(selectedIds);
   const available = (projects.data ?? []).filter((project) => project.status === 'complete');
   const entries = bundles
@@ -201,6 +204,20 @@ export function ComparisonScreen() {
     normalize && parsedMonths && Number.isInteger(parsedMonths) && parsedMonths > 0
       ? parsedMonths
       : undefined;
+  useEffect(() => {
+    if (selectedIds.length < 2) return;
+    const key = [...selectedIds].sort().join(':');
+    if (lastComparisonKey.current === key || entries.length !== selectedIds.length) return;
+    lastComparisonKey.current = key;
+    void telemetry.track('comparison_started', {
+      project_count_bucket: projectCountBucket(selectedIds.length),
+      source_screen: 'compare',
+    });
+    void telemetry.track('comparison_completed', {
+      project_count_bucket: projectCountBucket(entries.length),
+      source_screen: 'compare',
+    });
+  }, [entries.length, selectedIds]);
   const toggleProject = (projectId: string) => {
     if (selectedIds.includes(projectId)) {
       setSelectedIds((ids) => ids.filter((id) => id !== projectId));

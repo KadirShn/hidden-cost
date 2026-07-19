@@ -17,7 +17,7 @@ import { settingsStore } from '@/store/settings-store';
 
 import { AdsContext, type AdsContextValue } from './ads-context';
 
-const ANALYTICS_CONSENT_KEY = 'settings.adAnalyticsConsent';
+const ANALYTICS_CONSENT_KEY = 'settings.analyticsConsent';
 const LAUNCHED_BEFORE_KEY = 'ads.launchedBefore';
 
 export function AdsProvider({ children }: PropsWithChildren) {

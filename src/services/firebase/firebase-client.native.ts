@@ -29,6 +29,7 @@ import {
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { runtimeConfig } from '@/config/runtime-config';
+import { initializeAppProtection } from '@/services/observability/app-protection';
 
 import { buildCloudDocumentMutation, resolveCloudMutation } from './cloud-document';
 import {
@@ -128,6 +129,7 @@ class NativeFirebaseClient implements FirebaseClient {
     record: Parameters<FirebaseClient['applyMutation']>[1],
   ): Promise<CloudMutationResult> {
     this.assertConfigured();
+    await initializeAppProtection();
     this.connectEmulators();
     const mutation = buildCloudDocumentMutation(uid, record);
     try {
@@ -180,6 +182,7 @@ class NativeFirebaseClient implements FirebaseClient {
 
   async deleteAccountAndCloudData(): Promise<void> {
     this.assertConfigured();
+    await initializeAppProtection();
     this.connectEmulators();
     try {
       await httpsCallable(getFunctions(), 'deleteAccountAndData')();

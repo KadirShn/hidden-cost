@@ -21,6 +21,7 @@ import {
   type ProjectReportViewModel,
   type ResultCardViewModel,
 } from '@/services/export/report-html';
+import { telemetry } from '@/services/observability/telemetry-service';
 import { formatMinorCurrency, formatNumber, getLocaleTag } from '@/utils/format';
 
 export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
@@ -128,6 +129,9 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
     setOutcome(null);
     setCancelled(false);
     try {
+      if (kind === 'pdf') {
+        void telemetry.track('pdf_export_started', { locale, source_screen: 'project_detail' });
+      }
       if (kind === 'pdf' && ads.rewardedExportEnabled) {
         const reward = await ads.requestRewardedExport(true);
         if (reward === 'dismissed') {
@@ -142,6 +146,10 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
         kind === 'pdf' ? t('export.projectReportTitle') : t('export.resultCardTitle'),
       );
       setOutcome(nextOutcome);
+      if (kind === 'pdf') {
+        void telemetry.track('pdf_export_completed', { locale, source_screen: 'project_detail' });
+      }
+      void telemetry.track('share_completed', { locale, source_screen: 'project_detail' });
     } catch {
       setError(true);
     } finally {

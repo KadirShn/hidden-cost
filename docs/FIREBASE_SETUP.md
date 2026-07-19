@@ -113,7 +113,8 @@ Enable Google Auth and select the `client_type: 3` client ID from Firebase confi
 `functions/src/index.ts` exports authenticated callable `deleteAccountAndData`. It ignores
 client-provided UIDs, recursively deletes only `users/{request.auth.uid}`, then deletes that Auth
 user. Local SQLite calculations are deliberately preserved and the confirmation explains this.
-App Check enforcement is deferred to the security phase; valid Firebase Auth is already mandatory.
+App Check is initialized in Phase 9, but enforcement remains an explicit console rollout after
+metrics validation. See [App Check setup](APP_CHECK_SETUP.md). Valid Firebase Auth remains mandatory.
 
 ```powershell
 npm --prefix functions run build
@@ -124,8 +125,8 @@ firebase deploy --only functions:deleteAccountAndData,firestore:rules,firestore:
 
 Defaults are set before fetch and fetch failure is non-blocking: all ad/reward switches are off,
 `max_compare_items` is 3, cloud backup capability is on, catalog version is 1, maintenance and force
-update are off, and minimum supported version is `1.0.0`. Analytics is installed only because
-Remote Config requires its native dependency. Collection remains disabled and no events are added.
+update are off, and minimum supported version is `1.0.0`. Analytics collection defaults to disabled
+and is controlled by the versioned Settings consent.
 
 ## Manual acceptance checks
 

@@ -11,13 +11,17 @@ import { RepositoryProvider } from '@/data/repositories/repository-provider';
 import { AdsProvider } from '@/features/ads/ads-provider';
 import { AppInitializationGate } from '@/features/app-initialization/app-initialization-gate';
 import { CloudBackupProvider } from '@/features/cloud-backup/cloud-backup-provider';
+import { ObservabilityProvider } from '@/features/observability/observability-provider';
 import { SettingsProvider } from '@/features/settings/settings-provider';
 import { i18n } from '@/i18n';
+import { crashReporter } from '@/services/observability/crash-reporter';
+import { toAppError } from '@/services/observability/errors';
 import { AppThemeProvider } from '@/theme/theme-provider';
 
 void SplashScreen.preventAutoHideAsync();
 
-export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
+export function ErrorBoundary({ retry, error }: ErrorBoundaryProps) {
+  void crashReporter.record(toAppError(error, 'app/initialization_failed'));
   return (
     <FatalErrorScreen
       actionLabel={i18n.t('common.retry')}
@@ -32,7 +36,8 @@ export default function RootLayout() {
   return (
     <I18nextProvider i18n={i18n}>
       <SettingsProvider>
-        <AppThemeProvider>
+        <ObservabilityProvider>
+          <AppThemeProvider>
           <QueryClientProvider client={queryClient}>
             <StatusBar style="auto" />
             <AppInitializationGate>
@@ -50,7 +55,8 @@ export default function RootLayout() {
               </RepositoryProvider>
             </AppInitializationGate>
           </QueryClientProvider>
-        </AppThemeProvider>
+          </AppThemeProvider>
+        </ObservabilityProvider>
       </SettingsProvider>
     </I18nextProvider>
   );

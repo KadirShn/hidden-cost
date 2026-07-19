@@ -6,6 +6,7 @@ import { runMigrations } from '@/data/database/migration-runner';
 import { databaseSchema, type DatabaseSchema } from '@/data/database/schema';
 import { SQLiteAppSettingsRepository } from '@/data/repositories/app-settings-repository';
 import { defaultRepositoryDependencies } from '@/data/repositories/dependencies';
+import { SQLiteLocalDataRepository } from '@/data/repositories/local-data-repository';
 import { SQLiteProjectRepository } from '@/data/repositories/project-repository';
 import { SQLiteScenarioRepository } from '@/data/repositories/scenario-repository';
 import { SQLiteSyncQueueRepository } from '@/data/repositories/sync-queue-repository';
@@ -17,6 +18,7 @@ import type {
   SyncQueueRepository,
   TemplateRepository,
   UserProfileRepository,
+  LocalDataRepository,
 } from '@/data/repositories/types';
 import { SQLiteUserProfileRepository } from '@/data/repositories/user-profile-repository';
 import { seedTemplateCache } from '@/data/templates/seed';
@@ -31,6 +33,7 @@ export type DatabaseServices = {
   userProfiles: UserProfileRepository;
   settings: AppSettingsRepository;
   syncQueue: SyncQueueRepository;
+  localData: LocalDataRepository;
 };
 
 type DatabaseState = {
@@ -58,6 +61,7 @@ function createState(): DatabaseState {
       userProfiles: new SQLiteUserProfileRepository(database, dependencies),
       settings: new SQLiteAppSettingsRepository(database, dependencies),
       syncQueue: new SQLiteSyncQueueRepository(database),
+      localData: new SQLiteLocalDataRepository(database),
     },
   };
 }

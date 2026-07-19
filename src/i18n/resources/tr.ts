@@ -289,14 +289,53 @@ export const tr = {
       'Google UMP izin formundaki reklam gizliliği tercihlerini buradan yeniden açabilirsin.',
     openPrivacyOptions: 'Gizlilik seçeneklerini aç',
     privacyOptionsUnavailable: 'Bu cihaz ve bölge için yeniden açılması gereken bir form yok.',
-    analyticsTitle: 'Anonim reklam tanılama verileri',
+    analyticsTitle: 'Anonim kullanım analitiği',
     analyticsBody:
-      'Yalnızca yükleme, gösterim, tıklama ve hata olaylarını gönderir; hesaplama veya maliyet verisi göndermez.',
+      'Yalnızca kategorik kullanım olaylarını gönderir; tutar, başlık, not, e-posta veya serbest metin göndermez.',
     rewardedTitle: 'Reklam izleyerek dışa aktar',
     rewardedBody:
       'PDF veya gelişmiş rapor dışa aktarımını açmak için isteğe bağlı reklamı izleyebilirsin. Reklam yüklenemezse dışa aktarım ücretsiz devam eder.',
     watchRewarded: 'Reklamı izle',
     rewardCancelled: 'Reklam izleme iptal edildi; verilerin ve hesaplaman değişmedi.',
+  },
+  privacy: {
+    section: 'Verilerin ve gizliliğin',
+    localDataTitle: 'Yerel veriler',
+    localDataBody:
+      'Hesaplamalarını, profilini ve bekleyen senkronizasyon kayıtlarını JSON olarak dışa aktarabilir veya bu cihazdan kalıcı olarak silebilirsin.',
+    exportAction: 'Yerel verileri dışa aktar',
+    deleteAction: 'Yerel verileri sil',
+    deleteTitle: 'Yerel veriler silinsin mi?',
+    deleteMessage:
+      'Bu cihazdaki hesaplamalar, profil ve bekleyen senkronizasyon kayıtları kalıcı olarak silinir. Bulut verileri ayrıca hesap silme aksiyonuyla silinmelidir.',
+    deleteConfirm: 'Yerel verileri kalıcı sil',
+    status: {
+      exported: 'Veri dışa aktarma dosyası hazırlandı.',
+      deleted: 'Yerel kullanıcı verileri silindi.',
+      error: 'İşlem tamamlanamadı. Verilerin değiştirilmeden kaldı.',
+    },
+  },
+  legal: {
+    section: 'Yasal bilgiler',
+    privacyTitle: 'Gizlilik bildirimi',
+    termsTitle: 'Kullanım koşulları',
+    disclaimerTitle: 'Yasal uyarı',
+    privacyBody:
+      'Hidden Cost hesaplamaları cihazında saklar. Bulut yedekleme ve kullanım analitiği ayrı, isteğe bağlı tercihlerdir. Analytics olayları maliyet tutarı, proje başlığı, not, e-posta veya serbest kullanıcı metni içermez. Reklam gizliliği tercihleri Google UMP üzerinden yönetilir.',
+    termsBody:
+      'Uygulama, kullanıcı tarafından girilen varsayımlara dayalı tahminler üretir. Sonuçların doğruluğu ve güncelliği garanti edilmez. Uygulamayı yürürlükteki kurallara uygun ve kendi sorumluluğunda kullanmalısın.',
+    disclaimerBody:
+      'Hidden Cost finansal, hukuki, vergisel veya yatırım tavsiyesi sunmaz. Bir satın alma ya da finansman kararı vermeden önce uygun bir uzmana danış.',
+    placeholderWarning:
+      'Yayın öncesi hukuk ve gizlilik incelemesi gerektiren taslak metindir; nihai politika URL’si değildir.',
+  },
+  observability: {
+    developerTitle: 'Observability geliştirme araçları',
+    developerBody:
+      'Bu kontrollü test aksiyonları yalnız development build’de görünür ve production arayüzüne dahil edilmez.',
+    testAnalytics: 'Test analytics olayı',
+    testCrash: 'Test non-fatal hata',
+    testQueued: 'Test aksiyonu işlendi.',
   },
   projects: {
     searchLabel: 'Hesaplama ara',
@@ -455,7 +494,7 @@ export const tr = {
     aboutSection: 'Uygulama',
     versionLabel: 'Sürüm',
     phaseLabel: 'Mevcut kapsam',
-    phaseValue: 'Faz 8 — İzin odaklı ve policy-aware reklam altyapısı',
+    phaseValue: 'Faz 9 — Observability, abuse protection ve privacy kontrolleri',
     developerSection: 'Geliştirici araçları',
     resetDatabaseTitle: 'Yerel veritabanını sıfırla',
     resetDatabaseHelp:

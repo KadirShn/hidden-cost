@@ -1,4 +1,5 @@
 import { type Href, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -6,6 +7,7 @@ import { AppText } from '@/components/ui/app-text';
 import { Card } from '@/components/ui/card';
 import { OnboardingPage } from '@/features/onboarding/onboarding-page';
 import { useTheme } from '@/hooks/use-theme';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 export default function WelcomeScreen() {
   const { t } = useTranslation();
@@ -16,6 +18,10 @@ export default function WelcomeScreen() {
     t('onboarding.welcome.pointTwo'),
     t('onboarding.welcome.pointThree'),
   ];
+
+  useEffect(() => {
+    void telemetry.track('onboarding_started', { source_screen: 'onboarding_welcome' });
+  }, []);
 
   return (
     <OnboardingPage

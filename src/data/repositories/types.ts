@@ -153,3 +153,19 @@ export interface SyncQueueRepository {
   recordFailure(record: SyncQueueRecord, errorCode: string, nextAttemptAt: string): void;
   recordConflict(record: SyncQueueRecord): void;
 }
+
+export type LocalDataSnapshot = Readonly<{
+  formatVersion: 1;
+  exportedAt: string;
+  profiles: unknown[];
+  projects: unknown[];
+  costItems: unknown[];
+  scenarioOverrides: unknown[];
+  appSettings: unknown[];
+  syncQueue: unknown[];
+}>;
+
+export interface LocalDataRepository {
+  exportSnapshot(): LocalDataSnapshot;
+  deleteAll(): void;
+}

@@ -12,6 +12,7 @@ import { calculateCostProject } from '@/domain';
 import { ProjectExportActions } from '@/features/export/project-export-actions';
 import { ScenarioSummary } from '@/features/scenarios/scenario-summary';
 import { useTheme } from '@/hooks/use-theme';
+import { telemetry } from '@/services/observability/telemetry-service';
 
 import { ResultSummary } from './result-summary';
 
@@ -47,6 +48,7 @@ export function ResultScreen() {
   const result = calculateCostProject({ project: bundle.project, costItems: bundle.costItems });
   const save = async () => {
     await updateProject.mutateAsync({ ...bundle.project, status: 'complete' });
+    void telemetry.track('project_saved', { source_screen: 'result' });
     router.replace(`/project/${id}?completed=1` as Href);
   };
 

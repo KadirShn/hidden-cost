@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This document records the Phase 8 architecture baseline. The application connects its Expo
+This document records the Phase 9 architecture baseline. The application connects its Expo
 Router screens to the pure calculation domain through an offline-first repository layer. Remote
 Firebase backup/synchronization is optional and adapter-bound. Advertising is isolated behind a
 consent-aware adapter and policy service; safe defaults keep every format disabled.
@@ -31,7 +31,7 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 8 directory boundaries
+## Phase 9 directory boundaries
 
 ```text
 src/
@@ -187,6 +187,22 @@ they never run in onboarding, the first session, or the wizard.
 Ad event analytics has a separate default-off user permission. Its typed payload permits format,
 placement, event, and bounded SDK error only. Domain inputs, project metadata, currency, and cost
 results cannot enter the event contract. Ad failures must never block the base application.
+
+## Observability and privacy boundary
+
+All product telemetry passes through `TelemetryService`. Event names match the Product Spec
+allowlist and parameters are reduced at runtime to categorical step, bucket, locale, offline, and
+source fields. Firebase Analytics collection defaults off and follows a versioned Settings consent.
+Ad event adapters map only approved impression/reward lifecycle events into this same boundary.
+
+Crashlytics native auto-collection is disabled in config. The adapter enables it only for production
+and records typed error codes plus redacted, allowlisted attributes; it never records raw domain
+input or user text. Development test actions are reachable only from the development tools section.
+
+App Check selects debug providers for development/preview and Play Integrity for Android production.
+It initializes before Firestore mutation and callable account deletion. Console enforcement remains
+an operator rollout after valid-request metrics are reviewed. Local data export/delete is isolated in
+a repository that snapshots or deletes user-owned tables transactionally without exposing SQL to UI.
 
 ## Quality gates
 
