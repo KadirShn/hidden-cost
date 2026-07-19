@@ -158,8 +158,7 @@ create or commit an ad-hoc production key.
 - [ ] Confirm no interstitial in onboarding, first session, or wizard.
 - [ ] Test maximum font scale, TalkBack, reduced motion, dark/light/system themes, and smallest
   supported screen.
-- [ ] Complete the Maestro offline flow; it remains an open gate until the local-only startup fix is
-  rebuilt and rerun.
+- [x] Complete the Maestro offline flow on the rebuilt preview release APK.
 - [ ] Verify no sensitive cost/title/note/email/free text in Analytics or Crashlytics.
 
 ## Analytics and Crashlytics verification

@@ -101,7 +101,7 @@ at the end. The flow is Android-only because Maestro airplane-mode control is An
 - The current Expo SDK 57 toolchain transitively includes `uuid` through Expo config/xcode tooling;
   npm reports its buffer-check advisory as moderate with no upstream fix. It is build tooling, not
   application-domain input handling, but must be re-audited on each Expo patch upgrade.
-- The first local Maestro run exposed credentials-free App Check autolinking at startup. The native
-  dependency is now excluded per platform when its Firebase service file is absent; because the
-  repeated clean NDK build was intentionally skipped, the fixed APK smoke run remains a CI/manual
-  release gate.
+- The first local Maestro runs exposed credentials-free App Check and Google Sign-In imports at
+  startup. Platform autolinking exclusions plus local-only import guards now fail closed; the rebuilt
+  preview release APK remained foreground without a fatal exception and passed the complete offline
+  Maestro journey.

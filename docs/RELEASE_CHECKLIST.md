@@ -26,7 +26,7 @@ binary, a physical device, or an external console action.
 - [x] Unit, integration, UI, repository, sync-chaos, and ad-chaos tests pass locally.
 - [x] Firestore rules tests pass on Java 21.
 - [x] Preview release APK assembles and installs locally.
-- [ ] Maestro offline smoke test passes after rebuilding the latest local-only startup guards.
+- [x] Maestro offline smoke test passes on the rebuilt preview release APK.
 - [ ] CI quality, Firestore-rules, Android AAB/APK, and Maestro jobs are green on the release commit.
 
 ## Firebase, App Check, and Remote Config
