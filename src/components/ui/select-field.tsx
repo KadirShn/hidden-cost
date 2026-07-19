@@ -1,10 +1,19 @@
 import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
-import { Modal, Pressable, ScrollView, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  AccessibilityInfo,
+  findNodeHandle,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useTheme } from '@/hooks/use-theme';
 
 export type SelectOption<T extends string> = Readonly<{ label: string; value: T }>;
@@ -33,8 +42,15 @@ export function SelectField<T extends string>({
   selectedAccessibilityLabel,
 }: SelectFieldProps<T>) {
   const theme = useTheme();
+  const reducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+  const titleRef = useRef<Text>(null);
   const selectedOption = options.find((option) => option.value === value) ?? options[0];
+
+  const focusTitle = () => {
+    const node = findNodeHandle(titleRef.current);
+    if (node) AccessibilityInfo.setAccessibilityFocus(node);
+  };
 
   if (!selectedOption) return null;
 
@@ -75,8 +91,9 @@ export function SelectField<T extends string>({
         </AppText>
       ) : null}
       <Modal
-        animationType="fade"
+        animationType={reducedMotion ? 'none' : 'fade'}
         onRequestClose={() => setIsOpen(false)}
+        onShow={focusTitle}
         transparent
         visible={isOpen}
       >
@@ -99,7 +116,7 @@ export function SelectField<T extends string>({
               padding: theme.spacing.xl,
             }}
           >
-            <AppText accessibilityRole="header" variant="subtitle">
+            <AppText ref={titleRef} accessibilityRole="header" variant="subtitle">
               {modalTitle}
             </AppText>
             <ScrollView contentInsetAdjustmentBehavior="automatic">

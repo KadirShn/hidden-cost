@@ -7,10 +7,7 @@ export type AdsContextValue = Readonly<{
   ready: boolean;
   privacyOptionsAvailable: boolean;
   rewardedExportEnabled: boolean;
-  canShowNative: (
-    placement: 'dashboard' | 'template_library',
-    hasContent: boolean,
-  ) => boolean;
+  canShowNative: (placement: 'dashboard' | 'template_library', hasContent: boolean) => boolean;
   requestRewardedExport: (userOptedIn: boolean) => Promise<RewardedOutcome>;
   maybeShowPostResultInterstitial: (completedCalculations: number) => Promise<void>;
   openPrivacyOptions: () => Promise<void>;

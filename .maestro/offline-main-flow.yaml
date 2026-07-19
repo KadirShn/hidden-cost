@@ -1,0 +1,84 @@
+appId: com.kadirshn.hiddencost
+name: Offline motorcycle calculation
+tags:
+  - smoke
+  - offline
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: onboarding-primary
+    timeout: 30000
+- tapOn:
+    id: onboarding-primary
+- tapOn:
+    id: onboarding-primary
+- tapOn:
+    id: onboarding-primary
+- extendedWaitUntil:
+    visible:
+      id: dashboard-screen
+    timeout: 30000
+- setAirplaneMode: enabled
+- tapOn:
+    id: home-new-calculation
+- extendedWaitUntil:
+    visible:
+      id: template-motorcycle
+    timeout: 30000
+- tapOn:
+    id: template-motorcycle
+- tapOn:
+    id: template-start
+- extendedWaitUntil:
+    visible:
+      id: wizard-next
+    timeout: 30000
+- tapOn:
+    id: wizard-next
+- tapOn:
+    id: wizard-purchasePrice
+- eraseText
+- inputText: 250000
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: wizard-next
+    direction: DOWN
+    visibilityPercentage: 80
+- tapOn:
+    id: wizard-next
+- repeat:
+    times: 5
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: wizard-next
+          direction: DOWN
+          visibilityPercentage: 80
+      - tapOn:
+          id: wizard-next
+- scrollUntilVisible:
+    element:
+      id: wizard-calculate
+    direction: DOWN
+    visibilityPercentage: 80
+- tapOn:
+    id: wizard-calculate
+- extendedWaitUntil:
+    visible:
+      id: result-screen
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: result-save
+    direction: DOWN
+    visibilityPercentage: 80
+- tapOn:
+    id: result-save
+- extendedWaitUntil:
+    visible:
+      id: project-detail-screen
+    timeout: 30000
+- setAirplaneMode: disabled

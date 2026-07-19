@@ -57,7 +57,12 @@ export function OnboardingPage({
         {secondaryLabel && onSecondaryPress ? (
           <Button label={secondaryLabel} onPress={onSecondaryPress} variant="secondary" />
         ) : null}
-        <Button fullWidth label={primaryLabel} onPress={onPrimaryPress} />
+        <Button
+          fullWidth
+          label={primaryLabel}
+          onPress={onPrimaryPress}
+          testID="onboarding-primary"
+        />
       </View>
     </Screen>
   );

@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 16.0.0"
+    "version": ">= 16.0.1",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -18,8 +19,22 @@
     },
     "production": {
       "autoIncrement": true,
+      "distribution": "store",
+      "environment": "production",
+      "android": {
+        "buildType": "app-bundle"
+      },
       "env": {
-        "EXPO_PUBLIC_APP_ENV": "production"
+        "EXPO_PUBLIC_APP_ENV": "production",
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "submit": {
+    "internal": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
       }
     }
   }

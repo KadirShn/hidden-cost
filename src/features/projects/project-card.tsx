@@ -27,7 +27,7 @@ export function ProjectCard({
 
   return (
     <Pressable
-      accessibilityLabel={`${openLabel}: ${project.title}`}
+      accessibilityLabel={`${openLabel}: ${project.title}. ${categoryLabel}. ${statusLabel}. ${amountLabel}`}
       accessibilityRole="button"
       onPress={onPress}
     >

@@ -4,7 +4,6 @@ import { ConsentAwareAdAnalytics } from './ad-analytics';
 
 import type { AdEvent } from './contracts';
 
-
 const event = { name: 'load', format: 'native', placement: 'dashboard' } as const;
 
 describe('ConsentAwareAdAnalytics', () => {

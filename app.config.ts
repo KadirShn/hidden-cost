@@ -21,24 +21,70 @@ function resolveAppEnvironment(value: string | undefined): AppEnvironment {
   return environment as AppEnvironment;
 }
 
+function resolvePublicHttpsUrl(value: string | undefined, name: string, required: boolean) {
+  if (!value) {
+    if (required) throw new Error(`Production builds require ${name}.`);
+    return null;
+  }
+
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error(`${name} must be a valid URL.`);
+  }
+  const hostname = url.hostname.toLowerCase();
+  if (
+    url.protocol !== 'https:' ||
+    hostname === 'localhost' ||
+    hostname === 'example.com' ||
+    hostname === 'example.org' ||
+    hostname === 'example.net' ||
+    ['.example', '.invalid', '.localhost', '.test'].some((suffix) => hostname.endsWith(suffix))
+  ) {
+    throw new Error(`${name} must be a public HTTPS URL, not a placeholder.`);
+  }
+  return url.toString();
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   const appEnvironment = resolveAppEnvironment(process.env.EXPO_PUBLIC_APP_ENV);
   const isProduction = appEnvironment === 'production';
+  const buildPlatform = process.env.EAS_BUILD_PLATFORM;
+  const buildsAndroid = !buildPlatform || buildPlatform === 'android';
+  const buildsIos = !buildPlatform || buildPlatform === 'ios';
   const androidAdMobAppId = isProduction
     ? process.env.ADMOB_ANDROID_APP_ID
     : ADMOB_TEST_APP_IDS.android;
   const iosAdMobAppId = isProduction ? process.env.ADMOB_IOS_APP_ID : ADMOB_TEST_APP_IDS.ios;
 
-  if (isProduction && (!androidAdMobAppId || !iosAdMobAppId)) {
+  if (isProduction && ((buildsAndroid && !androidAdMobAppId) || (buildsIos && !iosAdMobAppId))) {
     throw new Error(
-      'Production builds require ADMOB_ANDROID_APP_ID and ADMOB_IOS_APP_ID. Test IDs are never used in production.',
+      'Production builds require the platform AdMob app ID. Test IDs are never used in production.',
     );
   }
+  const privacyPolicyUrl = resolvePublicHttpsUrl(
+    process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL,
+    'EXPO_PUBLIC_PRIVACY_POLICY_URL',
+    isProduction,
+  );
+  const accountDeletionUrl = resolvePublicHttpsUrl(
+    process.env.EXPO_PUBLIC_ACCOUNT_DELETION_URL,
+    'EXPO_PUBLIC_ACCOUNT_DELETION_URL',
+    isProduction,
+  );
   const firebaseRequested = process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true';
   const androidServicesFile = process.env.FIREBASE_GOOGLE_SERVICES_FILE;
   const iosServicesFile = process.env.FIREBASE_GOOGLE_SERVICE_INFO_FILE;
   const firebaseNativeConfigured =
     firebaseRequested && Boolean(androidServicesFile || iosServicesFile);
+  if (
+    isProduction &&
+    firebaseRequested &&
+    ((buildsAndroid && !androidServicesFile) || (buildsIos && !iosServicesFile))
+  ) {
+    throw new Error('Firebase-enabled production builds require the platform service file.');
+  }
   const firebasePlugins: NonNullable<ExpoConfig['plugins']> = firebaseNativeConfigured
     ? [
         '@react-native-firebase/app',
@@ -52,9 +98,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
         ],
         '@react-native-google-signin/google-signin',
-        [
-          'expo-build-properties',
-          {
+      ]
+    : [];
+  const buildPropertiesPlugin: NonNullable<ExpoConfig['plugins']>[number] = [
+    'expo-build-properties',
+    {
+      ...(firebaseNativeConfigured
+        ? {
             ios: {
               useFrameworks: 'static',
               forceStaticLinking: [
@@ -68,10 +118,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 'RNFBRemoteConfig',
               ],
             },
-          },
-        ],
-      ]
-    : [];
+          }
+        : undefined),
+    },
+  ];
 
   return {
     ...config,
@@ -94,6 +144,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             'This identifier may be used to deliver and measure ads when you allow it.',
         },
       ],
+      buildPropertiesPlugin,
       ...firebasePlugins,
     ],
     android: {
@@ -118,8 +169,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         testMode: !isProduction,
         productionUnitIdsConfigured: Boolean(
           process.env.EXPO_PUBLIC_ADMOB_NATIVE_UNIT_ID &&
-            process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID &&
-            process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID,
+          process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID &&
+          process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID,
         ),
       },
       firebase: {
@@ -129,6 +180,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         useEmulators:
           appEnvironment === 'development' &&
           process.env.EXPO_PUBLIC_FIREBASE_USE_EMULATORS === 'true',
+      },
+      legal: {
+        privacyPolicyUrl,
+        accountDeletionUrl,
       },
     },
   };

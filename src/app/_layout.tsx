@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { I18nextProvider } from 'react-i18next';
 
 import { FatalErrorScreen } from '@/components/feedback/fatal-error-screen';
+import { RenderProfiler } from '@/components/performance/render-profiler';
 import { queryClient } from '@/data/query/query-client';
 import { RepositoryProvider } from '@/data/repositories/repository-provider';
 import { AdsProvider } from '@/features/ads/ads-provider';
@@ -16,9 +17,11 @@ import { SettingsProvider } from '@/features/settings/settings-provider';
 import { i18n } from '@/i18n';
 import { crashReporter } from '@/services/observability/crash-reporter';
 import { toAppError } from '@/services/observability/errors';
+import { performanceMonitor } from '@/services/performance/performance-monitor';
 import { AppThemeProvider } from '@/theme/theme-provider';
 
 void SplashScreen.preventAutoHideAsync();
+performanceMonitor.markStartup('root_module_loaded');
 
 export function ErrorBoundary({ retry, error }: ErrorBoundaryProps) {
   void crashReporter.record(toAppError(error, 'app/initialization_failed'));
@@ -38,23 +41,25 @@ export default function RootLayout() {
       <SettingsProvider>
         <ObservabilityProvider>
           <AppThemeProvider>
-          <QueryClientProvider client={queryClient}>
-            <StatusBar style="auto" />
-            <AppInitializationGate>
-              <RepositoryProvider>
-                <CloudBackupProvider>
-                  <AdsProvider>
-                    <Stack screenOptions={{ headerShown: false }}>
-                      <Stack.Screen name="index" />
-                      <Stack.Screen name="(onboarding)" />
-                      <Stack.Screen name="(tabs)" />
-                      <Stack.Screen name="(flow)" />
-                    </Stack>
-                  </AdsProvider>
-                </CloudBackupProvider>
-              </RepositoryProvider>
-            </AppInitializationGate>
-          </QueryClientProvider>
+            <QueryClientProvider client={queryClient}>
+              <StatusBar style="auto" />
+              <AppInitializationGate>
+                <RepositoryProvider>
+                  <CloudBackupProvider>
+                    <AdsProvider>
+                      <RenderProfiler id="root_navigation">
+                        <Stack screenOptions={{ headerShown: false }}>
+                          <Stack.Screen name="index" />
+                          <Stack.Screen name="(onboarding)" />
+                          <Stack.Screen name="(tabs)" />
+                          <Stack.Screen name="(flow)" />
+                        </Stack>
+                      </RenderProfiler>
+                    </AdsProvider>
+                  </CloudBackupProvider>
+                </RepositoryProvider>
+              </AppInitializationGate>
+            </QueryClientProvider>
           </AppThemeProvider>
         </ObservabilityProvider>
       </SettingsProvider>

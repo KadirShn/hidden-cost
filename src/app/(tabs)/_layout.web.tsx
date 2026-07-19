@@ -12,6 +12,8 @@ function WebTabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
   return (
     <Pressable
       {...props}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: isFocused }}
       style={({ pressed }) => ({
         backgroundColor: isFocused ? theme.colors.surfaceMuted : 'transparent',
         borderRadius: theme.radius.md,
@@ -44,6 +46,7 @@ export default function WebTabLayout() {
             borderTopWidth: 1,
             bottom: 0,
             flexDirection: 'row',
+            flexWrap: 'wrap',
             gap: theme.spacing.sm,
             justifyContent: 'center',
             padding: theme.spacing.md,

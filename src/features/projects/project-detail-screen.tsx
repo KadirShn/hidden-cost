@@ -42,12 +42,7 @@ export function ProjectDetailScreen() {
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
 
   useEffect(() => {
-    if (
-      completed !== '1' ||
-      interstitialChecked.current ||
-      !project.data ||
-      !projects.data
-    ) {
+    if (completed !== '1' || interstitialChecked.current || !project.data || !projects.data) {
       return;
     }
     interstitialChecked.current = true;
@@ -97,7 +92,7 @@ export function ProjectDetailScreen() {
   const actionError = duplicate.isError || archive.isError || remove.isError;
 
   return (
-    <Screen>
+    <Screen testID="project-detail-screen">
       <Stack.Screen options={{ title: bundle.project.title }} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm }}>
         <Chip disabled label={t(`categories.${bundle.project.category}`)} />

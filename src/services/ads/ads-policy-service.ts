@@ -51,9 +51,7 @@ export class AdsPolicyService {
 
   isRewardedExportEnabled(): boolean {
     return (
-      this.config.ads_enabled &&
-      this.config.rewarded_export_enabled &&
-      this.consent.canRequestAds
+      this.config.ads_enabled && this.config.rewarded_export_enabled && this.consent.canRequestAds
     );
   }
 

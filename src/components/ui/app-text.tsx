@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { Text, type TextProps } from 'react-native';
 
 import { useTheme } from '@/hooks/use-theme';
@@ -10,7 +11,10 @@ export type AppTextProps = TextProps & {
   tone?: 'primary' | 'secondary' | 'accent' | 'danger' | 'success' | 'warning';
 };
 
-export function AppText({ style, variant = 'body', tone = 'primary', ...props }: AppTextProps) {
+export const AppText = forwardRef<Text, AppTextProps>(function AppText(
+  { style, variant = 'body', tone = 'primary', ...props },
+  ref,
+) {
   const theme = useTheme();
   const toneColors = {
     primary: theme.colors.textPrimary,
@@ -21,5 +25,7 @@ export function AppText({ style, variant = 'body', tone = 'primary', ...props }:
     warning: theme.colors.warning,
   };
 
-  return <Text style={[typography[variant], { color: toneColors[tone] }, style]} {...props} />;
-}
+  return (
+    <Text ref={ref} style={[typography[variant], { color: toneColors[tone] }, style]} {...props} />
+  );
+});

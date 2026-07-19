@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -15,6 +22,60 @@ jobs:
           node-version: 22.13
           cache: npm
       - run: npm ci
+      - run: npx expo install --check
       - run: npm run typecheck
       - run: npm run lint
-      - run: npm test -- --runInBand
+      - run: npm run format:check
+      - run: npm run test:ci
+      - run: npm ci --prefix functions
+      - run: npm run build --prefix functions
+      - run: npm run lint --prefix functions
+
+  firestore-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm run test:rules
+
+  android-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npx expo prebuild --platform android --clean --no-install
+        env:
+          EXPO_PUBLIC_APP_ENV: preview
+          NODE_ENV: production
+      - run: ./gradlew --no-daemon :app:assembleRelease
+        working-directory: android
+        env:
+          EXPO_PUBLIC_APP_ENV: preview
+          NODE_ENV: production
+      - run: curl -Ls "https://get.maestro.mobile.dev" | bash
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          script: |
+            adb install -r android/app/build/outputs/apk/release/app-release.apk
+            $HOME/.maestro/bin/maestro test .maestro

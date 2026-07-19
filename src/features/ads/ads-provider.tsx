@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 
 import { ConsentAwareAdAnalytics } from '@/services/ads/ad-analytics';
 import { AdsPolicyService } from '@/services/ads/ads-policy-service';

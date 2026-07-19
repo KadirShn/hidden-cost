@@ -11,6 +11,7 @@ class FirebaseCrashReporter implements CrashReporter {
   private configured = false;
 
   async initialize(): Promise<void> {
+    if (!runtimeConfig.firebase.enabled) return;
     const [{ getCrashlytics, setCrashlyticsCollectionEnabled }, { firebaseClient }] =
       await Promise.all([
         import('@react-native-firebase/crashlytics'),
@@ -31,18 +32,16 @@ class FirebaseCrashReporter implements CrashReporter {
 
   async recordDevelopmentTest(): Promise<boolean> {
     if (!this.configured || runtimeConfig.appEnvironment !== 'development') return false;
-    const { getCrashlytics, setCrashlyticsCollectionEnabled } = await import(
-      '@react-native-firebase/crashlytics'
-    );
+    const { getCrashlytics, setCrashlyticsCollectionEnabled } =
+      await import('@react-native-firebase/crashlytics');
     await setCrashlyticsCollectionEnabled(getCrashlytics(), true);
     await this.send(new AppError('dev/test_non_fatal'));
     return true;
   }
 
   private async send(error: AppError, context: SafeLogContext = {}): Promise<void> {
-    const { getCrashlytics, recordError, setAttributes } = await import(
-      '@react-native-firebase/crashlytics'
-    );
+    const { getCrashlytics, recordError, setAttributes } =
+      await import('@react-native-firebase/crashlytics');
     const crashlytics = getCrashlytics();
     const safe = sanitizeLogContext({
       ...context,

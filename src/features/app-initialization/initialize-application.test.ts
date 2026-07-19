@@ -13,6 +13,7 @@ describe('initializeApplication', () => {
     ).resolves.toEqual({
       appEnvironment: 'preview',
       databaseReady: true,
+      startupDurationMs: expect.any(Number),
     });
     expect(databaseInitializer).toHaveBeenCalledTimes(1);
   });

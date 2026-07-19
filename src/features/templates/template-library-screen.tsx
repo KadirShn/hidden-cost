@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Screen } from '@/components/layout/screen';
+import { VirtualizedScreen } from '@/components/layout/virtualized-screen';
 import { AppText } from '@/components/ui/app-text';
 import { Chip } from '@/components/ui/chip';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -40,8 +41,8 @@ export function TemplateLibraryScreen() {
     [category, query, t, templates.data],
   );
 
-  return (
-    <Screen>
+  const controls = (
+    <>
       <Stack.Screen options={{ title: t('templatesScreen.title') }} />
       {isOffline ? <OfflineBanner message={t('offline.templates')} /> : null}
       <AppText selectable tone="secondary">
@@ -66,38 +67,57 @@ export function TemplateLibraryScreen() {
           ),
         )}
       </View>
-      {templates.isPending ? (
+    </>
+  );
+
+  if (templates.isPending) {
+    return (
+      <Screen>
+        {controls}
         <View accessible={false} style={{ gap: theme.spacing.md }}>
           <LoadingSkeleton accessibilityLabel={t('common.loading')} height={120} />
           <LoadingSkeleton accessibilityLabel={t('common.loading')} height={120} />
         </View>
-      ) : templates.isError ? (
+      </Screen>
+    );
+  }
+
+  if (templates.isError) {
+    return (
+      <Screen>
+        {controls}
         <ErrorState
           message={t('templatesScreen.errorBody')}
           onRetry={() => void templates.refetch()}
           retryLabel={t('common.retry')}
           title={t('templatesScreen.errorTitle')}
         />
-      ) : filtered.length ? (
-        <>
-          {filtered.map((template) => (
-            <TemplateCard
-              key={template.id}
-              description={t(template.descriptionKey)}
-              openLabel={t('common.open')}
-              onPress={() => router.push(`/templates/${template.id}` as Href)}
-              template={template}
-              title={t(template.titleKey)}
-            />
-          ))}
-          <NativeAdSlot hasContent placement="template_library" />
-        </>
-      ) : (
+      </Screen>
+    );
+  }
+
+  return (
+    <VirtualizedScreen
+      data={filtered}
+      empty={
         <EmptyState
           message={t('templatesScreen.emptyBody')}
           title={t('templatesScreen.emptyTitle')}
         />
+      }
+      footer={filtered.length ? <NativeAdSlot hasContent placement="template_library" /> : null}
+      header={controls}
+      keyExtractor={(template) => template.id}
+      renderItem={({ item: template }) => (
+        <TemplateCard
+          description={t(template.descriptionKey)}
+          openLabel={t('common.open')}
+          onPress={() => router.push(`/templates/${template.id}` as Href)}
+          template={template}
+          title={t(template.titleKey)}
+        />
       )}
-    </Screen>
+      testID="template-list"
+    />
   );
 }

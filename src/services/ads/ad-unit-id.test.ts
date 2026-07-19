@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { resolveAdUnitId } from './ad-unit-id';
+import { resolveAdUnitId, resolveTestDeviceIdentifiers } from './ad-unit-id';
 
 describe('resolveAdUnitId', () => {
   it('always uses the SDK test ID in development and preview', () => {
@@ -22,5 +22,12 @@ describe('resolveAdUnitId', () => {
         productionId: 'production-id',
       }),
     ).toBe('production-id');
+  });
+});
+
+describe('resolveTestDeviceIdentifiers', () => {
+  it('keeps emulator test configuration out of production requests', () => {
+    expect(resolveTestDeviceIdentifiers(true)).toEqual(['EMULATOR']);
+    expect(resolveTestDeviceIdentifiers(false)).toEqual([]);
   });
 });

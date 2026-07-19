@@ -10,6 +10,8 @@ export function initializeAppProtection(): Promise<AppCheckMode> {
 }
 
 async function initialize(): Promise<AppCheckMode> {
+  if (!runtimeConfig.observability.appCheckEnabled) return 'disabled';
+
   const { getApp } = await import('@react-native-firebase/app');
   let configured = false;
   try {
@@ -24,9 +26,8 @@ async function initialize(): Promise<AppCheckMode> {
   });
   if (mode === 'disabled') return mode;
 
-  const { initializeAppCheck, ReactNativeFirebaseAppCheckProvider } = await import(
-    '@react-native-firebase/app-check'
-  );
+  const { initializeAppCheck, ReactNativeFirebaseAppCheckProvider } =
+    await import('@react-native-firebase/app-check');
   const provider = new ReactNativeFirebaseAppCheckProvider();
   provider.configure({
     android: { provider: mode === 'debug' ? 'debug' : 'playIntegrity' },

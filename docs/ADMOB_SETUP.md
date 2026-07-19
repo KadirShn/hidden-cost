@@ -1,6 +1,6 @@
 # AdMob Setup
 
-Phase 8 adds a consent-first advertising boundary with `react-native-google-mobile-ads` 16.4.0.
+Phase 8 adds a consent-first advertising boundary with `react-native-google-mobile-ads` 16.0.1.
 Advertising is optional: Remote Config defaults disable every format, a failed SDK/consent/ad request
 renders no ad, and calculation, persistence, results, and basic export keep working.
 

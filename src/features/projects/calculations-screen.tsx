@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Screen } from '@/components/layout/screen';
+import { VirtualizedScreen } from '@/components/layout/virtualized-screen';
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/ui/chip';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -40,8 +41,8 @@ export function CalculationsScreen() {
     [filter, projects.data, query],
   );
 
-  return (
-    <Screen>
+  const controls = (
+    <>
       {isOffline ? <OfflineBanner message={t('offline.projects')} /> : null}
       <Button label={t('calculations.action')} onPress={() => router.push('/templates' as Href)} />
       <TextField
@@ -60,33 +61,54 @@ export function CalculationsScreen() {
           />
         ))}
       </View>
-      {projects.isPending ? (
+    </>
+  );
+
+  if (projects.isPending) {
+    return (
+      <Screen>
+        {controls}
         <View accessible={false} style={{ gap: theme.spacing.md }}>
           <LoadingSkeleton accessibilityLabel={t('common.loading')} height={120} />
           <LoadingSkeleton accessibilityLabel={t('common.loading')} height={120} />
         </View>
-      ) : projects.isError ? (
+      </Screen>
+    );
+  }
+
+  if (projects.isError) {
+    return (
+      <Screen>
+        {controls}
         <ErrorState
           message={t('projects.errorBody')}
           onRetry={() => void projects.refetch()}
           retryLabel={t('common.retry')}
           title={t('projects.errorTitle')}
         />
-      ) : filtered.length ? (
-        filtered.map((project) => (
-          <ProjectCard
-            key={project.id}
-            amountLabel={formatMinorCurrency(project.purchasePriceMinor, project.currency, locale)}
-            categoryLabel={t(`categories.${project.category}`)}
-            onPress={() => router.push(`/project/${project.id}` as Href)}
-            openLabel={t('common.open')}
-            project={project}
-            statusLabel={t(`projectStatus.${project.status}`)}
-          />
-        ))
-      ) : (
+      </Screen>
+    );
+  }
+
+  return (
+    <VirtualizedScreen
+      data={filtered}
+      empty={
         <EmptyState message={t('calculations.emptyBody')} title={t('calculations.emptyTitle')} />
+      }
+      header={controls}
+      keyExtractor={(project) => project.id}
+      renderItem={({ item: project }) => (
+        <ProjectCard
+          amountLabel={formatMinorCurrency(project.purchasePriceMinor, project.currency, locale)}
+          categoryLabel={t(`categories.${project.category}`)}
+          onPress={() => router.push(`/project/${project.id}` as Href)}
+          openLabel={t('common.open')}
+          project={project}
+          statusLabel={t(`projectStatus.${project.status}`)}
+        />
       )}
-    </Screen>
+      testID="calculations-list"
+    />
   );
 }

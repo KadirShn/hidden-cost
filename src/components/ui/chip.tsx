@@ -25,6 +25,7 @@ export function Chip({ label, selected = false, disabled, ...props }: ChipProps)
         justifyContent: 'center',
         opacity: disabled ? 0.48 : pressed ? 0.72 : 1,
         paddingHorizontal: theme.spacing.lg,
+        paddingVertical: theme.spacing.xs,
       })}
       {...props}
     >

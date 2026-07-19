@@ -12,7 +12,12 @@ export function MetricCard({ label, value, supportingText, ...props }: MetricCar
   const theme = useTheme();
 
   return (
-    <Card accessibilityLabel={`${label}: ${value}`} {...props}>
+    <Card
+      accessible
+      accessibilityHint={supportingText}
+      accessibilityLabel={`${label}: ${value}`}
+      {...props}
+    >
       <AppText variant="label" tone="secondary">
         {label}
       </AppText>

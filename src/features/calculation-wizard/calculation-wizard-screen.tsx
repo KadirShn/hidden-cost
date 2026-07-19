@@ -4,7 +4,15 @@ import { usePreventRemove } from 'expo-router/react-navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm, useWatch, type Control, type FieldPath } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Alert, AppState, Switch, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Alert,
+  AppState,
+  findNodeHandle,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
 
 import { Screen } from '@/components/layout/screen';
 import { AppText } from '@/components/ui/app-text';
@@ -45,11 +53,13 @@ function ControlledTextField({ control, name, label, helperText }: ControlledFie
       name={name}
       render={({ field, fieldState }) => (
         <TextField
+          ref={field.ref}
           errorText={fieldState.error ? t('forms.invalidField') : undefined}
           helperText={helperText}
           label={label}
           onBlur={field.onBlur}
           onChangeText={field.onChange}
+          testID={`wizard-${name}`}
           value={String(field.value ?? '')}
         />
       )}
@@ -65,11 +75,13 @@ function ControlledNumberField({ control, name, label, helperText }: ControlledF
       name={name}
       render={({ field, fieldState }) => (
         <NumberInput
+          ref={field.ref}
           errorText={fieldState.error ? t('forms.invalidNumber') : undefined}
           helperText={helperText}
           label={label}
           onBlur={field.onBlur}
           onChangeText={field.onChange}
+          testID={`wizard-${name}`}
           value={String(field.value ?? '')}
         />
       )}
@@ -91,12 +103,14 @@ function ControlledMoneyField({
       name={name}
       render={({ field, fieldState }) => (
         <MoneyInput
+          ref={field.ref}
           currency={currency}
           errorText={fieldState.error ? t('forms.invalidMoney') : undefined}
           helperText={helperText}
           label={label}
           onBlur={field.onBlur}
           onChangeText={field.onChange}
+          testID={`wizard-${name}`}
           value={String(field.value ?? '')}
         />
       )}
@@ -115,6 +129,7 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   const [step, setStep] = useState(0);
   const [allowNavigation, setAllowNavigation] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stepHeadingRef = useRef<Text>(null);
   const latestValues = useRef<WizardFormValues | undefined>(undefined);
   const schema = useMemo(() => createWizardFormSchema(locale), [locale]);
   const storedDraft = readWizardDraft(settings, bundle.project.id);
@@ -137,6 +152,18 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
       source_screen: 'wizard',
     });
   }, [isOffline, locale, step]);
+
+  useEffect(() => {
+    const node = findNodeHandle(stepHeadingRef.current);
+    if (node) AccessibilityInfo.setAccessibilityFocus(node);
+    AccessibilityInfo.announceForAccessibility(
+      t('accessibility.wizardStep', {
+        current: step + 1,
+        total: totalSteps,
+        title: t(`wizard.steps.${step}.title`),
+      }),
+    );
+  }, [step, t, totalSteps]);
 
   const flushDraft = useCallback(() => {
     if (!latestValues.current) return;
@@ -188,6 +215,10 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   const next = async () => {
     const fields = wizardStepFields[step] as readonly FieldPath<WizardFormValues>[];
     const valid = fields.length ? await form.trigger([...fields], { shouldFocus: true }) : true;
+    if (!valid) {
+      AccessibilityInfo.announceForAccessibility(t('forms.fixErrors'));
+      return;
+    }
     if (valid) {
       void telemetry.track('calculation_step_completed', {
         step_name: `step_${step}`,
@@ -226,7 +257,9 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
         totalSteps={totalSteps}
       />
       <View style={{ gap: theme.spacing.sm }}>
-        <AppText variant="title">{t(`wizard.steps.${step}.title`)}</AppText>
+        <AppText ref={stepHeadingRef} accessibilityRole="header" variant="title">
+          {t(`wizard.steps.${step}.title`)}
+        </AppText>
         <AppText selectable tone="secondary">
           {t(`wizard.steps.${step}.body`)}
         </AppText>
@@ -408,12 +441,13 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           />
         ) : null}
         {step < totalSteps - 1 ? (
-          <Button label={t('common.continue')} onPress={() => void next()} />
+          <Button label={t('common.continue')} onPress={() => void next()} testID="wizard-next" />
         ) : (
           <Button
             label={t('wizard.calculate')}
             loading={saveBundle.isPending}
             onPress={() => void calculate()}
+            testID="wizard-calculate"
           />
         )}
       </View>

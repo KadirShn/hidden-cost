@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "hidden-cost",
+    "name": "Hidden Cost",
     "slug": "hidden-cost",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,6 +17,7 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "versionCode": 1,
       "predictiveBackGestureEnabled": false,
       "package": "com.kadirshn.hiddencost"
     },

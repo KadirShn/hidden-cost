@@ -175,6 +175,7 @@ export const tr = {
     invalidField: 'Bu alanı kontrol et.',
     invalidNumber: 'Geçerli, negatif olmayan bir sayı gir.',
     invalidMoney: 'Geçerli, negatif olmayan bir tutar gir.',
+    fixErrors: 'Devam etmeden önce bildirilen alanları kontrol et.',
     unsavedTitle: 'Değişiklikler kaydediliyor',
     unsavedBody: 'Son taslağı bu cihaza kaydedip çıkmak istiyor musun?',
     stay: 'Kal',
@@ -337,6 +338,12 @@ export const tr = {
     testCrash: 'Test non-fatal hata',
     testQueued: 'Test aksiyonu işlendi.',
   },
+  performance: {
+    developerTitle: 'Performans profili',
+    developerBody:
+      'Son yerel başlangıç ve React render sürelerini gösterir. Bu ölçümler telemetry olarak gönderilmez.',
+    refresh: 'Profili yenile',
+  },
   projects: {
     searchLabel: 'Hesaplama ara',
     filters: { all: 'Tümü', draft: 'Taslaklar', complete: 'Kayıtlı', archived: 'Arşiv' },
@@ -494,7 +501,7 @@ export const tr = {
     aboutSection: 'Uygulama',
     versionLabel: 'Sürüm',
     phaseLabel: 'Mevcut kapsam',
-    phaseValue: 'Faz 9 — Observability, abuse protection ve privacy kontrolleri',
+    phaseValue: 'Faz 11 — Android internal testing hazırlığı',
     developerSection: 'Geliştirici araçları',
     resetDatabaseTitle: 'Yerel veritabanını sıfırla',
     resetDatabaseHelp:
@@ -512,5 +519,6 @@ export const tr = {
     notSelected: 'Seçili değil',
     openSelection: '{{label}} seçimini aç',
     step: '{{current}} / {{total}}. adım',
+    wizardStep: '{{total}} adımdan {{current}}. adım: {{title}}',
   },
 } as const;

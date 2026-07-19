@@ -84,6 +84,7 @@ export function TemplateDetailScreen() {
         label={t('templatesScreen.start')}
         loading={createProject.isPending}
         onPress={() => void start()}
+        testID="template-start"
       />
       {createProject.isError ? (
         <AppText accessibilityLiveRegion="assertive" tone="danger">

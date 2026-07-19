@@ -26,7 +26,6 @@ import {
   getNumber,
   getRemoteConfig,
 } from '@react-native-firebase/remote-config';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { runtimeConfig } from '@/config/runtime-config';
 import { initializeAppProtection } from '@/services/observability/app-protection';
@@ -72,9 +71,6 @@ class NativeFirebaseClient implements FirebaseClient {
       }
     }
     this.configured = hasDefaultApp;
-    if (this.configured && runtimeConfig.firebase.googleWebClientId) {
-      GoogleSignin.configure({ webClientId: runtimeConfig.firebase.googleWebClientId });
-    }
   }
 
   currentUser(): CloudUser | null {
@@ -112,6 +108,8 @@ class NativeFirebaseClient implements FirebaseClient {
     const current = getAuth().currentUser;
     if (!current) throw new FirebaseOperationError('auth/no-current-user');
     try {
+      const { GoogleSignin } = await import('@react-native-google-signin/google-signin');
+      GoogleSignin.configure({ webClientId: runtimeConfig.firebase.googleWebClientId });
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const response = await GoogleSignin.signIn();
       const idToken = response.data?.idToken;

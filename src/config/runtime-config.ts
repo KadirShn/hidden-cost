@@ -44,7 +44,6 @@ export const runtimeConfig: RuntimeConfig = Object.freeze({
       process.env.EXPO_PUBLIC_APP_ENV === 'production' &&
       process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true',
     appCheckEnabled: process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true',
-    appCheckProvider:
-      process.env.EXPO_PUBLIC_APP_ENV === 'production' ? 'playIntegrity' : 'debug',
+    appCheckProvider: process.env.EXPO_PUBLIC_APP_ENV === 'production' ? 'playIntegrity' : 'debug',
   }),
 });

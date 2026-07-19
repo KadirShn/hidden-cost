@@ -117,6 +117,19 @@ describe('AdsPolicyService', () => {
     await expect(service.requestRewardedExport(true)).resolves.toBe('unavailable');
   });
 
+  it('fails closed when consent or ad loading throws', async () => {
+    const { adapter, service } = setup();
+    adapter.initializeConsent = async () => Promise.reject(new Error('consent outage'));
+    adapter.showRewarded = async () => Promise.reject(new Error('ad network outage'));
+
+    await expect(service.initialize()).resolves.toEqual({
+      canRequestAds: false,
+      privacyOptionsRequired: false,
+    });
+    await expect(service.requestRewardedExport(true)).resolves.toBe('unavailable');
+    expect(service.canShowNative('dashboard', true)).toBe(false);
+  });
+
   it('never shows interstitials in the first session, wizard, or before the threshold', async () => {
     const { adapter, service } = setup();
     await service.initialize();
@@ -158,5 +171,20 @@ describe('AdsPolicyService', () => {
     now += 30 * 60_000;
     await expect(service.maybeShowInterstitial(input)).resolves.toBe('shown');
     expect(adapter.interstitialCalls).toBe(2);
+  });
+
+  it('does not interrupt the result flow when interstitial loading throws', async () => {
+    const { adapter, service } = setup();
+    await service.initialize();
+    adapter.showInterstitial = async () => Promise.reject(new Error('no fill'));
+
+    await expect(
+      service.maybeShowInterstitial({
+        placement: 'post_result',
+        completedCalculations: 3,
+        isFirstSession: false,
+        wizardActive: false,
+      }),
+    ).resolves.toBe('unavailable');
   });
 });

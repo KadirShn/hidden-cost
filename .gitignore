@@ -36,6 +36,8 @@ yarn-error.*
 # Firebase native configuration (provide through local/EAS secret files)
 google-services.json
 GoogleService-Info.plist
+google-play-service-account*.json
+play-service-account*.json
 .firebase/
 firebase-debug.log
 firestore-debug.log
@@ -43,6 +45,7 @@ ui-debug.log
 
 # typescript
 *.tsbuildinfo
+/functions/lib/
 
 example
 

@@ -30,6 +30,13 @@ function queue(): SyncQueueRepository {
   };
 }
 
+function queueWith(records: SyncQueueRecord[]): SyncQueueRepository {
+  return {
+    ...queue(),
+    listReady: jest.fn(() => records),
+  };
+}
+
 function client(result: 'applied' | 'remote_newer' = 'applied'): FirebaseClient {
   return {
     configured: true,
@@ -79,5 +86,43 @@ describe('FirebaseSyncWorker', () => {
       '2026-07-19T10:00:04.000Z',
     );
     expect(calculateRetryAt(30, new Date(0), 1)).toBe('1970-01-01T00:15:00.000Z');
+  });
+
+  it('survives a batch-wide network outage and bounds work to 50 queue records', async () => {
+    const records = Array.from({ length: 75 }, (_, index) => ({
+      ...item,
+      id: `queue-${index}`,
+      entityId: `project-${index}`,
+    }));
+    const repository = queueWith(records);
+    const firebase = client();
+    jest.mocked(firebase.applyMutation).mockRejectedValue({ code: 'firestore/unavailable' });
+    const worker = new FirebaseSyncWorker(
+      repository,
+      firebase,
+      () => new Date(0),
+      () => 0,
+    );
+
+    await expect(worker.run('user-a')).resolves.toEqual({
+      processed: 50,
+      completed: 0,
+      failed: 50,
+      conflicts: 0,
+    });
+    expect(repository.recordFailure).toHaveBeenCalledTimes(50);
+  });
+
+  it('coalesces concurrent foreground and network-recovery sync triggers', async () => {
+    const repository = queue();
+    const firebase = client();
+    const worker = new FirebaseSyncWorker(repository, firebase);
+
+    const first = worker.run('user-a');
+    const second = worker.run('user-a');
+
+    expect(second).toBe(first);
+    await first;
+    expect(firebase.applyMutation).toHaveBeenCalledTimes(1);
   });
 });

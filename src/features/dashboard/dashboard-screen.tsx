@@ -30,7 +30,7 @@ export function DashboardScreen() {
   const templates = useTemplates();
 
   return (
-    <Screen>
+    <Screen testID="dashboard-screen">
       {isOffline ? <OfflineBanner message={t('offline.message')} /> : null}
       <Card elevated style={{ backgroundColor: theme.colors.surfaceElevated }}>
         <AppText selectable variant="title">
@@ -42,6 +42,7 @@ export function DashboardScreen() {
         <Button
           label={t('home.newCalculation')}
           onPress={() => router.push('/templates' as Href)}
+          testID="home-new-calculation"
         />
       </Card>
 

@@ -175,6 +175,7 @@ export const en = {
     invalidField: 'Check this field.',
     invalidNumber: 'Enter a valid non-negative number.',
     invalidMoney: 'Enter a valid non-negative amount.',
+    fixErrors: 'Check the announced fields before continuing.',
     unsavedTitle: 'Changes are still being saved',
     unsavedBody: 'Leave after saving the latest draft to this device?',
     stay: 'Stay',
@@ -338,6 +339,12 @@ export const en = {
     testCrash: 'Test non-fatal error',
     testQueued: 'The test action was processed.',
   },
+  performance: {
+    developerTitle: 'Performance profile',
+    developerBody:
+      'Shows the latest local startup and React render durations. These measurements are never sent as telemetry.',
+    refresh: 'Refresh profile',
+  },
   projects: {
     searchLabel: 'Search calculations',
     filters: { all: 'All', draft: 'Drafts', complete: 'Saved', archived: 'Archived' },
@@ -495,7 +502,7 @@ export const en = {
     aboutSection: 'Application',
     versionLabel: 'Version',
     phaseLabel: 'Current scope',
-    phaseValue: 'Phase 9 — Observability, abuse protection, and privacy controls',
+    phaseValue: 'Phase 11 — Android internal testing preparation',
     developerSection: 'Developer tools',
     resetDatabaseTitle: 'Reset local database',
     resetDatabaseHelp: 'Available only in development. This permanently removes local projects.',
@@ -512,5 +519,6 @@ export const en = {
     notSelected: 'Not selected',
     openSelection: 'Open {{label}} selection',
     step: 'Step {{current}} of {{total}}',
+    wizardStep: 'Step {{current}} of {{total}}: {{title}}',
   },
 } as const;

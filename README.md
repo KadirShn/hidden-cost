@@ -6,9 +6,10 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 9 adds allowlisted Firebase Analytics, production-only Crashlytics, environment-separated App
-Check, log redaction, typed error codes, legal screens, and local/cloud data controls while
-preserving SQLite-first behavior and ad-independent calculations.
+Phase 11 prepares the Android internal-testing release boundary: an AAB production profile, remote
+versioning, signing/credential guidance, production Firebase/AdMob/App Check/Remote Config gates,
+Data Safety inventory, Play listing copy, smoke/rollback plans, and explicit owner-supplied inputs.
+No store submission or credential mutation is automated.
 
 ## Technology
 
@@ -52,7 +53,7 @@ in the client bundle and must never contain secrets.
 
 ## Running the app
 
-The Phase 7 app initializes its versioned Expo SQLite database and built-in templates before routes
+The app initializes its versioned Expo SQLite database and built-in templates before routes
 render. Local project operations require no account or network connection:
 
 ```bash
@@ -83,11 +84,15 @@ in this repository. Supply those values when preparing an actual remote build.
 ```bash
 npm run typecheck
 npm run lint
-npm test -- --runInBand
 npm run format:check
+npm run test:ci
+npm run test:rules       # Java 21 required
+npm run test:maestro     # Android emulator/device and Maestro required
 ```
 
-GitHub Actions runs install, typecheck, lint, and tests for pull requests and pushes to `main`.
+GitHub Actions runs deterministic install and Expo dependency checks, typecheck, lint, formatting,
+Jest, Functions checks, Firestore rules tests, a preview release APK build, and the offline Maestro
+smoke journey for pull requests and pushes to `main`.
 
 ## Architecture
 
@@ -112,6 +117,7 @@ src/domain/                      Pure money, validation, calculation, scenario, 
 src/data/                        SQLite, migrations, repositories, seeds, and Query hooks
 src/services/export/             PDF/share adapters and export access policy
 src/services/firebase/           Optional native Firebase adapter and sync worker
+src/services/performance/        Bounded, local-only startup and render measurements
 docs/                            Product and architecture documentation
 ```
 
@@ -126,7 +132,7 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - Scenario editor: sparse low/high overrides for a project
 - Each tab owns a nested Stack; focused calculation routes use a shared root flow Stack.
 
-## Known Phase 9 limitations
+## Known limitations
 
 - Inbound cloud restore and the interactive conflict-resolution screen remain future work; a newer
   cloud revision is preserved and exposed as `conflict` instead of being overwritten.
@@ -134,6 +140,17 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
   build-time configuration the app remains local-only and all advertising defaults to disabled.
 - Store console declarations, production UMP messages, and Remote Config rollout remain operator
   steps documented in the setup and policy checklist.
+- The automated accessibility coverage verifies semantics and scalable layouts, but TalkBack,
+  Switch Access, and maximum-font visual review on the final signed build remain a physical-device
+  release gate.
+- Phase 10 verifies an unsigned preview release APK. A signed production AAB cannot be produced
+  until the owner supplies application/store identifiers, AdMob IDs, Firebase files, and signing
+  credentials.
+- Performance samples are intentionally local development diagnostics, not telemetry or fixed
+  cross-device budgets. Final startup/list baselines must be captured on the target low-end Android
+  device.
+- npm currently reports a moderate, no-fix `uuid` advisory in Expo's transitive config/xcode build
+  tooling. It is tracked in the quality guide and must be reassessed on Expo SDK updates.
 
 ## Documentation
 
@@ -149,6 +166,10 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - [Advertising policy checklist](docs/AD_POLICY_CHECKLIST.md)
 - [App Check setup](docs/APP_CHECK_SETUP.md)
 - [Privacy checklist](docs/PRIVACY_CHECKLIST.md)
+- [Quality and release verification](docs/QUALITY_AND_RELEASE.md)
+- [Android internal testing preparation](docs/ANDROID_INTERNAL_TESTING.md)
+- [Google Play Data Safety inventory](docs/DATA_SAFETY.md)
+- [Google Play listing draft](docs/PLAY_STORE_LISTING.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)
 
 ## Disclaimer

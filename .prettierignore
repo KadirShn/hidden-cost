@@ -4,6 +4,7 @@ dist
 coverage
 android
 ios
+functions/lib
 *.lock
 .env.example
 assets

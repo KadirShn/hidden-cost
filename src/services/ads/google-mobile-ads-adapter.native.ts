@@ -12,7 +12,7 @@ import {
 
 import { runtimeConfig } from '@/config/runtime-config';
 
-import { resolveAdUnitId } from './ad-unit-id';
+import { resolveAdUnitId, resolveTestDeviceIdentifiers } from './ad-unit-id';
 
 import type {
   AdAnalytics,
@@ -45,7 +45,7 @@ export class GoogleMobileAdsAdapter implements AdsAdapter {
     if (info.canRequestAds && !this.initialized) {
       await mobileAds().setRequestConfiguration({
         maxAdContentRating: MaxAdContentRating.PG,
-        testDeviceIdentifiers: runtimeConfig.ads.testMode ? ['EMULATOR'] : [],
+        testDeviceIdentifiers: [...resolveTestDeviceIdentifiers(runtimeConfig.ads.testMode)],
       });
       await mobileAds().initialize();
       this.initialized = true;

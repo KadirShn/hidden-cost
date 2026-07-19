@@ -9,10 +9,7 @@ describe('SQLiteLocalDataRepository', () => {
   it('exports stored user data and permanently deletes it transactionally', () => {
     const { database, sqlite } = createTestDatabase();
     new SQLiteProjectRepository(database).create(projectFixture(), []);
-    const repository = new SQLiteLocalDataRepository(
-      database,
-      () => '2026-07-19T12:00:00.000Z',
-    );
+    const repository = new SQLiteLocalDataRepository(database, () => '2026-07-19T12:00:00.000Z');
 
     expect(repository.exportSnapshot()).toMatchObject({
       formatVersion: 1,

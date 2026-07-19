@@ -3,7 +3,7 @@ import { createContext, useCallback, useMemo, type PropsWithChildren } from 'rea
 import { getInitialLocale, i18n, isAppLocale, type AppLocale } from '@/i18n';
 import { setAdEventAnalyticsEnabled } from '@/services/ads/send-ad-event';
 import { telemetry } from '@/services/observability/telemetry-service';
-import { settingsStore , usePersistentSetting } from '@/store/settings-store';
+import { settingsStore, usePersistentSetting } from '@/store/settings-store';
 import type { ThemePreference } from '@/theme/tokens';
 
 type SettingsContextValue = Readonly<{

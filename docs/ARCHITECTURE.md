@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This document records the Phase 9 architecture baseline. The application connects its Expo
+This document records the Phase 11 architecture baseline. The application connects its Expo
 Router screens to the pure calculation domain through an offline-first repository layer. Remote
 Firebase backup/synchronization is optional and adapter-bound. Advertising is isolated behind a
 consent-aware adapter and policy service; safe defaults keep every format disabled.
@@ -31,7 +31,7 @@ Infrastructure adapters
 Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
 advertising packages. Routes must not contain reusable components or infrastructure calls.
 
-## Phase 9 directory boundaries
+## Phase 11 directory boundaries
 
 ```text
 src/
@@ -56,6 +56,7 @@ src/
     comparison/                Two-to-three project decision support
     export/                    Export action presentation
     cloud-backup/              Opt-in auth, sync state, and Settings UI
+    developer-tools/           Development-only local performance diagnostics
   i18n/                        Turkish and English resource dictionaries
   store/                       Small key-value settings storage
   theme/                       Semantic tokens and theme provider
@@ -65,6 +66,7 @@ src/
   services/
     export/                    HTML reports, native adapter, and access policy
     firebase/                  Platform client, queue worker, backoff, defaults
+    performance/               Bounded local startup/render measurement store
 ```
 
 Feature screens consume TanStack Query hooks and repository interfaces. Routes remain thin exports,
@@ -203,6 +205,25 @@ App Check selects debug providers for development/preview and Play Integrity for
 It initializes before Firestore mutation and callable account deletion. Console enforcement remains
 an operator rollout after valid-request metrics are reviewed. Local data export/delete is isolated in
 a repository that snapshots or deletes user-owned tables transactionally without exposing SQL to UI.
+`react-native.config.js` also excludes optional Firebase/Google Sign-In native packages per platform
+when that platform's service file is absent. This prevents an autolinked SDK from requiring a default
+Firebase app before the local-only JavaScript fallback can start.
+
+## Accessibility and performance boundaries
+
+Shared primitives own scalable text, minimum touch targets, roles, state, hints, assertive form
+errors, and modal focus. Wizard step changes move accessibility focus and announce progress. Motion
+is disabled when the operating system requests reduced motion. Charts always pair color with a
+visible text label and exact formatted value.
+
+Large project/template collections render through a bounded `FlatList` configuration instead of a
+screen-sized mapped `ScrollView`. A development-only React Profiler wrapper and initialization
+marks write a maximum of 50 in-memory samples. These samples never enter analytics, persistence, or
+network adapters and are visible only in development Settings.
+
+Failure behavior is tested at adapter boundaries: consent/SDK failures fail closed for ads, sync
+outages retain bounded queue work with retry, concurrent triggers coalesce, and the SQLite main
+flow completes without Firebase. See [Quality and release verification](QUALITY_AND_RELEASE.md).
 
 ## Quality gates
 
@@ -211,6 +232,21 @@ The local and CI quality gates are:
 - TypeScript strict typecheck
 - ESLint with zero warnings
 - Jest tests
+- Firestore emulator rules tests on Java 21
+- Android preview release APK assembly and Maestro offline smoke journey
 - Deterministic install through `package-lock.json` and `npm ci`
+- Prettier formatting and Expo dependency compatibility checks
 
-Format checking is available separately through `npm run format:check`.
+## Release boundary
+
+The production EAS profile creates an Android App Bundle, uses EAS-managed remote version codes,
+and never submits automatically. Production config fails closed when the platform AdMob app ID or
+public legal URLs are absent/placeholder values. Enabling Firebase also requires that platform's
+service file. Signing keys, service-account JSON, service files, live ad IDs, and store credentials
+remain outside version control and require owner action.
+
+The Play internal submit profile is draft-only and remains a separate external command. Remote
+Config starts with advertising and force-update switches off. EAS Update is not configured in this
+baseline; adopting it requires a separately reviewed native build, runtime policy, channels, and
+rollback exercise. Operational details live in
+[Android internal testing preparation](ANDROID_INTERNAL_TESTING.md).

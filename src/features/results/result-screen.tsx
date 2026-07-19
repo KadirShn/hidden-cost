@@ -53,7 +53,7 @@ export function ResultScreen() {
   };
 
   return (
-    <Screen>
+    <Screen testID="result-screen">
       <Stack.Screen options={{ title: t('result.title') }} />
       <AppText variant="title">{bundle.project.title}</AppText>
       <ResultSummary result={result} />
@@ -80,6 +80,7 @@ export function ResultScreen() {
             label={t('result.save')}
             loading={updateProject.isPending}
             onPress={() => void save()}
+            testID="result-save"
           />
         )}
       </View>

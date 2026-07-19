@@ -12,12 +12,20 @@ type TemplateCardProps = {
   onPress: () => void;
 };
 
-export function TemplateCard({ title, description, openLabel, onPress }: TemplateCardProps) {
+export function TemplateCard({
+  template,
+  title,
+  description,
+  openLabel,
+  onPress,
+}: TemplateCardProps) {
   return (
     <Pressable
       accessibilityLabel={`${openLabel}: ${title}`}
+      accessibilityHint={description}
       accessibilityRole="button"
       onPress={onPress}
+      testID={`template-${template.id}`}
     >
       {({ pressed }) => (
         <Card elevated style={{ opacity: pressed ? 0.72 : 1 }}>

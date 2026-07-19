@@ -41,6 +41,7 @@ export function Button({
           borderColor: variant === 'ghost' ? theme.colors.border : palette.background,
           borderRadius: theme.radius.md,
           paddingHorizontal: theme.spacing.xl,
+          paddingVertical: theme.spacing.sm,
         },
         pressed && styles.pressed,
         isDisabled && styles.disabled,
