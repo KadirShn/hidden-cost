@@ -33,6 +33,7 @@ import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
 import { ownershipMonthBucket } from '@/services/observability/analytics-contracts';
 import { telemetry } from '@/services/observability/telemetry-service';
+import { formatLocalizedMoneyInput } from '@/utils/format';
 
 import { clearWizardDraft, readWizardDraft, writeWizardDraft } from './draft-store';
 import { formToProjectBundle, projectBundleToForm } from './form-mapper';
@@ -143,6 +144,9 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   const saveBundle = useSaveProjectBundle(bundle.project.id);
   const totalSteps = wizardStepFields.length;
   const currency = bundle.project.currency;
+  const reviewPurchasePrice =
+    formatLocalizedMoneyInput(form.getValues('purchasePrice'), locale) ??
+    form.getValues('purchasePrice');
 
   useEffect(() => {
     void telemetry.track('calculation_step_viewed', {
@@ -262,6 +266,13 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
         </AppText>
         <AppText selectable tone="secondary">
           {t(`wizard.steps.${step}.body`)}
+        </AppText>
+        <AppText
+          accessibilityLiveRegion="polite"
+          variant="helper"
+          tone={hasPendingAutosave ? 'warning' : 'success'}
+        >
+          {hasPendingAutosave ? t('wizard.autosavePending') : t('wizard.autosaveSaved')}
         </AppText>
       </View>
 
@@ -408,7 +419,7 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
         <Card>
           <AppText variant="subtitle">{form.getValues('title')}</AppText>
           <AppText selectable>
-            {t('wizard.review.purchase', { value: form.getValues('purchasePrice'), currency })}
+            {t('wizard.review.purchase', { value: reviewPurchasePrice, currency })}
           </AppText>
           <AppText selectable>
             {t('wizard.review.duration', { value: form.getValues('ownershipMonths') })}
@@ -432,18 +443,25 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           {t('wizard.saveError')}
         </AppText>
       ) : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.md }}>
+      <View style={{ gap: theme.spacing.sm }}>
         {step > 0 ? (
           <Button
+            fullWidth
             label={t('common.back')}
             onPress={() => setStep((value) => value - 1)}
-            variant="secondary"
+            variant="ghost"
           />
         ) : null}
         {step < totalSteps - 1 ? (
-          <Button label={t('common.continue')} onPress={() => void next()} testID="wizard-next" />
+          <Button
+            fullWidth
+            label={t('common.continue')}
+            onPress={() => void next()}
+            testID="wizard-next"
+          />
         ) : (
           <Button
+            fullWidth
             label={t('wizard.calculate')}
             loading={saveBundle.isPending}
             onPress={() => void calculate()}
@@ -451,13 +469,6 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           />
         )}
       </View>
-      <AppText
-        accessibilityLiveRegion="polite"
-        variant="helper"
-        tone={hasPendingAutosave ? 'warning' : 'success'}
-      >
-        {hasPendingAutosave ? t('wizard.autosavePending') : t('wizard.autosaveSaved')}
-      </AppText>
     </Screen>
   );
 }

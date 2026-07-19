@@ -1,6 +1,11 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { formatCurrency, formatNumber, parseLocalizedNumber } from '@/utils/format';
+import {
+  formatCurrency,
+  formatLocalizedMoneyInput,
+  formatNumber,
+  parseLocalizedNumber,
+} from '@/utils/format';
 
 describe('locale-aware presentation formatting', () => {
   it('formats currency for Turkish and English locales', () => {
@@ -11,6 +16,11 @@ describe('locale-aware presentation formatting', () => {
   it('parses localized decimal input', () => {
     expect(parseLocalizedNumber('1.234,50', 'tr')).toBe(1234.5);
     expect(parseLocalizedNumber('1,234.50', 'en')).toBe(1234.5);
+  });
+
+  it('formats wizard money input for the active locale', () => {
+    expect(formatLocalizedMoneyInput('1234,5', 'tr')).toBe('1.234,50');
+    expect(formatLocalizedMoneyInput('1234.5', 'en')).toBe('1,234.50');
   });
 
   it('uses locale-specific grouping', () => {

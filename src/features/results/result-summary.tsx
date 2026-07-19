@@ -47,35 +47,6 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
         />
       </View>
       <Card>
-        <AppText variant="subtitle">{t('result.completeness')}</AppText>
-        <AppText variant="metric">{formatNumber(result.completenessScore, locale)}%</AppText>
-        <View
-          accessible
-          accessibilityLabel={t('result.completenessAccessible', {
-            value: result.completenessScore,
-          })}
-          accessibilityRole="progressbar"
-          accessibilityValue={{ min: 0, max: 100, now: result.completenessScore }}
-          style={{
-            backgroundColor: theme.colors.surfaceMuted,
-            borderRadius: theme.radius.pill,
-            height: 10,
-            overflow: 'hidden',
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: theme.colors.accent,
-              height: '100%',
-              width: `${result.completenessScore}%`,
-            }}
-          />
-        </View>
-        <AppText tone="secondary">
-          {t(`result.completenessLevels.${result.completenessLevel}`)}
-        </AppText>
-      </Card>
-      <Card>
         <AppText variant="subtitle">{t('result.breakdown')}</AppText>
         {result.breakdown.map((item) => (
           <View key={item.key} style={{ gap: theme.spacing.xs }}>
@@ -117,8 +88,6 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
             </View>
           </View>
         ))}
-      </Card>
-      <Card>
         <AppText variant="subtitle">{t('result.topDrivers')}</AppText>
         {result.topDrivers.map((item, index) => (
           <View key={item.key} style={{ flexDirection: 'row', gap: theme.spacing.md }}>
@@ -132,16 +101,6 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
           </View>
         ))}
       </Card>
-      {result.warnings.length ? (
-        <Card>
-          <AppText variant="subtitle">{t('result.warningsTitle')}</AppText>
-          {result.warnings.map((warning) => (
-            <AppText key={warning} selectable tone="warning">
-              • {t(`result.warnings.${warning}`)}
-            </AppText>
-          ))}
-        </Card>
-      ) : null}
       <ExpandableSection
         collapseLabel={t('result.collapseAssumptions')}
         expandLabel={t('result.expandAssumptions')}
@@ -155,6 +114,45 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
           {t('result.engineVersion', { version: result.calculationEngineVersion })}
         </AppText>
       </ExpandableSection>
+      <Card>
+        <AppText variant="subtitle">{t('result.completeness')}</AppText>
+        <AppText variant="metric">{formatNumber(result.completenessScore, locale)}%</AppText>
+        <View
+          accessible
+          accessibilityLabel={t('result.completenessAccessible', {
+            value: result.completenessScore,
+          })}
+          accessibilityRole="progressbar"
+          accessibilityValue={{ min: 0, max: 100, now: result.completenessScore }}
+          style={{
+            backgroundColor: theme.colors.surfaceMuted,
+            borderRadius: theme.radius.pill,
+            height: 10,
+            overflow: 'hidden',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: theme.colors.accent,
+              height: '100%',
+              width: `${result.completenessScore}%`,
+            }}
+          />
+        </View>
+        <AppText tone="secondary">
+          {t(`result.completenessLevels.${result.completenessLevel}`)}
+        </AppText>
+      </Card>
+      {result.warnings.length ? (
+        <Card>
+          <AppText variant="subtitle">{t('result.warningsTitle')}</AppText>
+          {result.warnings.map((warning) => (
+            <AppText key={warning} selectable tone="warning">
+              • {t(`result.warnings.${warning}`)}
+            </AppText>
+          ))}
+        </Card>
+      ) : null}
     </>
   );
 }

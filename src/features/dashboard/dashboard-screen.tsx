@@ -47,6 +47,40 @@ export function DashboardScreen() {
       </Card>
 
       <View style={{ gap: theme.spacing.md }}>
+        <AppText variant="subtitle">{t('home.recentTitle')}</AppText>
+        {projects.isPending ? (
+          <LoadingSkeleton accessibilityLabel={t('common.loading')} height={112} />
+        ) : projects.isError ? (
+          <ErrorState
+            message={t('projects.errorBody')}
+            onRetry={() => void projects.refetch()}
+            retryLabel={t('common.retry')}
+            title={t('projects.errorTitle')}
+          />
+        ) : projects.data?.length ? (
+          projects.data
+            .slice(0, 3)
+            .map((project) => (
+              <ProjectCard
+                key={project.id}
+                amountLabel={formatMinorCurrency(
+                  project.purchasePriceMinor,
+                  project.currency,
+                  locale,
+                )}
+                categoryLabel={t(`categories.${project.category}`)}
+                onPress={() => router.push(`/project/${project.id}` as Href)}
+                openLabel={t('common.open')}
+                project={project}
+                statusLabel={t(`projectStatus.${project.status}`)}
+              />
+            ))
+        ) : (
+          <EmptyState message={t('home.recentEmptyBody')} title={t('home.recentEmptyTitle')} />
+        )}
+      </View>
+
+      <View style={{ gap: theme.spacing.md }}>
         <AppText variant="subtitle">{t('home.categoriesTitle')}</AppText>
         {templates.isPending ? (
           <LoadingSkeleton accessibilityLabel={t('common.loading')} height={112} />
@@ -89,40 +123,6 @@ export function DashboardScreen() {
         hasContent={Boolean(templates.data?.length || projects.data?.length)}
         placement="dashboard"
       />
-
-      <View style={{ gap: theme.spacing.md }}>
-        <AppText variant="subtitle">{t('home.recentTitle')}</AppText>
-        {projects.isPending ? (
-          <LoadingSkeleton accessibilityLabel={t('common.loading')} height={112} />
-        ) : projects.isError ? (
-          <ErrorState
-            message={t('projects.errorBody')}
-            onRetry={() => void projects.refetch()}
-            retryLabel={t('common.retry')}
-            title={t('projects.errorTitle')}
-          />
-        ) : projects.data?.length ? (
-          projects.data
-            .slice(0, 3)
-            .map((project) => (
-              <ProjectCard
-                key={project.id}
-                amountLabel={formatMinorCurrency(
-                  project.purchasePriceMinor,
-                  project.currency,
-                  locale,
-                )}
-                categoryLabel={t(`categories.${project.category}`)}
-                onPress={() => router.push(`/project/${project.id}` as Href)}
-                openLabel={t('common.open')}
-                project={project}
-                statusLabel={t(`projectStatus.${project.status}`)}
-              />
-            ))
-        ) : (
-          <EmptyState message={t('home.recentEmptyBody')} title={t('home.recentEmptyTitle')} />
-        )}
-      </View>
     </Screen>
   );
 }

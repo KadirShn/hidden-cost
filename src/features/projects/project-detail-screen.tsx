@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/ui/chip';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { ErrorState } from '@/components/ui/error-state';
+import { ExpandableSection } from '@/components/ui/expandable-section';
 import { LoadingSkeleton } from '@/components/ui/loading-skeleton';
 import {
   useArchiveProject,
@@ -110,12 +111,16 @@ export function ProjectDetailScreen() {
           {t('projects.actionError')}
         </AppText>
       ) : null}
-      <View style={{ gap: theme.spacing.md }}>
-        <Button
-          fullWidth
-          label={t('projects.edit')}
-          onPress={() => router.push(`/wizard/${id}` as Href)}
-        />
+      <Button
+        fullWidth
+        label={t('projects.edit')}
+        onPress={() => router.push(`/wizard/${id}` as Href)}
+      />
+      <ExpandableSection
+        collapseLabel={t('projects.collapseActions')}
+        expandLabel={t('projects.expandActions')}
+        title={t('projects.moreActions')}
+      >
         <Button
           fullWidth
           label={t('projects.duplicate')}
@@ -137,7 +142,7 @@ export function ProjectDetailScreen() {
           onPress={() => setConfirmAction('delete')}
           variant="danger"
         />
-      </View>
+      </ExpandableSection>
       <ConfirmDialog
         cancelLabel={t('common.cancel')}
         confirmLabel={confirmAction === 'delete' ? t('projects.delete') : t('projects.archive')}

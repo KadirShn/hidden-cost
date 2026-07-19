@@ -64,19 +64,22 @@ export function ResultScreen() {
           {t('result.saveError')}
         </AppText>
       ) : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.md }}>
+      <View style={{ gap: theme.spacing.sm }}>
         <Button
+          fullWidth
           label={t('result.edit')}
           onPress={() => router.push(`/wizard/${id}` as Href)}
-          variant="secondary"
+          variant="ghost"
         />
         {bundle.project.status === 'complete' ? (
           <Button
+            fullWidth
             label={t('result.openProject')}
             onPress={() => router.replace(`/project/${id}` as Href)}
           />
         ) : (
           <Button
+            fullWidth
             label={t('result.save')}
             loading={updateProject.isPending}
             onPress={() => void save()}

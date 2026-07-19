@@ -43,4 +43,29 @@ describe('ResultSummary', () => {
     expect(screen.getByText('Top cost drivers')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Show assumptions and formulas' })).toBeTruthy();
   });
+
+  it('keeps metrics, breakdown, and assumptions in decision order', async () => {
+    await i18n.changeLanguage('en');
+    const result = calculateCostProject({
+      project: projectFixture({ purchasePriceMinor: '1000000', ownershipMonths: 12 }),
+      costItems: [],
+    });
+    const screen = await renderWithTheme(
+      <I18nextProvider i18n={i18n}>
+        <SettingsProvider>
+          <ResultSummary result={result} />
+        </SettingsProvider>
+      </I18nextProvider>,
+    );
+    const rendered = JSON.stringify(screen.toJSON());
+    const totalIndex = rendered.indexOf('Total cost of ownership');
+    const breakdownIndex = rendered.indexOf('Cost breakdown');
+    const completenessIndex = rendered.indexOf('Data completeness');
+    const assumptionsIndex = rendered.indexOf('Assumptions and formulas');
+
+    expect(totalIndex).toBeGreaterThanOrEqual(0);
+    expect(breakdownIndex).toBeGreaterThan(totalIndex);
+    expect(assumptionsIndex).toBeGreaterThan(breakdownIndex);
+    expect(completenessIndex).toBeGreaterThan(assumptionsIndex);
+  });
 });
