@@ -1,0 +1,54 @@
+{
+  "conditions": [],
+  "parameters": {
+    "ads_enabled": {
+      "defaultValue": { "value": "true" },
+      "description": "Global production advertising kill switch."
+    },
+    "native_ads_enabled": {
+      "defaultValue": { "value": "true" },
+      "description": "Allows native ads only in approved content placements."
+    },
+    "interstitial_ads_enabled": {
+      "defaultValue": { "value": "true" },
+      "description": "Allows policy-gated interstitials after completed calculations."
+    },
+    "rewarded_export_enabled": {
+      "defaultValue": { "value": "true" },
+      "description": "Allows explicit opt-in rewarded ads for advanced exports."
+    },
+    "interstitial_min_completed_calculations": {
+      "defaultValue": { "value": "3" },
+      "description": "Minimum completed calculations before an interstitial is eligible."
+    },
+    "interstitial_cooldown_minutes": {
+      "defaultValue": { "value": "30" },
+      "description": "Minimum minutes between eligible interstitials."
+    },
+    "max_compare_items": {
+      "defaultValue": { "value": "3" },
+      "description": "Maximum number of projects in a comparison."
+    },
+    "cloud_backup_enabled": {
+      "defaultValue": { "value": "true" },
+      "description": "Allows the opt-in cloud backup controls."
+    },
+    "template_catalog_version": {
+      "defaultValue": { "value": "1" },
+      "description": "Current template catalog version."
+    },
+    "maintenance_mode": {
+      "defaultValue": { "value": "false" },
+      "description": "Emergency maintenance state."
+    },
+    "minimum_supported_version": {
+      "defaultValue": { "value": "1.0.0" },
+      "description": "Oldest supported client version."
+    },
+    "force_update_enabled": {
+      "defaultValue": { "value": "false" },
+      "description": "Emergency force-update gate; intentionally disabled for the first release."
+    }
+  },
+  "parameterGroups": {}
+}

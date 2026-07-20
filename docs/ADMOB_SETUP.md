@@ -69,6 +69,16 @@ before enabling production ads.
 Roll out in this order: publish consent messages, validate test ads, enable `ads_enabled`, then enable
 one format at a time. Turning `ads_enabled` off is the emergency rollback.
 
+The repository contains `remoteconfig.production.template.json` as the reviewed production
+template. Import it from **Firebase Console -> Remote Config -> Publish from a file** only after the
+release candidate passes device smoke testing. It enables all three approved formats while retaining
+the completed-calculation threshold and cooldown. The in-app defaults intentionally remain off so a
+Remote Config outage fails closed.
+
+The hosted seller declaration is `https://hiddencost-1dde2.web.app/app-ads.txt`. Set
+`https://hiddencost-1dde2.web.app` as the app's developer website in Google Play, then ask AdMob to
+check for updates. AdMob may take time to crawl and verify a new listing.
+
 ## Placement and fallback rules
 
 - Native: dashboard and template library only, and only after meaningful local content exists.

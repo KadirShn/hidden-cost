@@ -17,7 +17,6 @@
         "monochromeImage": "./assets/brand/brand-mark-monochrome.png"
       },
       "icon": "./assets/brand/app-icon.png",
-      "versionCode": 1,
       "predictiveBackGestureEnabled": false,
       "package": "com.kadirshn.hiddencost"
     },

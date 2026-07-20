@@ -15,8 +15,8 @@ binary, a physical device, or an external console action.
 
 - [x] Production EAS profile explicitly produces an AAB with store distribution.
 - [x] Internal submit profile targets Play internal track with draft release status.
-- [ ] Expo organization/EAS project is linked and production environment variables are present.
-- [ ] Android upload key strategy is approved and Play App Signing is enabled.
+- [x] Expo organization/EAS project is linked and production environment variables are present.
+- [x] EAS remote Android upload keystore is configured; Play App Signing is selected at first upload.
 - [ ] Production AAB is generated, fingerprinted, retained, and manually inspected.
 - [ ] First Play upload is completed manually; no automated submission without approval.
 
@@ -26,13 +26,15 @@ binary, a physical device, or an external console action.
 - [x] Unit, integration, UI, repository, sync-chaos, and ad-chaos tests pass locally.
 - [x] Firestore rules tests pass on Java 21.
 - [x] Preview release APK assembles and installs locally.
-- [x] Maestro offline smoke test passes on the rebuilt preview release APK.
+- [ ] Maestro offline smoke test passes on the rebuilt release candidate (previous onboarding
+      selector run was not completed successfully).
 - [ ] CI quality, Firestore-rules, Android AAB/APK, and Maestro jobs are green on the release commit.
 
 ## Firebase, App Check, and Remote Config
 
-- [ ] Dedicated production Firebase project and exact Android package are confirmed.
-- [ ] Production service file is stored as an EAS file secret; no credential is committed.
+- [x] Production Firebase project `hiddencost-1dde2` and Android package
+      `com.kadirshn.hiddencost` are confirmed.
+- [x] Production service file is stored as an EAS file secret; no credential is committed.
 - [ ] Auth providers, SHA-1/SHA-256, Firestore rules/indexes, Functions region, and deletion callable
   are verified.
 - [ ] Cross-user access denial and offline-to-online sync pass on the Play-installed build.
@@ -45,18 +47,19 @@ binary, a physical device, or an external console action.
 
 - [x] Development/preview use official test IDs; production never substitutes test IDs.
 - [x] Production ad request configuration contains no committed test-device identifiers.
-- [ ] Production Android app/native/interstitial/rewarded unit IDs are configured.
-- [ ] UMP regional messages, privacy-options reopening, Play ads declaration, and `app-ads.txt` are
-  reviewed.
-- [ ] First internal test starts with every Remote Config ad switch off.
+- [x] Production Android app/native/interstitial/rewarded unit IDs are configured.
+- [x] UMP EEA/UK and US messages are published, privacy options are available, and `app-ads.txt` is
+      publicly reachable. The Play Console ads declaration remains an upload-time action.
+- [ ] Import and publish `remoteconfig.production.template.json` after the release-candidate smoke
+      test; use `ads_enabled=false` for emergency rollback.
 - [ ] Consent rejection, no-fill, timeout, rewarded dismissal, and interstitial policy pass on device.
 
 ## Privacy, deletion, and Data Safety
 
 - [x] Production config rejects missing, non-HTTPS, localhost, and example legal URLs.
 - [x] In-app local export/delete and authenticated account/cloud deletion flows exist.
-- [ ] Final privacy policy URL and public account-deletion URL are supplied and reachable.
-- [ ] Public deletion page explains verification, deleted/retained data, and completion time.
+- [x] Final privacy policy URL and public account-deletion URL are supplied and reachable.
+- [x] Public deletion page explains verification, deleted/retained data, and completion time.
 - [ ] Owner/legal review completes the engineering Data Safety inventory and Play declarations.
 - [ ] Controller/contact, processors, regions, retention, children/age position, ads, and user rights
   are final in policy/terms.
