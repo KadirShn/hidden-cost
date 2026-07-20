@@ -4,35 +4,40 @@
     "slug": "hidden-cost",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/brand/app-icon.png",
     "scheme": "hiddencost",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/brand/app-icon.png"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#071630",
+        "foregroundImage": "./assets/brand/brand-mark.png",
+        "monochromeImage": "./assets/brand/brand-mark-monochrome.png"
       },
+      "icon": "./assets/brand/app-icon.png",
       "versionCode": 1,
       "predictiveBackGestureEnabled": false,
       "package": "com.kadirshn.hiddencost"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/brand/app-icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#071630",
+          "image": "./assets/brand/brand-mark.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#030A18",
+            "image": "./assets/brand/brand-mark.png"
+          }
         }
       ]
     ],

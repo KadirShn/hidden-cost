@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import { BrandLockup } from '@/components/branding/brand-lockup';
 import { AppText } from '@/components/ui/app-text';
 import { Card } from '@/components/ui/card';
 import { OnboardingPage } from '@/features/onboarding/onboarding-page';
@@ -34,6 +35,7 @@ export default function WelcomeScreen() {
       title={t('onboarding.welcome.title')}
       totalSteps={3}
     >
+      <BrandLockup compact name={t('brand.name')} tagline={t('brand.tagline')} />
       <Card elevated>
         {points.map((point, index) => (
           <View key={point} style={{ flexDirection: 'row', gap: theme.spacing.md }}>

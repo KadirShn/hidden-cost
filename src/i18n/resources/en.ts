@@ -1,4 +1,8 @@
 export const en = {
+  brand: {
+    name: 'Hidden Cost',
+    tagline: 'Make the true cost visible.',
+  },
   common: {
     continue: 'Continue',
     back: 'Back',

@@ -2,6 +2,7 @@ import { type Href, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import { BrandLockup } from '@/components/branding/brand-lockup';
 import { Screen } from '@/components/layout/screen';
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ export function DashboardScreen() {
   return (
     <Screen testID="dashboard-screen">
       {isOffline ? <OfflineBanner message={t('offline.message')} /> : null}
+      <BrandLockup name={t('brand.name')} tagline={t('brand.tagline')} />
       <Card elevated style={{ backgroundColor: theme.colors.surfaceElevated }}>
         <AppText selectable variant="title">
           {t('home.greeting')}

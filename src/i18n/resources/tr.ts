@@ -1,4 +1,8 @@
 export const tr = {
+  brand: {
+    name: 'Hidden Cost',
+    tagline: 'Gerçek maliyeti görünür kıl.',
+  },
   common: {
     continue: 'Devam et',
     back: 'Geri',
