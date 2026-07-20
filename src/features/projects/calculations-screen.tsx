@@ -100,6 +100,7 @@ export function CalculationsScreen() {
       keyExtractor={(project) => project.id}
       renderItem={({ item: project }) => (
         <ProjectCard
+          amountCaption={t('home.purchasePrice')}
           amountLabel={formatMinorCurrency(project.purchasePriceMinor, project.currency, locale)}
           categoryLabel={t(`categories.${project.category}`)}
           onPress={() => router.push(`/project/${project.id}` as Href)}

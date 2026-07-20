@@ -2,9 +2,9 @@
 
 ## Scope
 
-Phase 5 delivers the local, end-to-end calculation flow. A user can choose a seeded template,
-create a draft, enter assumptions, calculate a result, save it, reopen it, and edit or manage the
-project without a network connection.
+The local, end-to-end calculation flow lets a user choose a seeded template, create a draft, enter
+assumptions, calculate a result, save it, reopen it, and edit or manage the project without a
+network connection.
 
 ## Routes
 
@@ -13,7 +13,7 @@ project without a network connection.
 /(tabs)/calculations         Saved, draft, and archived calculations
 /templates                   Searchable template library
 /templates/[id]              Template preview
-/wizard/[id]                 Eight-step calculation form
+/wizard/[id]                 Seven-step calculation form
 /result/[id]                 Calculated result and save action
 /project/[id]                Saved project result and actions
 ```
@@ -34,15 +34,16 @@ Route modules contain only route composition or feature exports. Screen behavior
 
 ## Result contract
 
-The result screen calls the pure Phase 3 engine. It presents total and monthly cost, usage-unit
-cost, data completeness, labeled breakdown bars, top drivers, warnings, and an expandable formula
-summary. Every chart-like element has a text alternative; color is not the only differentiator.
+The result screen calls the pure calculation engine. Information follows decision order: three key
+metrics, a deterministic decision summary, labeled breakdown bars and top drivers, completeness and
+warnings, then expandable assumptions and formulas. The summary explains dominant purchase costs,
+material hidden costs, operating drivers, resale offsets, and incomplete inputs without making
+financial recommendations. Every chart-like element has a text alternative; color is not the only
+differentiator.
 
 The reserved advertising container is inert and hidden from accessibility. No advertising SDK or
 credential is included.
 
-## Deferred work
-
-Firebase synchronization, analytics, consent, and real advertising stay in their designated later
-phases. Scenario editing, comparisons, PDF, and result-card sharing are documented in
-[Scenarios, comparison, and export](EXPORT_AND_COMPARISON.md).
+Scenario editing, comparisons, PDF, and result-card sharing are documented in
+[Scenarios, comparison, and export](EXPORT_AND_COMPARISON.md). Firebase backup remains optional and
+does not participate in calculation or local persistence.

@@ -99,7 +99,7 @@ service cloud.firestore {
         allow read: if owns(userId);
         allow create: if owns(userId) && validProject(userId);
         allow update: if owns(userId) && validProject(userId) && validUpdate(userId);
-        allow delete: if false;
+        allow delete: if owns(userId) && resource.data.ownerId == userId;
 
         match /costItems/{itemId} {
           allow read: if owns(userId);
@@ -107,7 +107,7 @@ service cloud.firestore {
           allow update: if owns(userId)
             && validCostItem(userId, projectId)
             && validUpdate(userId);
-          allow delete: if false;
+          allow delete: if owns(userId) && resource.data.ownerId == userId;
         }
 
         match /scenarioOverrides/{overrideId} {
@@ -116,7 +116,7 @@ service cloud.firestore {
           allow update: if owns(userId)
             && validScenario(userId, projectId)
             && validUpdate(userId);
-          allow delete: if false;
+          allow delete: if owns(userId) && resource.data.ownerId == userId;
         }
       }
 
@@ -138,7 +138,7 @@ service cloud.firestore {
             'adsConsentStatus', 'createdAt', 'updatedAt', 'schemaVersion',
             'revision', 'deviceId'
           ]);
-        allow delete: if false;
+        allow delete: if owns(userId) && resource.data.ownerId == userId;
       }
     }
 

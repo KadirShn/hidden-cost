@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { ExpandableSection } from '@/components/ui/expandable-section';
 import { MetricCard } from '@/components/ui/metric-card';
 import type { CalculationResult } from '@/domain/calculation/types';
+import { deriveResultInsights } from '@/domain/result-insights';
 import { useSettings } from '@/features/settings/use-settings';
 import { useTheme } from '@/hooks/use-theme';
 import { formatMinorCurrency, formatNumber } from '@/utils/format';
@@ -15,6 +16,7 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
   const { locale } = useSettings();
   const theme = useTheme();
   const money = (minor: string) => formatMinorCurrency(minor, result.currency, locale);
+  const insights = deriveResultInsights(result);
   const colors = {
     purchase: theme.colors.chartPurchase,
     initial: theme.colors.textSecondary,
@@ -46,6 +48,41 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
           }
         />
       </View>
+      {insights.length ? (
+        <Card
+          elevated
+          accessibilityLabel={t('result.insights.title')}
+          style={{ borderLeftColor: theme.colors.accent, borderLeftWidth: 4 }}
+        >
+          <AppText variant="subtitle">{t('result.insights.title')}</AppText>
+          {insights.map((insight) => {
+            let message: string;
+            if (insight.key === 'improve_completeness') {
+              message = t('result.insights.improveCompleteness', { score: insight.score });
+            } else if (insight.key === 'hidden_costs_significant') {
+              message = t('result.insights.hiddenCostsSignificant', {
+                percent: insight.ratioPercent,
+              });
+            } else if (insight.key === 'purchase_dominates') {
+              message = t('result.insights.purchaseDominates', {
+                percent: insight.sharePercent,
+              });
+            } else if (insight.key === 'operating_driver') {
+              message = t('result.insights.operatingDriver', {
+                driver: t(`result.breakdownLabels.${insight.driver}`),
+                percent: insight.sharePercent,
+              });
+            } else {
+              message = t('result.insights.resaleOffsets', { value: money(insight.valueMinor) });
+            }
+            return (
+              <AppText key={insight.key} selectable>
+                • {message}
+              </AppText>
+            );
+          })}
+        </Card>
+      ) : null}
       <Card>
         <AppText variant="subtitle">{t('result.breakdown')}</AppText>
         {result.breakdown.map((item) => (
@@ -101,19 +138,6 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
           </View>
         ))}
       </Card>
-      <ExpandableSection
-        collapseLabel={t('result.collapseAssumptions')}
-        expandLabel={t('result.expandAssumptions')}
-        title={t('result.assumptionsTitle')}
-      >
-        <AppText selectable>{t('result.formulas.tco')}</AppText>
-        <AppText selectable>{t('result.formulas.recurring')}</AppText>
-        <AppText selectable>{t('result.formulas.fuel')}</AppText>
-        <AppText selectable>{t('result.formulas.financing')}</AppText>
-        <AppText selectable variant="helper" tone="secondary">
-          {t('result.engineVersion', { version: result.calculationEngineVersion })}
-        </AppText>
-      </ExpandableSection>
       <Card>
         <AppText variant="subtitle">{t('result.completeness')}</AppText>
         <AppText variant="metric">{formatNumber(result.completenessScore, locale)}%</AppText>
@@ -153,6 +177,19 @@ export function ResultSummary({ result }: { result: CalculationResult }) {
           ))}
         </Card>
       ) : null}
+      <ExpandableSection
+        collapseLabel={t('result.collapseAssumptions')}
+        expandLabel={t('result.expandAssumptions')}
+        title={t('result.assumptionsTitle')}
+      >
+        <AppText selectable>{t('result.formulas.tco')}</AppText>
+        <AppText selectable>{t('result.formulas.recurring')}</AppText>
+        <AppText selectable>{t('result.formulas.fuel')}</AppText>
+        <AppText selectable>{t('result.formulas.financing')}</AppText>
+        <AppText selectable variant="helper" tone="secondary">
+          {t('result.engineVersion', { version: result.calculationEngineVersion })}
+        </AppText>
+      </ExpandableSection>
     </>
   );
 }

@@ -20,5 +20,5 @@ export function writeWizardDraft(
 }
 
 export function clearWizardDraft(settings: AppSettingsRepository, projectId: string): void {
-  settings.set(keyFor(projectId), null);
+  settings.remove(keyFor(projectId));
 }

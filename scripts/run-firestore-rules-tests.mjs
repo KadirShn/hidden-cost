@@ -6,7 +6,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
 const projectId = 'demo-hidden-cost';
 const environment = await initializeTestEnvironment({
@@ -50,6 +50,7 @@ try {
   await assertFails(getDoc(doc(guest, 'users/alice/projects/project-1')));
   await assertFails(setDoc(doc(alice, 'users/alice/projects/foreign'), project('bob')));
   await assertFails(setDoc(doc(bob, 'users/alice/projects/project-2'), project('alice')));
+  await assertFails(deleteDoc(doc(bob, 'users/alice/projects/project-1')));
 
   await assertSucceeds(
     setDoc(aliceProject, {
@@ -69,8 +70,11 @@ try {
       updatedAt: '2026-07-19T12:00:00.000Z',
     }),
   );
+  await assertSucceeds(deleteDoc(aliceProject));
 
-  console.log('Firestore rules tests passed: owner isolation, auth, tombstone, revision.');
+  console.log(
+    'Firestore rules tests passed: owner isolation, auth, deletion, tombstone, revision.',
+  );
 } catch (error) {
   console.error(error);
   process.exitCode = 1;

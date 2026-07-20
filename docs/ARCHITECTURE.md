@@ -99,10 +99,11 @@ from their callers and do not own screen copy. Locale-aware number and currency 
 presentation concern. Localized money input is converted to canonical minor units before it reaches
 the `Money` value object.
 
-The calculation wizard keeps localized strings in React Hook Form, validates each of eight steps
-with locale-aware Zod schemas, and maps only normalized values into the domain. A debounced raw form
-snapshot is stored through `AppSettingsRepository`; it is flushed on backgrounding and navigation.
-Final project and cost-item updates use one repository transaction.
+The calculation wizard keeps localized strings in React Hook Form, validates each of seven steps
+with locale-aware Zod schemas, and maps only normalized values into the domain. Maintenance and fuel
+share one operating-cost step to reduce navigation without weakening field validation. A debounced
+raw form snapshot is stored through `AppSettingsRepository`; it is flushed on backgrounding and
+navigation. Final project and cost-item updates use one repository transaction.
 
 ## Preference persistence
 
@@ -202,7 +203,7 @@ and records typed error codes plus redacted, allowlisted attributes; it never re
 input or user text. Development test actions are reachable only from the development tools section.
 
 App Check selects debug providers for development/preview and Play Integrity for Android production.
-It initializes before Firestore mutation and callable account deletion. Console enforcement remains
+It initializes before Firestore mutation and cloud account deletion. Console enforcement remains
 an operator rollout after valid-request metrics are reviewed. Local data export/delete is isolated in
 a repository that snapshots or deletes user-owned tables transactionally without exposing SQL to UI.
 `react-native.config.js` also excludes optional Firebase/Google Sign-In native packages per platform

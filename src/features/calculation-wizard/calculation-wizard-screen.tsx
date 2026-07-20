@@ -358,16 +358,14 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
         </View>
       ) : null}
       {step === 3 ? (
-        <ControlledMoneyField
-          control={form.control}
-          currency={currency}
-          helperText={t('wizard.help.maintenance')}
-          label={t('wizard.fields.maintenanceAnnual')}
-          name="maintenanceAnnual"
-        />
-      ) : null}
-      {step === 4 ? (
         <View style={{ gap: theme.spacing.lg }}>
+          <ControlledMoneyField
+            control={form.control}
+            currency={currency}
+            helperText={t('wizard.help.maintenance')}
+            label={t('wizard.fields.maintenanceAnnual')}
+            name="maintenanceAnnual"
+          />
           <ControlledNumberField
             control={form.control}
             helperText={t('wizard.help.fuelConsumption')}
@@ -382,7 +380,7 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           />
         </View>
       ) : null}
-      {step === 5 ? (
+      {step === 4 ? (
         <View style={{ gap: theme.spacing.lg }}>
           <ControlledMoneyField
             control={form.control}
@@ -399,7 +397,7 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           />
         </View>
       ) : null}
-      {step === 6 ? (
+      {step === 5 ? (
         <View style={{ gap: theme.spacing.lg }}>
           <Card>
             <AppText variant="label">{t('wizard.assumptionsTitle')}</AppText>
@@ -415,7 +413,7 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           />
         </View>
       ) : null}
-      {step === 7 ? (
+      {step === 6 ? (
         <Card>
           <AppText variant="subtitle">{form.getValues('title')}</AppText>
           <AppText selectable>

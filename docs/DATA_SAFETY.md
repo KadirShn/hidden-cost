@@ -6,17 +6,17 @@ configuration before answering Play Console.
 
 ## Data paths
 
-| Data | Default/local-only behavior | Optional production behavior | Shared |
-| --- | --- | --- | --- |
-| Project title, notes, cost inputs, scenarios, results | SQLite on device | Firestore backup after explicit cloud opt-in | No |
-| Firebase UID | Not created | Anonymous Auth/cloud account identifier | No |
-| Google profile/email | Not collected | Firebase Auth when user explicitly links Google | No |
-| Language/theme/consents | On device | Consent/category state may influence SDK collection | No |
-| Product usage events | Off | Allowlisted categorical Analytics events after opt-in | Firebase processor |
-| Crash diagnostics | Off outside configured production | Typed/redacted Crashlytics errors | Firebase processor |
-| Ad/consent/device signals | Ads disabled by safe defaults | Google Mobile Ads/UMP when enabled and consent permits | Google advertising services |
-| App integrity signals | None in local-only mode | Play Integrity/App Check tokens | Google/Firebase security services |
-| Local export files | Temporary device file, cleaned after share | Sent only to the destination chosen by the user | User-selected destination |
+| Data                                                  | Default/local-only behavior                | Optional production behavior                           | Shared                            |
+| ----------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------ | --------------------------------- |
+| Project title, notes, cost inputs, scenarios, results | SQLite on device                           | Firestore backup after explicit cloud opt-in           | No                                |
+| Firebase UID                                          | Not created                                | Anonymous Auth/cloud account identifier                | No                                |
+| Google profile/email                                  | Not collected                              | Firebase Auth when user explicitly links Google        | No                                |
+| Language/theme/consents                               | On device                                  | Consent/category state may influence SDK collection    | No                                |
+| Product usage events                                  | Off                                        | Allowlisted categorical Analytics events after opt-in  | Firebase processor                |
+| Crash diagnostics                                     | Off outside configured production          | Typed/redacted Crashlytics errors                      | Firebase processor                |
+| Ad/consent/device signals                             | Ads disabled by safe defaults              | Google Mobile Ads/UMP when enabled and consent permits | Google advertising services       |
+| App integrity signals                                 | None in local-only mode                    | Play Integrity/App Check tokens                        | Google/Firebase security services |
+| Local export files                                    | Temporary device file, cleaned after share | Sent only to the destination chosen by the user        | User-selected destination         |
 
 The telemetry contract prohibits monetary amounts, project titles, notes, email addresses, and free
 text. Advertising analytics permits format, placement, event, and bounded SDK error only.
@@ -48,8 +48,8 @@ and AdMob advertising use must be evaluated separately under the final contracts
 ## Retention and deletion
 
 - Local calculations remain until the user soft-deletes/clears local data or uninstalls the app.
-- Account deletion calls authenticated `deleteAccountAndData`, recursively deletes the caller's
-  Firestore path, then deletes the Auth user. Local data is a separate explicit action.
+- Account deletion derives all paths from the current Auth UID, deletes the caller's known Firestore
+  tree through owner-only rules, then deletes the Auth user. Local data is a separate explicit action.
 - The public deletion page must describe request verification, data deleted, any legally retained
   data and period, and expected completion time.
 - Analytics, Crashlytics, Auth, Firestore, Functions logs, and AdMob retention must be set/reviewed in
@@ -60,13 +60,13 @@ and AdMob advertising use must be evaluated separately under the final contracts
 ## Security and review checklist
 
 - [ ] Data encrypted in transit by platform/Firebase/Google SDKs; verify Firestore at-rest claims in
-  the applicable production terms.
+      the applicable production terms.
 - [ ] Firestore rules and rules tests enforce per-UID ownership.
 - [ ] App Check rollout does not replace authentication/authorization.
 - [ ] Account deletion URL is public, functional without installing the app, and matches the in-app
-  flow.
+      flow.
 - [ ] Privacy policy names the controller/contact, subprocessors, regions, retention, user rights,
-  children/age position, ads, and consent controls.
+      children/age position, ads, and consent controls.
 - [ ] Play “Data deletion” and “Ads” declarations match the shipped binary and Remote Config plan.
 - [ ] Re-run this inventory whenever a new SDK, event, cloud field, ad format, or export destination
-  is introduced.
+      is introduced.

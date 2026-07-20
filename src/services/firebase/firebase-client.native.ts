@@ -2,26 +2,27 @@ import { getAnalytics, setAnalyticsCollectionEnabled } from '@react-native-fireb
 import { getApp } from '@react-native-firebase/app';
 import {
   connectAuthEmulator,
+  deleteUser,
   getAuth,
   GoogleAuthProvider,
   getIdToken,
   linkWithCredential,
   onAuthStateChanged,
+  reauthenticateWithCredential,
   reload,
   signInAnonymously,
   type User,
 } from '@react-native-firebase/auth';
 import {
+  collection,
   connectFirestoreEmulator,
   doc,
   getFirestore,
+  getDocs,
   runTransaction,
+  writeBatch,
 } from '@react-native-firebase/firestore';
-import {
-  connectFunctionsEmulator,
-  getFunctions,
-  httpsCallable,
-} from '@react-native-firebase/functions';
+import { connectFunctionsEmulator, getFunctions } from '@react-native-firebase/functions';
 import {
   fetchAndActivate,
   getBoolean,
@@ -33,6 +34,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { runtimeConfig } from '@/config/runtime-config';
 import { initializeAppProtection } from '@/services/observability/app-protection';
 
+import { deleteCloudDocumentTree, type CloudDeletionAdapter } from './cloud-account-deletion';
 import { buildCloudDocumentMutation, resolveCloudMutation } from './cloud-document';
 import {
   FirebaseOperationError,
@@ -256,8 +258,37 @@ class NativeFirebaseClient implements FirebaseClient {
     await initializeAppProtection();
     this.connectEmulators();
     try {
-      await httpsCallable(getFunctions(), 'deleteAccountAndData')();
+      const current = getAuth().currentUser;
+      if (!current) throw new FirebaseOperationError('auth/no-current-user');
+      if (current.providerData.some(({ providerId }) => providerId === 'google.com')) {
+        if (!runtimeConfig.firebase.googleWebClientId) {
+          throw new FirebaseOperationError('auth/google-client-id-missing');
+        }
+        GoogleSignin.configure({ webClientId: runtimeConfig.firebase.googleWebClientId });
+        const response = await GoogleSignin.signIn();
+        if (response.type === 'cancelled') {
+          throw new FirebaseOperationError('auth/google-sign-in-cancelled');
+        }
+        const idToken = response.data?.idToken;
+        if (!idToken) throw new FirebaseOperationError('auth/google-id-token-missing');
+        await reauthenticateWithCredential(current, GoogleAuthProvider.credential(idToken));
+      }
+      const firestore = getFirestore();
+      const adapter: CloudDeletionAdapter = {
+        listDocumentPaths: async (collectionPath) => {
+          const snapshot = await getDocs(collection(firestore, collectionPath));
+          return snapshot.docs.map((snapshotDocument) => snapshotDocument.ref.path);
+        },
+        deleteDocumentPaths: async (documentPaths) => {
+          const batch = writeBatch(firestore);
+          documentPaths.forEach((path) => batch.delete(doc(firestore, path)));
+          await batch.commit();
+        },
+      };
+      await deleteCloudDocumentTree(current.uid, adapter);
+      await deleteUser(current);
     } catch (error) {
+      if (error instanceof FirebaseOperationError) throw error;
       throw new FirebaseOperationError(errorCode(error));
     }
   }

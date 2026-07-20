@@ -30,13 +30,13 @@ Complete this checklist for every production release.
 - [x] Local user data can be permanently deleted with explicit confirmation and a transaction.
 - [x] Authenticated account deletion recursively deletes the caller's cloud path and Auth account.
 - [x] Local and cloud deletion are separate and their confirmation text explains the boundary.
-- [x] Firestore ownership rules and cloud deletion callable ignore client-supplied UIDs.
+- [x] Firestore ownership rules and cloud deletion paths ignore client-supplied UIDs.
 
 ## App Check and abuse protection
 
 - [x] Development/preview use the debug provider; production Android uses Play Integrity.
 - [x] No debug App Check token exists in source, Expo public config, or production configuration.
-- [x] App Check initialization precedes Firestore sync and callable account deletion.
+- [x] App Check initialization precedes Firestore sync and cloud account deletion.
 - [x] Enforcement rollout and rollback are documented before enforcement is enabled.
 - [ ] Production signing SHA-256 fingerprints and Play App Signing are registered.
 - [ ] Valid/missing/invalid metrics are observed before enforcing Functions or Firestore.

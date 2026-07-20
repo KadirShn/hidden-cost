@@ -50,7 +50,7 @@ tags:
 - tapOn:
     id: wizard-next
 - repeat:
-    times: 5
+    times: 4
     commands:
       - scrollUntilVisible:
           element:

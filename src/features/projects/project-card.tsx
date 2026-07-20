@@ -11,6 +11,7 @@ type ProjectCardProps = {
   categoryLabel: string;
   statusLabel: string;
   amountLabel: string;
+  amountCaption: string;
   openLabel: string;
   onPress: () => void;
 };
@@ -20,6 +21,7 @@ export function ProjectCard({
   categoryLabel,
   statusLabel,
   amountLabel,
+  amountCaption,
   openLabel,
   onPress,
 }: ProjectCardProps) {
@@ -27,7 +29,7 @@ export function ProjectCard({
 
   return (
     <Pressable
-      accessibilityLabel={`${openLabel}: ${project.title}. ${categoryLabel}. ${statusLabel}. ${amountLabel}`}
+      accessibilityLabel={`${openLabel}: ${project.title}. ${categoryLabel}. ${statusLabel}. ${amountCaption}: ${amountLabel}`}
       accessibilityRole="button"
       onPress={onPress}
     >
@@ -38,6 +40,9 @@ export function ProjectCard({
             <Chip disabled label={statusLabel} selected={project.status === 'complete'} />
           </View>
           <AppText variant="subtitle">{project.title}</AppText>
+          <AppText tone="secondary" variant="helper">
+            {amountCaption}
+          </AppText>
           <AppText selectable variant="metric">
             {amountLabel}
           </AppText>

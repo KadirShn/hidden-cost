@@ -23,7 +23,8 @@ in Expo Go.
 5. Enable Anonymous Authentication and, when account linking is wanted, Google Authentication.
 6. Create Firestore and deploy this repository's rules and indexes.
 7. Create the Remote Config keys listed below, or rely on the safe in-app defaults.
-8. Deploy the callable account-deletion function from `functions/`.
+8. Deploy the reviewed Firestore rules. The mobile account-deletion flow works on the Spark plan;
+   the optional callable implementation under `functions/` is reserved for a future backend rollout.
 
 For iOS, register the final bundle identifier, download `GoogleService-Info.plist`, and provide
 `IOS_BUNDLE_IDENTIFIER`. No bundle identifier or credential is invented in this repository.
@@ -104,21 +105,24 @@ users/{uid}/settings/profile
 Rules derive authorization from the path and `request.auth.uid`; another user's `ownerId` is
 rejected. The client performs no cross-user collection queries.
 
-## Google linking and deletion
+## Google linking and Spark-plan deletion
 
 The Google action links a credential to the current anonymous user with `linkWithCredential`; it
 does not switch to a separate UID. The action is hidden until a web OAuth client ID is supplied.
 Enable Google Auth and select the `client_type: 3` client ID from Firebase configuration.
 
-`functions/src/index.ts` exports authenticated callable `deleteAccountAndData`. It ignores
-client-provided UIDs, recursively deletes only `users/{request.auth.uid}`, then deletes that Auth
-user. Local SQLite calculations are deliberately preserved and the confirmation explains this.
-App Check is initialized in Phase 9, but enforcement remains an explicit console rollout after
-metrics validation. See [App Check setup](APP_CHECK_SETUP.md). Valid Firebase Auth remains mandatory.
+The app deletes the signed-in user's known Firestore tree in bounded write batches, then deletes the
+Firebase Auth user. Every path is derived from `currentUser.uid`; Firestore rules also require the
+same authenticated owner on each delete. A linked Google user is reauthenticated immediately before
+deletion. This flow does not require Cloud Functions or the Blaze plan. Local SQLite calculations are
+deliberately preserved and the confirmation explains this.
+
+`functions/src/index.ts` retains an authenticated callable alternative for a future backend rollout,
+but the current mobile client does not depend on it. App Check enforcement remains an explicit
+console rollout after metrics validation. See [App Check setup](APP_CHECK_SETUP.md).
 
 ```powershell
-npm --prefix functions run build
-firebase deploy --only functions:deleteAccountAndData,firestore:rules,firestore:indexes
+firebase deploy --only firestore:rules,firestore:indexes
 ```
 
 ## Remote Config defaults

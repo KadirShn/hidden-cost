@@ -41,6 +41,7 @@ describe('ResultSummary', () => {
     expect(screen.getByRole('progressbar', { name: /Data completeness/ })).toBeTruthy();
     expect(screen.getByText('Cost breakdown')).toBeTruthy();
     expect(screen.getByText('Top cost drivers')).toBeTruthy();
+    expect(screen.getByText('Decision summary')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Show assumptions and formulas' })).toBeTruthy();
   });
 
@@ -59,13 +60,15 @@ describe('ResultSummary', () => {
     );
     const rendered = JSON.stringify(screen.toJSON());
     const totalIndex = rendered.indexOf('Total cost of ownership');
+    const insightsIndex = rendered.indexOf('Decision summary');
     const breakdownIndex = rendered.indexOf('Cost breakdown');
     const completenessIndex = rendered.indexOf('Data completeness');
     const assumptionsIndex = rendered.indexOf('Assumptions and formulas');
 
     expect(totalIndex).toBeGreaterThanOrEqual(0);
-    expect(breakdownIndex).toBeGreaterThan(totalIndex);
-    expect(assumptionsIndex).toBeGreaterThan(breakdownIndex);
-    expect(completenessIndex).toBeGreaterThan(assumptionsIndex);
+    expect(insightsIndex).toBeGreaterThan(totalIndex);
+    expect(breakdownIndex).toBeGreaterThan(insightsIndex);
+    expect(completenessIndex).toBeGreaterThan(breakdownIndex);
+    expect(assumptionsIndex).toBeGreaterThan(completenessIndex);
   });
 });

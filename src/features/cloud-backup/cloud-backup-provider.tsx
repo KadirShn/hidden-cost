@@ -194,14 +194,17 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
       await firebaseClient.deleteAccountAndCloudData();
       void telemetry.track('account_deletion_completed', { source_screen: 'settings' });
       repositories.settings.set(BACKUP_ENABLED_KEY, false);
+      repositories.settings.remove(LAST_SYNC_KEY);
       setEnabledState(false);
       setUser(null);
+      setLastSyncAt(undefined);
+      refreshSummary();
       setStatus(firebaseClient.configured ? 'local_only' : 'unavailable');
     } catch {
       setErrorCode('account/delete_failed');
       setStatus('error');
     }
-  }, [repositories.settings]);
+  }, [refreshSummary, repositories.settings]);
 
   useEffect(() => {
     void firebaseClient.initializeRemoteConfig();

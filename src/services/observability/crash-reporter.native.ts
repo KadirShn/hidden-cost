@@ -12,11 +12,8 @@ class FirebaseCrashReporter implements CrashReporter {
 
   async initialize(): Promise<void> {
     if (!runtimeConfig.firebase.enabled) return;
-    const [{ getCrashlytics, setCrashlyticsCollectionEnabled }, { firebaseClient }] =
-      await Promise.all([
-        import('@react-native-firebase/crashlytics'),
-        import('@/services/firebase/firebase-client'),
-      ]);
+    const { getCrashlytics, setCrashlyticsCollectionEnabled } = loadCrashlyticsModule();
+    const { firebaseClient } = loadFirebaseClient();
     this.configured = firebaseClient.configured;
     if (!this.configured) return;
     await setCrashlyticsCollectionEnabled(
@@ -32,16 +29,14 @@ class FirebaseCrashReporter implements CrashReporter {
 
   async recordDevelopmentTest(): Promise<boolean> {
     if (!this.configured || runtimeConfig.appEnvironment !== 'development') return false;
-    const { getCrashlytics, setCrashlyticsCollectionEnabled } =
-      await import('@react-native-firebase/crashlytics');
+    const { getCrashlytics, setCrashlyticsCollectionEnabled } = loadCrashlyticsModule();
     await setCrashlyticsCollectionEnabled(getCrashlytics(), true);
     await this.send(new AppError('dev/test_non_fatal'));
     return true;
   }
 
   private async send(error: AppError, context: SafeLogContext = {}): Promise<void> {
-    const { getCrashlytics, recordError, setAttributes } =
-      await import('@react-native-firebase/crashlytics');
+    const { getCrashlytics, recordError, setAttributes } = loadCrashlyticsModule();
     const crashlytics = getCrashlytics();
     const safe = sanitizeLogContext({
       ...context,
@@ -54,6 +49,17 @@ class FirebaseCrashReporter implements CrashReporter {
     );
     recordError(crashlytics, new Error(error.code), error.code);
   }
+}
+
+function loadCrashlyticsModule(): typeof import('@react-native-firebase/crashlytics') {
+  // Metro's native development async evaluator is intentionally avoided for this guarded module.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require('@react-native-firebase/crashlytics');
+}
+
+function loadFirebaseClient(): typeof import('@/services/firebase/firebase-client') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require('@/services/firebase/firebase-client');
 }
 
 export const crashReporter: CrashReporter = new FirebaseCrashReporter();

@@ -68,7 +68,9 @@ Soft-deleted rows keep `deleted_at` and remain available for synchronization. De
 queries exclude them. Successful sync atomically removes the queue record and marks the entity
 `synced`. Failures mark it `failed` and schedule bounded exponential retry. A newer cloud revision
 marks it `conflict` and blocks automatic overwrite. Firestore receives soft-delete tombstones;
-physical cloud cleanup is performed only by the authenticated account-deletion callable.
+explicit account deletion removes the authenticated user's known document tree in bounded client
+batches protected by owner-only Firestore rules, then deletes the Auth user. This keeps deletion
+available on Firebase's Spark plan.
 
 ## Template seed
 

@@ -12,7 +12,7 @@ export function initializeAppProtection(): Promise<AppCheckMode> {
 async function initialize(): Promise<AppCheckMode> {
   if (!runtimeConfig.observability.appCheckEnabled) return 'disabled';
 
-  const { getApp } = await import('@react-native-firebase/app');
+  const { getApp } = loadFirebaseAppModule();
   let configured = false;
   try {
     getApp();
@@ -26,8 +26,7 @@ async function initialize(): Promise<AppCheckMode> {
   });
   if (mode === 'disabled') return mode;
 
-  const { initializeAppCheck, ReactNativeFirebaseAppCheckProvider } =
-    await import('@react-native-firebase/app-check');
+  const { initializeAppCheck, ReactNativeFirebaseAppCheckProvider } = loadAppCheckModule();
   const provider = new ReactNativeFirebaseAppCheckProvider();
   provider.configure({
     android: { provider: mode === 'debug' ? 'debug' : 'playIntegrity' },
@@ -40,4 +39,15 @@ async function initialize(): Promise<AppCheckMode> {
     isTokenAutoRefreshEnabled: true,
   });
   return mode;
+}
+
+function loadFirebaseAppModule(): typeof import('@react-native-firebase/app') {
+  // Metro's native development async evaluator is intentionally avoided for this guarded module.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require('@react-native-firebase/app');
+}
+
+function loadAppCheckModule(): typeof import('@react-native-firebase/app-check') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require('@react-native-firebase/app-check');
 }

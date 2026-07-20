@@ -62,6 +62,7 @@ export const tr = {
     insight: 'Düşük etiket fiyatı her zaman düşük sahip olma maliyeti anlamına gelmez.',
     categoriesTitle: 'Hazır başlangıçlar',
     recentTitle: 'Son hesaplamalar',
+    purchasePrice: 'Satın alma fiyatı',
     recentEmptyTitle: 'Henüz hesaplama yok',
     recentEmptyBody: 'İlk toplam sahip olma maliyeti tahminini oluşturduğunda burada görünecek.',
     categoryCar: 'Otomobil',
@@ -191,14 +192,13 @@ export const tr = {
       '0': { title: 'Temel bilgiler', body: 'Hesaplamayı adlandır; süreyi ve kullanımı belirle.' },
       '1': { title: 'Satın alma fiyatı', body: 'Etiket fiyatını veya satın alma tutarını gir.' },
       '2': { title: 'Finansman', body: 'Satın almayı kredilendireceksen finansmanı ekle.' },
-      '3': { title: 'Periyodik maliyetler', body: 'Tipik bir yıl için bakım giderini tahmin et.' },
-      '4': {
-        title: 'Kullanım maliyetleri',
-        body: 'Yakıt gideri aylık kullanım ve tüketime göre hesaplanır.',
+      '3': {
+        title: 'İşletme maliyetleri',
+        body: 'Bakım ve yakıt giderlerini tek adımda tahmin et.',
       },
-      '5': { title: 'Satış değeri', body: 'Sahiplik sonunda geri kazanılacak değeri tahmin et.' },
-      '6': { title: 'Varsayımlar', body: 'Modeli incele ve önemli bağlam için not ekle.' },
-      '7': { title: 'Önizleme', body: 'Hesaplamadan önce temel girdileri kontrol et.' },
+      '4': { title: 'Satış değeri', body: 'Sahiplik sonunda geri kazanılacak değeri tahmin et.' },
+      '5': { title: 'Varsayımlar', body: 'Modeli incele ve önemli bağlam için not ekle.' },
+      '6': { title: 'Önizleme', body: 'Hesaplamadan önce temel girdileri kontrol et.' },
     },
     fields: {
       title: 'Hesaplama adı',
@@ -229,7 +229,7 @@ export const tr = {
     },
     assumptionsTitle: 'Temel senaryo',
     assumptionsBody:
-      'Faz 5, girdilerinden temel senaryoyu hesaplar. Düşük/yüksek senaryo düzenleme Faz 6’da gelir.',
+      'Temel sonuç bu girdilerden hesaplanır; düşük ve yüksek senaryoları sonuçtan sonra düzenleyebilirsin.',
     review: {
       purchase: 'Satın alma: {{value}} {{currency}}',
       duration: 'Sahiplik: {{value}} ay',
@@ -258,6 +258,18 @@ export const tr = {
       residual: 'Satış değeri',
     },
     topDrivers: 'En büyük maliyet sürücüleri',
+    insights: {
+      title: 'Karar özeti',
+      improveCompleteness:
+        'Tahmin %{{score}} tamamlandı. Eksik varsayımları eklemek sonucu daha güvenilir yapar.',
+      hiddenCostsSignificant:
+        "Etiket fiyatı dışındaki net maliyetler, satın alma fiyatının yaklaşık %{{percent}}'ine ulaşıyor.",
+      purchaseDominates:
+        "Satın alma bedeli brüt maliyetlerin yaklaşık %{{percent}}'ini oluşturuyor.",
+      operatingDriver:
+        "Satın alma dışındaki en etkili kalem {{driver}}; brüt maliyetlerin yaklaşık %{{percent}}'i.",
+      resaleOffsets: 'Tahmini satış değeri toplam maliyetten {{value}} düşürüyor.',
+    },
     warningsTitle: 'Bu tahmini iyileştir',
     warnings: {
       missing_residual_value: 'Tahmini satış değeri ekle.',

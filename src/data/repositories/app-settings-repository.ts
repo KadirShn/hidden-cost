@@ -28,4 +28,8 @@ export class SQLiteAppSettingsRepository<TRunResult> implements AppSettingsRepos
       .onConflictDoUpdate({ target: appSettingsTable.key, set: { valueJson, updatedAt } })
       .run();
   }
+
+  remove(key: string): void {
+    this.db.delete(appSettingsTable).where(eq(appSettingsTable.key, key)).run();
+  }
 }

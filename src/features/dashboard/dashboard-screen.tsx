@@ -63,6 +63,7 @@ export function DashboardScreen() {
             .map((project) => (
               <ProjectCard
                 key={project.id}
+                amountCaption={t('home.purchasePrice')}
                 amountLabel={formatMinorCurrency(
                   project.purchasePriceMinor,
                   project.currency,

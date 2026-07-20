@@ -144,6 +144,7 @@ export interface UserProfileRepository {
 export interface AppSettingsRepository {
   get<T>(key: string): T | null;
   set<T>(key: string, value: T): void;
+  remove(key: string): void;
 }
 
 export interface SyncQueueRepository {

@@ -62,6 +62,7 @@ export const en = {
     insight: 'A lower price tag does not always mean a lower cost of ownership.',
     categoriesTitle: 'Prepared starting points',
     recentTitle: 'Recent calculations',
+    purchasePrice: 'Purchase price',
     recentEmptyTitle: 'No calculations yet',
     recentEmptyBody: 'Your first total cost of ownership estimate will appear here.',
     categoryCar: 'Car',
@@ -191,11 +192,13 @@ export const en = {
       '0': { title: 'Basic information', body: 'Name the calculation and define time and usage.' },
       '1': { title: 'Purchase price', body: 'Enter the label price or purchase amount.' },
       '2': { title: 'Financing', body: 'Add the loan only if you plan to finance the purchase.' },
-      '3': { title: 'Periodic costs', body: 'Estimate maintenance over a typical year.' },
-      '4': { title: 'Usage costs', body: 'Fuel cost is based on monthly usage and consumption.' },
-      '5': { title: 'Resale value', body: 'Estimate the value recovered at the end of ownership.' },
-      '6': { title: 'Assumptions', body: 'Review the model and add a note for important context.' },
-      '7': { title: 'Review', body: 'Check the key inputs before calculating.' },
+      '3': {
+        title: 'Operating costs',
+        body: 'Estimate maintenance and fuel costs in one step.',
+      },
+      '4': { title: 'Resale value', body: 'Estimate the value recovered at the end of ownership.' },
+      '5': { title: 'Assumptions', body: 'Review the model and add a note for important context.' },
+      '6': { title: 'Review', body: 'Check the key inputs before calculating.' },
     },
     fields: {
       title: 'Calculation name',
@@ -226,7 +229,7 @@ export const en = {
     },
     assumptionsTitle: 'Base scenario',
     assumptionsBody:
-      'Phase 5 calculates the base scenario from your entries. Low/high scenario editing arrives in Phase 6.',
+      'The base result uses these inputs; you can edit low and high scenarios after calculating.',
     review: {
       purchase: 'Purchase: {{value}} {{currency}}',
       duration: 'Ownership: {{value}} months',
@@ -259,6 +262,17 @@ export const en = {
       residual: 'Resale value',
     },
     topDrivers: 'Top cost drivers',
+    insights: {
+      title: 'Decision summary',
+      improveCompleteness:
+        'This estimate is {{score}}% complete. Adding missing assumptions will make it more reliable.',
+      hiddenCostsSignificant:
+        'Net costs beyond the purchase price reach about {{percent}}% of the purchase price.',
+      purchaseDominates: 'The purchase price makes up about {{percent}}% of gross costs.',
+      operatingDriver:
+        'The largest cost beyond purchase is {{driver}}, at about {{percent}}% of gross costs.',
+      resaleOffsets: 'Estimated resale value offsets {{value}} from the total cost.',
+    },
     warningsTitle: 'Improve this estimate',
     warnings: {
       missing_residual_value: 'Add an estimated resale value.',
