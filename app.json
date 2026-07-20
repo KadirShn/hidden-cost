@@ -39,6 +39,28 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "appEnvironment": "development",
+      "ads": {
+        "testMode": true,
+        "productionUnitIdsConfigured": false
+      },
+      "firebase": {
+        "configured": false,
+        "emulatorHost": "10.0.2.2",
+        "googleWebClientId": {},
+        "useEmulators": false
+      },
+      "legal": {
+        "privacyPolicyUrl": {},
+        "accountDeletionUrl": {}
+      },
+      "router": {},
+      "eas": {
+        "projectId": "40be20eb-8475-45c5-a6e8-dabc5b8e6ee0"
+      }
+    },
+    "owner": "kadirshn"
   }
 }

@@ -30,7 +30,10 @@ export class FirebaseUnavailableError extends Error {
 }
 
 export class FirebaseOperationError extends Error {
-  constructor(readonly code: string) {
+  constructor(
+    readonly code: string,
+    readonly diagnosticReason?: string,
+  ) {
     super(code);
     this.name = 'FirebaseOperationError';
   }

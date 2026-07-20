@@ -467,6 +467,13 @@ export const en = {
     lastSync: 'Last successful sync: {{date}}',
     syncNow: 'Sync now',
     linkGoogle: 'Link Google account',
+    googleLinkErrors: {
+      cancelled: 'Google account linking was not completed.',
+      credential_in_use: 'This Google account is linked to another Hidden Cost cloud account.',
+      configuration: 'Google linking could not be verified. Check the SHA and OAuth configuration.',
+      unknown: 'The Google account could not be linked. Check your connection and try again.',
+    },
+    googleLinkDiagnostic: 'Diagnostic code: {{code}}',
     google: 'Google account',
     anonymousAccount: 'Protected by an anonymous Firebase account on this installation.',
     linkedAccount: 'Linked account: {{account}}',

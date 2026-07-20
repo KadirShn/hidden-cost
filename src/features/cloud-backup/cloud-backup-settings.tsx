@@ -79,12 +79,26 @@ export function CloudBackupSettings() {
               variant="secondary"
             />
             {cloud.user?.isAnonymous && cloud.googleLinkAvailable ? (
-              <Button
-                disabled={busy}
-                label={t('cloudBackup.linkGoogle')}
-                onPress={() => void cloud.linkGoogle()}
-                variant="secondary"
-              />
+              <View style={{ gap: theme.spacing.sm }}>
+                <Button
+                  disabled={busy}
+                  label={t('cloudBackup.linkGoogle')}
+                  onPress={() => void cloud.linkGoogle()}
+                  variant="secondary"
+                />
+                {cloud.googleLinkError ? (
+                  <AppText accessibilityLiveRegion="assertive" selectable tone="danger">
+                    {t(`cloudBackup.googleLinkErrors.${cloud.googleLinkError}`)}
+                  </AppText>
+                ) : null}
+                {cloud.googleLinkDiagnosticCode ? (
+                  <AppText selectable variant="helper" tone="secondary">
+                    {t('cloudBackup.googleLinkDiagnostic', {
+                      code: cloud.googleLinkDiagnosticCode,
+                    })}
+                  </AppText>
+                ) : null}
+              </View>
             ) : null}
           </View>
         ) : null}

@@ -4,8 +4,10 @@ import {
   connectAuthEmulator,
   getAuth,
   GoogleAuthProvider,
+  getIdToken,
   linkWithCredential,
   onAuthStateChanged,
+  reload,
   signInAnonymously,
   type User,
 } from '@react-native-firebase/auth';
@@ -26,6 +28,7 @@ import {
   getNumber,
   getRemoteConfig,
 } from '@react-native-firebase/remote-config';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { runtimeConfig } from '@/config/runtime-config';
 import { initializeAppProtection } from '@/services/observability/app-protection';
@@ -38,6 +41,7 @@ import {
   type CloudUser,
   type FirebaseClient,
 } from './contracts';
+import { GoogleAccountLinkRestError, linkGoogleAccountWithRest } from './google-account-link';
 import { REMOTE_CONFIG_DEFAULTS, type RemoteConfigValues } from './remote-config-defaults';
 
 function toCloudUser(user: User): CloudUser {
@@ -50,10 +54,37 @@ function toCloudUser(user: User): CloudUser {
 }
 
 function errorCode(error: unknown): string {
-  if (typeof error === 'object' && error && 'code' in error && typeof error.code === 'string') {
-    return error.code;
+  if (typeof error === 'object' && error && 'code' in error) {
+    if (typeof error.code === 'string') return error.code;
+    if (typeof error.code === 'number') return String(error.code);
   }
   return 'firebase/unknown';
+}
+
+function diagnosticReason(error: unknown): string | undefined {
+  if (typeof error !== 'object' || !error) return undefined;
+  const details = ['message', 'nativeErrorMessage']
+    .flatMap((key) => {
+      if (!(key in error)) return [];
+      const value = error[key as keyof typeof error];
+      return typeof value === 'string' ? [value] : [];
+    })
+    .join(' ')
+    .toUpperCase();
+  const knownReasons: readonly (readonly [string, string])[] = [
+    ['CONFIGURATION_NOT_FOUND', 'configuration_not_found'],
+    ['OPERATION_NOT_ALLOWED', 'operation_not_allowed'],
+    ['INVALID_IDP_RESPONSE', 'invalid_idp_response'],
+    ['CREDENTIAL_ALREADY_IN_USE', 'credential_already_in_use'],
+    ['NETWORK REQUEST FAILED', 'network_request_failed'],
+    ['NETWORK_ERROR', 'network_error'],
+    ['API KEY NOT VALID', 'api_key_not_valid'],
+    ['APP_NOT_AUTHORIZED', 'app_not_authorized'],
+    ['UNKNOWN CALLING PACKAGE', 'unknown_calling_package'],
+    ['TOO_MANY_ATTEMPTS_TRY_LATER', 'too_many_attempts'],
+    ['INTERNAL ERROR', 'internal_error'],
+  ];
+  return knownReasons.find(([marker]) => details.includes(marker))?.[1];
 }
 
 class NativeFirebaseClient implements FirebaseClient {
@@ -107,18 +138,60 @@ class NativeFirebaseClient implements FirebaseClient {
     }
     const current = getAuth().currentUser;
     if (!current) throw new FirebaseOperationError('auth/no-current-user');
+    let googleIdToken: string | undefined;
     try {
-      const { GoogleSignin } = await import('@react-native-google-signin/google-signin');
       GoogleSignin.configure({ webClientId: runtimeConfig.firebase.googleWebClientId });
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const response = await GoogleSignin.signIn();
-      const idToken = response.data?.idToken;
-      if (!idToken) throw new FirebaseOperationError('auth/google-id-token-missing');
-      const credential = GoogleAuthProvider.credential(idToken);
-      return toCloudUser((await linkWithCredential(current, credential)).user);
+      if (response.type === 'cancelled') {
+        throw new FirebaseOperationError('auth/google-sign-in-cancelled');
+      }
+      googleIdToken = response.data?.idToken ?? undefined;
+      if (!googleIdToken) throw new FirebaseOperationError('auth/google-id-token-missing');
+      const credential = GoogleAuthProvider.credential(googleIdToken);
+      const linked = (await linkWithCredential(current, credential)).user;
+      await reload(linked);
+      return toCloudUser(getAuth().currentUser ?? linked);
     } catch (error) {
       if (error instanceof FirebaseOperationError) throw error;
-      throw new FirebaseOperationError(errorCode(error));
+      if (errorCode(error) === 'auth/unknown' && googleIdToken) {
+        return this.linkGoogleAccountAfterUnknownNativeError(current, googleIdToken);
+      }
+      throw new FirebaseOperationError(errorCode(error), diagnosticReason(error));
+    }
+  }
+
+  private async linkGoogleAccountAfterUnknownNativeError(
+    current: User,
+    googleIdToken: string,
+  ): Promise<CloudUser> {
+    try {
+      // The native call may have reached the backend before losing its result.
+      await reload(current);
+      if (current.providerData.some(({ providerId }) => providerId === 'google.com')) {
+        return toCloudUser(current);
+      }
+      const apiKey = getApp().options.apiKey;
+      if (!apiKey) throw new FirebaseOperationError('auth/firebase-api-key-missing');
+      await linkGoogleAccountWithRest({
+        apiKey,
+        firebaseIdToken: await getIdToken(current, true),
+        googleIdToken,
+        expectedUid: current.uid,
+      });
+      await reload(current);
+      return toCloudUser(current);
+    } catch (error) {
+      if (error instanceof FirebaseOperationError) throw error;
+      if (error instanceof GoogleAccountLinkRestError) {
+        const collision =
+          error.code === 'FEDERATED_USER_ID_ALREADY_LINKED' || error.code === 'EMAIL_EXISTS';
+        throw new FirebaseOperationError(
+          collision ? 'auth/credential-already-in-use' : 'auth/unknown',
+          error.code.toLowerCase(),
+        );
+      }
+      throw new FirebaseOperationError(errorCode(error), diagnosticReason(error));
     }
   }
 

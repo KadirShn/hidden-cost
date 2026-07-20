@@ -1,5 +1,6 @@
-import type { ConfigContext, ExpoConfig } from 'expo/config';
 import path from 'node:path';
+
+import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 const APP_ENVIRONMENTS = ['development', 'preview', 'production'] as const;
 type AppEnvironment = (typeof APP_ENVIRONMENTS)[number];
@@ -51,8 +52,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const appEnvironment = resolveAppEnvironment(process.env.EXPO_PUBLIC_APP_ENV);
   const isProduction = appEnvironment === 'production';
   const buildPlatform = process.env.EAS_BUILD_PLATFORM;
-  const buildsAndroid = !buildPlatform || buildPlatform === 'android';
-  const buildsIos = !buildPlatform || buildPlatform === 'ios';
+  // EAS can evaluate dynamic config locally before exposing EAS_BUILD_PLATFORM.
+  // This release is Android-first, so an unspecified platform must not require
+  // unavailable iOS credentials. A real iOS EAS build sets the platform to ios.
+  const buildsAndroid = buildPlatform !== 'ios';
+  const buildsIos = buildPlatform === 'ios';
   const androidAdMobAppId = isProduction
     ? process.env.ADMOB_ANDROID_APP_ID
     : ADMOB_TEST_APP_IDS.android;
@@ -81,6 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   if (
     isProduction &&
     firebaseRequested &&
+    process.env.EAS_BUILD === 'true' &&
     ((buildsAndroid && !androidServicesFile) || (buildsIos && !iosServicesFile))
   ) {
     throw new Error('Firebase-enabled production builds require the platform service file.');
@@ -136,7 +141,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'react-native-google-mobile-ads',
         {
           androidAppId: androidAdMobAppId,
-          iosAppId: iosAdMobAppId,
+          iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-0000000000000000~0000000000',
           delayAppMeasurementInit: true,
           optimizeInitialization: true,
           optimizeAdLoading: true,

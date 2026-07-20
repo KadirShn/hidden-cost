@@ -466,6 +466,13 @@ export const tr = {
     lastSync: 'Son başarılı senkronizasyon: {{date}}',
     syncNow: 'Şimdi senkronize et',
     linkGoogle: 'Google hesabını bağla',
+    googleLinkErrors: {
+      cancelled: 'Google hesabı bağlama tamamlanmadı.',
+      credential_in_use: 'Bu Google hesabı başka bir Hidden Cost bulut hesabına bağlı.',
+      configuration: 'Google bağlantısı doğrulanamadı. SHA ve OAuth yapılandırmasını kontrol et.',
+      unknown: 'Google hesabı bağlanamadı. Bağlantını kontrol edip tekrar dene.',
+    },
+    googleLinkDiagnostic: 'Tanılama kodu: {{code}}',
     google: 'Google hesabı',
     anonymousAccount: 'Bu kurulumdaki anonim Firebase hesabıyla korunuyor.',
     linkedAccount: 'Bağlı hesap: {{account}}',

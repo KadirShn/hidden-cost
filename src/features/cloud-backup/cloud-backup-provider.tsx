@@ -14,11 +14,13 @@ import { useRepositories } from '@/data/repositories/repository-provider';
 import type { SyncQueueSummary } from '@/data/repositories/types';
 import { useSettings } from '@/features/settings/use-settings';
 import { useNetworkStatus } from '@/hooks/use-network-status';
-import type { CloudUser } from '@/services/firebase/contracts';
+import { FirebaseOperationError, type CloudUser } from '@/services/firebase/contracts';
 import { firebaseClient } from '@/services/firebase/firebase-client';
 import { FirebaseSyncWorker } from '@/services/firebase/sync-worker';
 import type { AppErrorCode } from '@/services/observability/errors';
 import { telemetry } from '@/services/observability/telemetry-service';
+
+import { resolveGoogleLinkError, type GoogleLinkError } from './google-link-error';
 
 const BACKUP_ENABLED_KEY = 'cloudBackup.enabled';
 const LAST_SYNC_KEY = 'cloudBackup.lastSyncAt';
@@ -35,6 +37,8 @@ export type CloudBackupContextValue = {
   summary: SyncQueueSummary;
   lastSyncAt?: string;
   errorCode?: AppErrorCode;
+  googleLinkError?: GoogleLinkError;
+  googleLinkDiagnosticCode?: string;
   setEnabled: (enabled: boolean) => Promise<void>;
   syncNow: () => Promise<void>;
   linkGoogle: () => Promise<void>;
@@ -61,6 +65,8 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
     () => repositories.settings.get<string>(LAST_SYNC_KEY) ?? undefined,
   );
   const [errorCode, setErrorCode] = useState<AppErrorCode>();
+  const [googleLinkError, setGoogleLinkError] = useState<GoogleLinkError>();
+  const [googleLinkDiagnosticCode, setGoogleLinkDiagnosticCode] = useState<string>();
   const worker = useMemo(
     () => new FirebaseSyncWorker(repositories.syncQueue, firebaseClient),
     [repositories.syncQueue],
@@ -160,6 +166,8 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
   const linkGoogle = useCallback(async () => {
     setStatus('connecting');
     setErrorCode(undefined);
+    setGoogleLinkError(undefined);
+    setGoogleLinkDiagnosticCode(undefined);
     try {
       void telemetry.track('sign_in_started', { source_screen: 'cloud_backup' });
       const linked = await firebaseClient.linkGoogleAccount();
@@ -168,9 +176,14 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
       upsertProfile(linked, true);
       setStatus('idle');
       await syncNow();
-    } catch {
-      setErrorCode('firebase/unavailable');
-      setStatus('error');
+    } catch (error) {
+      setGoogleLinkError(resolveGoogleLinkError(error));
+      if (__DEV__ && error instanceof FirebaseOperationError) {
+        setGoogleLinkDiagnosticCode(
+          error.diagnosticReason ? `${error.code}:${error.diagnosticReason}` : error.code,
+        );
+      }
+      setStatus('idle');
     }
   }, [syncNow, upsertProfile]);
   const deleteCloudAccount = useCallback(async () => {
@@ -226,6 +239,8 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
       summary,
       lastSyncAt,
       errorCode,
+      googleLinkError,
+      googleLinkDiagnosticCode,
       setEnabled,
       syncNow,
       linkGoogle,
@@ -235,6 +250,8 @@ export function CloudBackupProvider({ children }: PropsWithChildren) {
       deleteCloudAccount,
       enabled,
       errorCode,
+      googleLinkError,
+      googleLinkDiagnosticCode,
       lastSyncAt,
       linkGoogle,
       setEnabled,

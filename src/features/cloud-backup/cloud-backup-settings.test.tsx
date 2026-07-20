@@ -49,4 +49,35 @@ describe('CloudBackupSettings', () => {
     expect(screen.getByText(/credentials are not configured/i)).toBeTruthy();
     expect(screen.getByText(/Local calculations continue/i)).toBeTruthy();
   });
+
+  it('keeps a Google linking failure visible next to the retry action', async () => {
+    await i18n.changeLanguage('en');
+    const value: CloudBackupContextValue = {
+      configured: true,
+      googleLinkAvailable: true,
+      googleLinkError: 'configuration',
+      googleLinkDiagnosticCode: '10',
+      enabled: true,
+      user: { uid: 'anonymous-user', isAnonymous: true },
+      status: 'idle',
+      summary: { pending: 0, failed: 0, conflicts: 0 },
+      setEnabled: jest.fn(async () => undefined),
+      syncNow: jest.fn(async () => undefined),
+      linkGoogle: jest.fn(async () => undefined),
+      deleteCloudAccount: jest.fn(async () => undefined),
+    };
+    const screen = await renderWithTheme(
+      <I18nextProvider i18n={i18n}>
+        <SettingsProvider>
+          <CloudBackupContext.Provider value={value}>
+            <CloudBackupSettings />
+          </CloudBackupContext.Provider>
+        </SettingsProvider>
+      </I18nextProvider>,
+    );
+
+    expect(screen.getByText(/Check the SHA and OAuth configuration/)).toBeTruthy();
+    expect(screen.getByText(/Diagnostic code: 10/)).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Link Google account' })).toBeTruthy();
+  });
 });
