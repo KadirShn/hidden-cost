@@ -156,7 +156,6 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 
 - [Product specification](docs/HIDDEN_COST_PRODUCT_SPEC.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Codex master prompt](docs/HIDDEN_COST_CODEX_MASTER_PROMPT.md)
 - [Calculation engine](docs/CALCULATION_ENGINE.md)
 - [Offline-first data layer](docs/DATA_LAYER.md)
 - [Main calculation flow](docs/MAIN_FLOW.md)
