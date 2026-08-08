@@ -2,7 +2,7 @@ export type ExportFeature = 'project_pdf' | 'comparison_pdf' | 'result_card';
 
 export type ExportAccessDecision = {
   granted: boolean;
-  source: 'free' | 'rewarded';
+  source: 'free';
 };
 
 export interface ExportAccessPolicy {

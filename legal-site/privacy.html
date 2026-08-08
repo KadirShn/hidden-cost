@@ -44,11 +44,6 @@
           işlenebilir. Hassas alanlar gönderilmeden önce sınırlandırılır ve maskelenir.
         </li>
         <li>
-          Reklamlar etkinleştirildiğinde Google AdMob ve User Messaging Platform; izin tercihi,
-          cihaz/reklam tanımlayıcıları ve reklam etkileşim sinyallerini geçerli izinlere göre
-          işleyebilir. Hesaplama tutarları reklam sistemlerine gönderilmez.
-        </li>
-        <li>
           Firebase App Check, kötüye kullanımı önlemek için uygulama ve cihaz bütünlüğü sinyalleri
           işler.
         </li>
@@ -57,14 +52,13 @@
       <h2>3. Amaç ve tercihler</h2>
       <p>
         Veriler hesaplama, isteğe bağlı yedekleme/senkronizasyon, güvenlik, hata giderme ve
-        kullanıcının izin verdiği ölçüm veya reklam amaçlarıyla işlenir. Bulut yedekleme, analytics
-        ve reklam gizliliği birbirinden ayrı tercihlerdir. Analytics tercihi ve uygun olduğunda
-        reklam gizliliği seçenekleri uygulamanın Ayarlar ekranından değiştirilebilir.
+        kullanıcının izin verdiği ölçüm amaçlarıyla işlenir. Bulut yedekleme ve analytics ayrı,
+        isteğe bağlı tercihlerdir. Analytics tercihi uygulamanın Ayarlar ekranından değiştirilebilir.
       </p>
 
       <h2>4. Hizmet sağlayıcılar ve aktarım</h2>
       <p>
-        Firebase, Google Analytics for Firebase, Crashlytics, App Check, AdMob ve UMP hizmetleri
+        Firebase, Google Analytics for Firebase, Crashlytics ve App Check hizmetleri
         Google tarafından sağlanır. Veriler, bu hizmetlerin altyapısının bulunduğu ülkelerde
         Google'ın geçerli şartları ve veri koruma mekanizmaları kapsamında işlenebilir. Kullanıcının
         dışa aktardığı PDF veya JSON dosyası yalnızca kullanıcının seçtiği hedef uygulamayla
@@ -120,9 +114,8 @@
           Optional cloud backup uses Firebase Authentication and Cloud Firestore. Linking Google may
           provide a name, email address, and profile photo. Optional Firebase Analytics receives
           only bounded categorical events—not monetary values, project titles, notes, email, or free
-          text. Production diagnostics may use Crashlytics. When advertising is enabled, AdMob and
-          UMP may process consent, device/ad identifiers, and ad interaction signals under
-          applicable choices. App Check processes integrity signals for abuse protection.
+          text. Production diagnostics may use Crashlytics. App Check processes integrity signals
+          for abuse protection.
         </p>
         <p>
           Local data remains until deleted by the user or the app is uninstalled. Cloud data remains

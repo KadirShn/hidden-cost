@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { compareProjects, type ComparisonEntry } from '@/domain';
-import { useAds } from '@/features/ads/use-ads';
 import { useSettings } from '@/features/settings/use-settings';
 import type { ExportOutcome } from '@/services/export/document-exporter';
 import { documentExporter } from '@/services/export/expo-document-exporter';
@@ -19,12 +17,9 @@ import { formatMinorCurrency, getLocaleTag } from '@/utils/format';
 export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[] }) {
   const { t } = useTranslation();
   const { locale } = useSettings();
-  const ads = useAds();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [outcome, setOutcome] = useState<ExportOutcome | null>(null);
-  const [rewardPromptVisible, setRewardPromptVisible] = useState(false);
-  const [cancelled, setCancelled] = useState(false);
   const comparison = compareProjects(entries);
   const generatedAt = new Intl.DateTimeFormat(getLocaleTag(locale), {
     dateStyle: 'medium',
@@ -62,16 +57,8 @@ export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[
     setLoading(true);
     setError(false);
     setOutcome(null);
-    setCancelled(false);
     try {
       void telemetry.track('pdf_export_started', { locale, source_screen: 'compare' });
-      if (ads.rewardedExportEnabled) {
-        const reward = await ads.requestRewardedExport(true);
-        if (reward === 'dismissed') {
-          setCancelled(true);
-          return;
-        }
-      }
       setOutcome(
         await documentExporter.exportHtml(
           'comparison_pdf',
@@ -94,7 +81,7 @@ export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[
         fullWidth
         label={t('export.comparisonAction')}
         loading={loading}
-        onPress={() => (ads.rewardedExportEnabled ? setRewardPromptVisible(true) : void run())}
+        onPress={() => void run()}
       />
       {outcome ? (
         <AppText accessibilityLiveRegion="polite" tone="success">
@@ -106,27 +93,6 @@ export function ComparisonExportActions({ entries }: { entries: ComparisonEntry[
           {t('export.failed')}
         </AppText>
       ) : null}
-      {cancelled ? (
-        <AppText accessibilityLiveRegion="polite" tone="secondary">
-          {t('ads.rewardCancelled')}
-        </AppText>
-      ) : null}
-      <ConfirmDialog
-        cancelLabel={t('common.cancel')}
-        confirmLabel={t('ads.watchRewarded')}
-        message={t('ads.rewardedBody')}
-        onCancel={() => {
-          setRewardPromptVisible(false);
-          setCancelled(true);
-          void ads.requestRewardedExport(false);
-        }}
-        onConfirm={() => {
-          setRewardPromptVisible(false);
-          void run();
-        }}
-        title={t('ads.rewardedTitle')}
-        visible={rewardPromptVisible}
-      />
     </>
   );
 }

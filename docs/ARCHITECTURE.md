@@ -2,10 +2,10 @@
 
 ## Status and scope
 
-This document records the Phase 11 architecture baseline. The application connects its Expo
+This document records the version 2.0 architecture baseline. The application connects its Expo
 Router screens to the pure calculation domain through an offline-first repository layer. Remote
-Firebase backup/synchronization is optional and adapter-bound. Advertising is isolated behind a
-consent-aware adapter and policy service; safe defaults keep every format disabled.
+Firebase backup/synchronization is optional and adapter-bound. Version 2.0 contains no advertising
+SDK or advertising placements.
 
 ## Goals
 
@@ -14,7 +14,7 @@ consent-aware adapter and policy service; safe defaults keep every format disabl
 - Clear separation between presentation, application, domain, and infrastructure
 - Safe monetary calculations using minor units and decimal arithmetic in the domain phase
 - Optional, replaceable Firebase synchronization
-- Replaceable analytics and advertising providers
+- Replaceable analytics provider
 
 ## Dependency direction
 
@@ -28,8 +28,8 @@ Domain interfaces and rules
 Infrastructure adapters
 ```
 
-Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, analytics, or
-advertising packages. Routes must not contain reusable components or infrastructure calls.
+Dependencies point inward. Domain code must not import React, Expo, Firebase, SQLite, or analytics
+packages. Routes must not contain reusable components or infrastructure calls.
 
 ## Phase 11 directory boundaries
 
@@ -135,8 +135,8 @@ local data.
 runtime config layer accept exactly `development`, `preview`, or `production`. Unknown values fail
 early instead of silently selecting a production-like configuration.
 
-Expo public variables are bundled into the client and are never a secret store. Firebase and AdMob
-configuration is intentionally deferred to their designated phases.
+Expo public variables are bundled into the client and are never a secret store. Firebase
+configuration is optional and supplied only at build time.
 
 ## Build profiles
 
@@ -175,21 +175,6 @@ and results. The engine is a deterministic pure function. It calculates initial,
 fuel/energy, financing, residual, TCO, derived metrics, breakdown, completeness, and warnings.
 Financing principal and down payment are not added to TCO because purchase price already includes
 them. See [Calculation Engine](CALCULATION_ENGINE.md) for the complete formula contract.
-
-## Advertising boundary
-
-`AdsPolicyService` decides the Remote Config kill switch, current UMP permission, placement,
-first-session exclusion, completed-calculation threshold, and cooldown. The Google SDK is confined
-to platform adapters/components; web and unsupported builds receive no-op implementations.
-
-Native inventory is allowed only after meaningful dashboard/template content exists. Rewarded
-inventory requires an export-specific user opt-in and fails open to free export on no-fill/load
-failure. Interstitial checks occur only after a result is persisted and project detail is visible;
-they never run in onboarding, the first session, or the wizard.
-
-Ad event analytics has a separate default-off user permission. Its typed payload permits format,
-placement, event, and bounded SDK error only. Domain inputs, project metadata, currency, and cost
-results cannot enter the event contract. Ad failures must never block the base application.
 
 ## Observability and privacy boundary
 
@@ -241,13 +226,13 @@ The local and CI quality gates are:
 ## Release boundary
 
 The production EAS profile creates an Android App Bundle, uses EAS-managed remote version codes,
-and never submits automatically. Production config fails closed when the platform AdMob app ID or
-public legal URLs are absent/placeholder values. Enabling Firebase also requires that platform's
-service file. Signing keys, service-account JSON, service files, live ad IDs, and store credentials
-remain outside version control and require owner action.
+and never submits automatically. Production config fails closed when public legal URLs are
+absent/placeholder values. Enabling Firebase also requires that platform's service file. Signing
+keys, service-account JSON, service files, and store credentials remain outside version control and
+require owner action.
 
 The Play internal submit profile is draft-only and remains a separate external command. Remote
-Config starts with advertising and force-update switches off. EAS Update is not configured in this
+Config starts with the force-update switch off. EAS Update is not configured in this
 baseline; adopting it requires a separately reviewed native build, runtime policy, channels, and
 rollback exercise. Operational details live in
 [Android internal testing preparation](ANDROID_INTERNAL_TESTING.md).

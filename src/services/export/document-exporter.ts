@@ -4,7 +4,7 @@ import {
   type ExportFeature,
 } from './export-policy';
 
-export type ExportOutcome = { mode: 'shared' | 'printed'; accessSource: 'free' | 'rewarded' };
+export type ExportOutcome = { mode: 'shared' | 'printed'; accessSource: 'free' };
 
 export type DocumentExportPorts = {
   platform: 'android' | 'ios' | 'web' | 'macos' | 'windows';

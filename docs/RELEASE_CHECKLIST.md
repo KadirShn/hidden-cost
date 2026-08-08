@@ -8,7 +8,7 @@ binary, a physical device, or an external console action.
 - [x] Display name is consistently `Hidden Cost`.
 - [x] Candidate Android application ID is `com.kadirshn.hiddencost`.
 - [ ] Owner confirms the application ID and legal publisher before the first Play upload.
-- [x] User-facing version is `1.0.0`; local initial `versionCode` is `1`.
+- [x] User-facing version is `2.0.0`; local seed `versionCode` is `2`.
 - [x] EAS uses remote version source and production `versionCode` auto-increment.
 
 ## Build and signing
@@ -40,19 +40,8 @@ binary, a physical device, or an external console action.
 - [ ] Cross-user access denial and offline-to-online sync pass on the Play-installed build.
 - [x] Firebase-disabled builds avoid native Analytics, Crashlytics, App Check, and Google Sign-In
   imports during startup.
-- [x] Remote Config defaults disable ads, rewarded export, force update, and maintenance mode.
+- [x] Remote Config defaults disable force update and maintenance mode.
 - [ ] App Check Play Integrity metrics are healthy before staged Firestore/Functions enforcement.
-
-## AdMob and consent
-
-- [x] Development/preview use official test IDs; production never substitutes test IDs.
-- [x] Production ad request configuration contains no committed test-device identifiers.
-- [x] Production Android app/native/interstitial/rewarded unit IDs are configured.
-- [x] UMP EEA/UK and US messages are published, privacy options are available, and `app-ads.txt` is
-      publicly reachable. The Play Console ads declaration remains an upload-time action.
-- [ ] Import and publish `remoteconfig.production.template.json` after the release-candidate smoke
-      test; use `ads_enabled=false` for emergency rollback.
-- [ ] Consent rejection, no-fill, timeout, rewarded dismissal, and interstitial policy pass on device.
 
 ## Privacy, deletion, and Data Safety
 

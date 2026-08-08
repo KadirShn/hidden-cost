@@ -5,11 +5,6 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 const APP_ENVIRONMENTS = ['development', 'preview', 'production'] as const;
 type AppEnvironment = (typeof APP_ENVIRONMENTS)[number];
 
-const ADMOB_TEST_APP_IDS = {
-  android: 'ca-app-pub-3940256099942544~3347511713',
-  ios: 'ca-app-pub-3940256099942544~1458002511',
-} as const;
-
 function resolveAppEnvironment(value: string | undefined): AppEnvironment {
   const environment = value ?? 'development';
 
@@ -57,16 +52,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   // unavailable iOS credentials. A real iOS EAS build sets the platform to ios.
   const buildsAndroid = buildPlatform !== 'ios';
   const buildsIos = buildPlatform === 'ios';
-  const androidAdMobAppId = isProduction
-    ? process.env.ADMOB_ANDROID_APP_ID
-    : ADMOB_TEST_APP_IDS.android;
-  const iosAdMobAppId = isProduction ? process.env.ADMOB_IOS_APP_ID : ADMOB_TEST_APP_IDS.ios;
-
-  if (isProduction && ((buildsAndroid && !androidAdMobAppId) || (buildsIos && !iosAdMobAppId))) {
-    throw new Error(
-      'Production builds require the platform AdMob app ID. Test IDs are never used in production.',
-    );
-  }
   const privacyPolicyUrl = resolvePublicHttpsUrl(
     process.env.EXPO_PUBLIC_PRIVACY_POLICY_URL,
     'EXPO_PUBLIC_PRIVACY_POLICY_URL',
@@ -137,18 +122,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-localization',
       'expo-sqlite',
       'expo-sharing',
-      [
-        'react-native-google-mobile-ads',
-        {
-          androidAppId: androidAdMobAppId,
-          iosAppId: process.env.ADMOB_IOS_APP_ID || 'ca-app-pub-0000000000000000~0000000000',
-          delayAppMeasurementInit: true,
-          optimizeInitialization: true,
-          optimizeAdLoading: true,
-          userTrackingUsageDescription:
-            'This identifier may be used to deliver and measure ads when you allow it.',
-        },
-      ],
       buildPropertiesPlugin,
       ...firebasePlugins,
     ],
@@ -170,14 +143,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     extra: {
       ...config.extra,
       appEnvironment,
-      ads: {
-        testMode: !isProduction,
-        productionUnitIdsConfigured: Boolean(
-          process.env.EXPO_PUBLIC_ADMOB_NATIVE_UNIT_ID &&
-          process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_UNIT_ID &&
-          process.env.EXPO_PUBLIC_ADMOB_REWARDED_UNIT_ID,
-        ),
-      },
       firebase: {
         configured: firebaseNativeConfigured,
         emulatorHost: process.env.EXPO_PUBLIC_FIREBASE_EMULATOR_HOST ?? '10.0.2.2',

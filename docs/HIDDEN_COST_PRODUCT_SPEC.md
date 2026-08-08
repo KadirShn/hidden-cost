@@ -1,5 +1,9 @@
 # Hidden Cost — Product Requirements & Technical Specification
 
+> **Version 2.0 override (August 2026):** Advertising, AdMob, UMP consent, ad telemetry, and
+> rewarded/interstitial/native placements described in this version 1.0 specification are retired.
+> Hidden Cost 2.0 is ad-free, and all export features are available without an advertising gate.
+
 > **Belge sürümü:** 1.0  
 > **Tarih:** 18 Temmuz 2026  
 > **Platform:** Android öncelikli, iOS uyumlu  

@@ -25,8 +25,6 @@ import {
 import { connectFunctionsEmulator, getFunctions } from '@react-native-firebase/functions';
 import {
   fetchAndActivate,
-  getBoolean,
-  getNumber,
   getRemoteConfig,
 } from '@react-native-firebase/remote-config';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -237,15 +235,6 @@ class NativeFirebaseClient implements FirebaseClient {
       await fetchAndActivate(config);
       return Object.freeze({
         ...REMOTE_CONFIG_DEFAULTS,
-        ads_enabled: getBoolean(config, 'ads_enabled'),
-        native_ads_enabled: getBoolean(config, 'native_ads_enabled'),
-        interstitial_ads_enabled: getBoolean(config, 'interstitial_ads_enabled'),
-        rewarded_export_enabled: getBoolean(config, 'rewarded_export_enabled'),
-        interstitial_min_completed_calculations: getNumber(
-          config,
-          'interstitial_min_completed_calculations',
-        ),
-        interstitial_cooldown_minutes: getNumber(config, 'interstitial_cooldown_minutes'),
       });
     } catch {
       // Defaults are safe; Firebase failure must never block local initialization.

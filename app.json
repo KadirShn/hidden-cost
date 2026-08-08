@@ -2,7 +2,7 @@
   "expo": {
     "name": "Hidden Cost",
     "slug": "hidden-cost",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/brand/app-icon.png",
     "scheme": "hiddencost",
@@ -46,10 +46,6 @@
     },
     "extra": {
       "appEnvironment": "development",
-      "ads": {
-        "testMode": true,
-        "productionUnitIdsConfigured": false
-      },
       "firebase": {
         "configured": false,
         "emulatorHost": "10.0.2.2",

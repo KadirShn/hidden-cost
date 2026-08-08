@@ -1,5 +1,5 @@
 import { type Href, Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -15,11 +15,9 @@ import {
   useArchiveProject,
   useDuplicateProject,
   useProject,
-  useProjects,
   useSoftDeleteProject,
 } from '@/data/query/project-hooks';
 import { calculateCostProject } from '@/domain';
-import { useAds } from '@/features/ads/use-ads';
 import { ProjectExportActions } from '@/features/export/project-export-actions';
 import { ResultSummary } from '@/features/results/result-summary';
 import { ScenarioSummary } from '@/features/scenarios/scenario-summary';
@@ -29,27 +27,15 @@ import { telemetry } from '@/services/observability/telemetry-service';
 type ConfirmAction = 'archive' | 'delete' | null;
 
 export function ProjectDetailScreen() {
-  const { id = '', completed } = useLocalSearchParams<{ id: string; completed?: string }>();
+  const { id = '' } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation();
   const router = useRouter();
   const theme = useTheme();
   const project = useProject(id);
-  const projects = useProjects();
-  const ads = useAds();
-  const interstitialChecked = useRef(false);
   const duplicate = useDuplicateProject();
   const archive = useArchiveProject();
   const remove = useSoftDeleteProject();
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
-
-  useEffect(() => {
-    if (completed !== '1' || interstitialChecked.current || !project.data || !projects.data) {
-      return;
-    }
-    interstitialChecked.current = true;
-    const completedCount = projects.data.filter((item) => item.status === 'complete').length;
-    void ads.maybeShowPostResultInterstitial(completedCount);
-  }, [ads, completed, project.data, projects.data]);
 
   if (project.isPending) {
     return (

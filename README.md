@@ -6,8 +6,8 @@ assumptions behind every result.
 
 ## Current status
 
-Phase 11 prepares the Android internal-testing release boundary: an AAB production profile, remote
-versioning, signing/credential guidance, production Firebase/AdMob/App Check/Remote Config gates,
+Version 2.0 prepares the Android release boundary as an ad-free application: an AAB production
+profile, remote versioning, signing/credential guidance, Firebase/App Check/Remote Config gates,
 Data Safety inventory, Play listing copy, smoke/rollback plans, and explicit owner-supplied inputs.
 No store submission or credential mutation is automated.
 
@@ -25,7 +25,6 @@ No store submission or credential mutation is automated.
 - `expo-print`, `expo-sharing`, and `expo-file-system` for guarded export and cleanup
 - React Native Firebase with Expo development builds for opt-in Auth, Firestore, Functions, and
   Remote Config
-- `react-native-google-mobile-ads` with UMP consent and test-only non-production inventory
 - React Native Firebase Analytics, Crashlytics, and App Check behind central adapters
 - EAS Build profiles for development, preview, and production
 - ESLint, Prettier, Jest, and React Native Testing Library
@@ -121,7 +120,7 @@ src/services/performance/        Bounded, local-only startup and render measurem
 docs/                            Product and architecture documentation
 ```
 
-UI code must not call Firebase, SQLite, analytics, or advertising providers directly. See
+UI code must not call Firebase, SQLite, or analytics providers directly. See
 [Architecture](docs/ARCHITECTURE.md) for dependency rules.
 
 ## Navigation
@@ -136,15 +135,15 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 
 - Inbound cloud restore and the interactive conflict-resolution screen remain future work; a newer
   cloud revision is preserved and exposed as `conflict` instead of being overwritten.
-- Real Firebase credentials and production AdMob identifiers are intentionally absent. Without
-  build-time configuration the app remains local-only and all advertising defaults to disabled.
-- Store console declarations, production UMP messages, and Remote Config rollout remain operator
-  steps documented in the setup and policy checklist.
+- Real Firebase credentials are intentionally absent. Without build-time configuration the app
+  remains local-only.
+- Store console declarations and Remote Config rollout remain operator steps documented in the
+  release checklists.
 - The automated accessibility coverage verifies semantics and scalable layouts, but TalkBack,
   Switch Access, and maximum-font visual review on the final signed build remain a physical-device
   release gate.
 - Phase 10 verifies an unsigned preview release APK. A signed production AAB cannot be produced
-  until the owner supplies application/store identifiers, AdMob IDs, Firebase files, and signing
+  until the owner supplies application/store identifiers, Firebase files, and signing
   credentials.
 - Performance samples are intentionally local development diagnostics, not telemetry or fixed
   cross-device budgets. Final startup/list baselines must be captured on the target low-end Android
@@ -161,8 +160,6 @@ UI code must not call Firebase, SQLite, analytics, or advertising providers dire
 - [Main calculation flow](docs/MAIN_FLOW.md)
 - [Scenarios, comparison, and export](docs/EXPORT_AND_COMPARISON.md)
 - [Firebase setup](docs/FIREBASE_SETUP.md)
-- [AdMob setup](docs/ADMOB_SETUP.md)
-- [Advertising policy checklist](docs/AD_POLICY_CHECKLIST.md)
 - [App Check setup](docs/APP_CHECK_SETUP.md)
 - [Privacy checklist](docs/PRIVACY_CHECKLIST.md)
 - [Quality and release verification](docs/QUALITY_AND_RELEASE.md)

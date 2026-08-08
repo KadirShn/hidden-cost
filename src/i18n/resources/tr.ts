@@ -298,23 +298,6 @@ export const tr = {
     openProject: 'Projeyi aç',
     saveError: 'Sonuç kaydedilemedi. Tekrar dene.',
   },
-  ads: {
-    sponsored: 'Sponsorlu',
-    privacySection: 'Reklam gizliliği',
-    privacyOptionsTitle: 'Gizlilik seçenekleri',
-    privacyOptionsBody:
-      'Google UMP izin formundaki reklam gizliliği tercihlerini buradan yeniden açabilirsin.',
-    openPrivacyOptions: 'Gizlilik seçeneklerini aç',
-    privacyOptionsUnavailable: 'Bu cihaz ve bölge için yeniden açılması gereken bir form yok.',
-    analyticsTitle: 'Anonim kullanım analitiği',
-    analyticsBody:
-      'Yalnızca kategorik kullanım olaylarını gönderir; tutar, başlık, not, e-posta veya serbest metin göndermez.',
-    rewardedTitle: 'Reklam izleyerek dışa aktar',
-    rewardedBody:
-      'PDF veya gelişmiş rapor dışa aktarımını açmak için isteğe bağlı reklamı izleyebilirsin. Reklam yüklenemezse dışa aktarım ücretsiz devam eder.',
-    watchRewarded: 'Reklamı izle',
-    rewardCancelled: 'Reklam izleme iptal edildi; verilerin ve hesaplaman değişmedi.',
-  },
   privacy: {
     section: 'Verilerin ve gizliliğin',
     localDataTitle: 'Yerel veriler',
@@ -338,7 +321,7 @@ export const tr = {
     termsTitle: 'Kullanım koşulları',
     disclaimerTitle: 'Yasal uyarı',
     privacyBody:
-      'Hidden Cost hesaplamaları cihazında saklar. Bulut yedekleme ve kullanım analitiği ayrı, isteğe bağlı tercihlerdir. Analytics olayları maliyet tutarı, proje başlığı, not, e-posta veya serbest kullanıcı metni içermez. Reklam gizliliği tercihleri Google UMP üzerinden yönetilir.',
+      'Hidden Cost hesaplamaları cihazında saklar. Bulut yedekleme ve kullanım analitiği ayrı, isteğe bağlı tercihlerdir. Analytics olayları maliyet tutarı, proje başlığı, not, e-posta veya serbest kullanıcı metni içermez.',
     termsBody:
       'Uygulama, kullanıcı tarafından girilen varsayımlara dayalı tahminler üretir. Sonuçların doğruluğu ve güncelliği garanti edilmez. Uygulamayı yürürlükteki kurallara uygun ve kendi sorumluluğunda kullanmalısın.',
     disclaimerBody:
@@ -521,13 +504,17 @@ export const tr = {
     themeSystem: 'Sistem',
     themeLight: 'Açık',
     themeDark: 'Koyu',
+    analyticsSection: 'Gizlilik ve analitik',
+    analyticsTitle: 'Anonim kullanım analitiği',
+    analyticsBody:
+      'Yalnızca kategorik kullanım olaylarını gönderir; tutar, başlık, not, e-posta veya serbest metin göndermez.',
     accessibilitySection: 'Erişilebilirlik',
     reducedMotionTitle: 'Azaltılmış hareket',
     reducedMotionSystem: 'Animasyonlar cihazının hareket tercihine saygı gösterir.',
     aboutSection: 'Uygulama',
     versionLabel: 'Sürüm',
     phaseLabel: 'Mevcut kapsam',
-    phaseValue: 'Faz 11 — Android internal testing hazırlığı',
+    phaseValue: 'Sürüm 2.0 — Reklamsız yayın',
     developerSection: 'Geliştirici araçları',
     resetDatabaseTitle: 'Yerel veritabanını sıfırla',
     resetDatabaseHelp:

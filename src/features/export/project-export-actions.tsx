@@ -5,11 +5,9 @@ import { View } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useScenarioOverrides } from '@/data/query/scenario-hooks';
 import type { ProjectBundle } from '@/data/repositories/types';
 import { analyzeScenarios } from '@/domain';
-import { useAds } from '@/features/ads/use-ads';
 import { getScenarioFields } from '@/features/scenarios/scenario-form';
 import { useSettings } from '@/features/settings/use-settings';
 import { useTheme } from '@/hooks/use-theme';
@@ -28,13 +26,10 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
   const { t } = useTranslation();
   const { locale } = useSettings();
   const theme = useTheme();
-  const ads = useAds();
   const overrides = useScenarioOverrides(bundle.project.id);
   const [busy, setBusy] = useState<'pdf' | 'card' | null>(null);
   const [error, setError] = useState(false);
   const [outcome, setOutcome] = useState<ExportOutcome | null>(null);
-  const [rewardPromptVisible, setRewardPromptVisible] = useState(false);
-  const [cancelled, setCancelled] = useState(false);
   const validScenarioPaths = new Set(getScenarioFields(bundle).map((field) => field.path));
   const analysis = analyzeScenarios(
     { project: bundle.project, costItems: bundle.costItems },
@@ -106,7 +101,7 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
     legalTitle: t('export.legalTitle'),
     legalDisclaimer: t('export.legalDisclaimer'),
     appVersionLabel: t('export.appVersion'),
-    appVersion: Constants.expoConfig?.version ?? '1.0.0',
+    appVersion: Constants.expoConfig?.version ?? '2.0.0',
     engineVersionLabel: t('export.engineVersion'),
     engineVersion: result.calculationEngineVersion,
   });
@@ -127,18 +122,9 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
     setBusy(kind);
     setError(false);
     setOutcome(null);
-    setCancelled(false);
     try {
       if (kind === 'pdf') {
         void telemetry.track('pdf_export_started', { locale, source_screen: 'project_detail' });
-      }
-      if (kind === 'pdf' && ads.rewardedExportEnabled) {
-        const reward = await ads.requestRewardedExport(true);
-        if (reward === 'dismissed') {
-          setCancelled(true);
-          return;
-        }
-        // If loading is unavailable, PDF remains usable without the ad.
       }
       const nextOutcome = await documentExporter.exportHtml(
         kind === 'pdf' ? 'project_pdf' : 'result_card',
@@ -164,9 +150,7 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
         <Button
           label={t('export.pdfAction')}
           loading={busy === 'pdf'}
-          onPress={() =>
-            ads.rewardedExportEnabled ? setRewardPromptVisible(true) : void run('pdf')
-          }
+          onPress={() => void run('pdf')}
           variant="secondary"
         />
         <Button
@@ -186,27 +170,6 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
           {t('export.failed')}
         </AppText>
       ) : null}
-      {cancelled ? (
-        <AppText accessibilityLiveRegion="polite" tone="secondary">
-          {t('ads.rewardCancelled')}
-        </AppText>
-      ) : null}
-      <ConfirmDialog
-        cancelLabel={t('common.cancel')}
-        confirmLabel={t('ads.watchRewarded')}
-        message={t('ads.rewardedBody')}
-        onCancel={() => {
-          setRewardPromptVisible(false);
-          setCancelled(true);
-          void ads.requestRewardedExport(false);
-        }}
-        onConfirm={() => {
-          setRewardPromptVisible(false);
-          void run('pdf');
-        }}
-        title={t('ads.rewardedTitle')}
-        visible={rewardPromptVisible}
-      />
     </View>
   );
 }

@@ -15,14 +15,6 @@ Complete this checklist for every production release.
 - [ ] Firebase Analytics DebugView and Crashlytics symbol/source-map processing are verified on a
       release candidate.
 
-## Advertising privacy
-
-- [x] UMP is refreshed before Mobile Ads initialization.
-- [x] Ads are not requested while UMP reports `canRequestAds=false`.
-- [x] Advertising privacy options can be reopened from Settings when required.
-- [x] Advertising and analytics consent are separate controls.
-- [ ] Published AdMob privacy messages and store disclosures are reviewed for every target region.
-
 ## User data controls
 
 - [x] Local calculations, profile, settings, and sync records can be exported as JSON.

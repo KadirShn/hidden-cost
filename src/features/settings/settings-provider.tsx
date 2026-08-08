@@ -1,7 +1,6 @@
 import { createContext, useCallback, useMemo, type PropsWithChildren } from 'react';
 
 import { getInitialLocale, i18n, isAppLocale, type AppLocale } from '@/i18n';
-import { setAdEventAnalyticsEnabled } from '@/services/ads/send-ad-event';
 import { telemetry } from '@/services/observability/telemetry-service';
 import { settingsStore, usePersistentSetting } from '@/store/settings-store';
 import type { ThemePreference } from '@/theme/tokens';
@@ -42,7 +41,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   );
   const [analyticsValue, setAnalyticsValue] = usePersistentSetting(
     'settings.analyticsConsent',
-    settingsStore.get('settings.adAnalyticsConsent') === 'true' ? 'true' : 'false',
+    'false',
     isBooleanSetting,
   );
 
@@ -58,7 +57,6 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     (enabled: boolean) => {
       setAnalyticsValue(String(enabled) as 'true' | 'false');
       settingsStore.set('settings.analyticsConsentVersion', '1');
-      void setAdEventAnalyticsEnabled(enabled);
       void telemetry.track('consent_status_updated', { source_screen: 'settings' });
     },
     [setAnalyticsValue],

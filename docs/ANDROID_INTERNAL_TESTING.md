@@ -4,12 +4,12 @@
 
 - Candidate application ID: `com.kadirshn.hiddencost`. The owner must approve it before the first
   Play upload; changing it later creates a different Play application.
-- User-facing version: `1.0.0`. Local seed `versionCode` is `1`; EAS is configured with remote
+- User-facing version: `2.0.0`. Local seed `versionCode` is `2`; EAS is configured with remote
   versioning and increments the Android version code for each production build.
 - The `production` EAS profile creates an Android App Bundle (`.aab`) with store distribution.
 - The `internal` submit profile targets Play internal testing with `draft` status. Submission is a
   separate, explicit command and is not run as part of build.
-- Credentials, an EAS project ID, live service files, production ad IDs, and store publication are
+- Credentials, an EAS project ID, live service files, and store publication are
   intentionally absent from the repository.
 
 ## Owner-supplied release inputs
@@ -22,14 +22,13 @@
 - [ ] Choose EAS-managed Android upload credentials or securely provide the existing upload key.
 - [ ] Enable Google Play App Signing and back up upload-key recovery information.
 - [ ] Configure the production Firebase Android app/service file if cloud features will ship.
-- [ ] Configure production AdMob app/ad-unit IDs and publish UMP messages if ads will ship.
 - [ ] Supply tester Google accounts and the internal-test feedback contact.
 - [ ] Complete legal review of the policy, terms, disclaimer, retention periods, and Data Safety
   answers.
 
-Production config rejects missing/placeholder legal URLs and missing platform AdMob app IDs. A
-Firebase-enabled production build also rejects a missing Android service file. Use EAS environment
-variables/file secrets; never commit these values.
+Production config rejects missing/placeholder legal URLs. A Firebase-enabled production build also
+rejects a missing Android service file. Use EAS environment variables/file secrets; never commit
+these values.
 
 ## Signing and credentials
 
@@ -66,22 +65,6 @@ Local-only operation remains valid when Firebase is disabled. Analytics, Crashly
 Auth, sync, and Remote Config adapters now return before importing native Firebase modules in that
 mode.
 
-## Production AdMob checklist
-
-- [ ] Register the exact Android package in AdMob.
-- [ ] Provide `ADMOB_ANDROID_APP_ID` and the native/interstitial/rewarded unit IDs through the EAS
-  production environment.
-- [ ] Keep iOS identifiers separate; an Android-only EAS build does not need the iOS app ID.
-- [ ] Publish applicable EEA/UK, regulated-US, and privacy-options UMP messages.
-- [ ] Declare ads honestly in Play Console and complete `app-ads.txt` when a publisher site exists.
-- [ ] Keep all Remote Config ad switches off for the first internal binary.
-- [ ] Verify no app-open ad exists, wizard/onboarding has no interstitial, and rewarded export is an
-  explicit choice with free fallback.
-
-Non-production builds use official Google test IDs and the emulator test-device identifier.
-Production resolves only production unit IDs and an empty test-device list; unit tests enforce both
-branches. Do not add physical test-device hashes to committed production configuration.
-
 ## App Check rollout
 
 1. Internal build: register Play Integrity, keep enforcement **off**, and confirm valid requests in
@@ -98,12 +81,6 @@ branches. Do not add physical test-device hashes to committed production configu
 
 | Key | Default | Release meaning |
 | --- | ---: | --- |
-| `ads_enabled` | `false` | Global ad kill switch |
-| `native_ads_enabled` | `false` | Native inventory off |
-| `interstitial_ads_enabled` | `false` | Interstitial off |
-| `rewarded_export_enabled` | `false` | Rewarded export off |
-| `interstitial_min_completed_calculations` | `3` | Threshold if later enabled |
-| `interstitial_cooldown_minutes` | `30` | Cooldown if later enabled |
 | `max_compare_items` | `3` | Domain/UI maximum |
 | `cloud_backup_enabled` | `true` | Capability available; user opt-in still required |
 | `template_catalog_version` | `1` | Bundled catalog baseline |
@@ -154,8 +131,6 @@ create or commit an ad-hoc production key.
   account/cloud deletion when Firebase ships.
 - [ ] Test low/base/high scenarios, three-project comparison, currency/unit warnings, PDF/share, and
   export failure fallback.
-- [ ] Verify UMP accept/reject/privacy-options and ad no-fill while all base features remain usable.
-- [ ] Confirm no interstitial in onboarding, first session, or wizard.
 - [ ] Test maximum font scale, TalkBack, reduced motion, dark/light/system themes, and smallest
   supported screen.
 - [x] Complete the Maestro offline flow on the rebuilt preview release APK.
@@ -170,7 +145,7 @@ for the internal release, verify a naturally captured typed test error through a
 or Firebase dashboard rather than shipping a crash button.
 
 Crash reports must contain typed codes and redacted categorical context only. Confirm release name
-and version code map to `1.0.0` plus the EAS-managed code. Remove the QA build/device from production
+and version code map to `2.0.0` plus the EAS-managed code. Remove the QA build/device from production
 metrics after verification.
 
 ## Rollback plan
@@ -194,6 +169,6 @@ unreviewed OTA path. If adopted later, configure it as a separate native release
 `appVersion` runtime policy, preview/production channels, staged rollout, and error monitoring.
 
 OTA updates may change JavaScript/assets only when compatible with the installed native runtime.
-Native packages, permissions, Firebase/AdMob plugins, service files, app identifiers, and Data
+Native packages, permissions, Firebase plugins, service files, app identifiers, and Data
 Safety-impacting behavior require a new AAB. Roll back a bad OTA through EAS Update and still retain
 the Play rollback plan for native failures.

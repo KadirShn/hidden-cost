@@ -4,11 +4,9 @@ import { Switch, View } from 'react-native';
 
 import { Screen } from '@/components/layout/screen';
 import { AppText } from '@/components/ui/app-text';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
 import { SelectField } from '@/components/ui/select-field';
-import { useAds } from '@/features/ads/use-ads';
 import { CloudBackupSettings } from '@/features/cloud-backup/cloud-backup-settings';
 import { DeveloperDatabaseTools } from '@/features/developer-tools/database-tools';
 import { DeveloperObservabilityTools } from '@/features/developer-tools/observability-tools';
@@ -22,7 +20,6 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
-  const ads = useAds();
   const {
     locale,
     setLocale,
@@ -83,33 +80,17 @@ export default function SettingsScreen() {
       </View>
 
       <View style={{ gap: theme.spacing.md }}>
-        <AppText variant="subtitle">{t('ads.privacySection')}</AppText>
+        <AppText variant="subtitle">{t('settings.analyticsSection')}</AppText>
         <Card>
-          <AppText variant="label">{t('ads.privacyOptionsTitle')}</AppText>
-          <AppText selectable tone="secondary">
-            {t('ads.privacyOptionsBody')}
-          </AppText>
-          <Button
-            disabled={!ads.privacyOptionsAvailable}
-            label={t('ads.openPrivacyOptions')}
-            onPress={() => void ads.openPrivacyOptions()}
-            variant="secondary"
-          />
-          {!ads.privacyOptionsAvailable ? (
-            <AppText tone="secondary" variant="helper">
-              {t('ads.privacyOptionsUnavailable')}
-            </AppText>
-          ) : null}
-          <Divider />
           <View
             style={{ flexDirection: 'row', gap: theme.spacing.md, justifyContent: 'space-between' }}
           >
             <View style={{ flex: 1, gap: theme.spacing.xs }}>
-              <AppText variant="label">{t('ads.analyticsTitle')}</AppText>
-              <AppText tone="secondary">{t('ads.analyticsBody')}</AppText>
+              <AppText variant="label">{t('settings.analyticsTitle')}</AppText>
+              <AppText tone="secondary">{t('settings.analyticsBody')}</AppText>
             </View>
             <Switch
-              accessibilityLabel={t('ads.analyticsTitle')}
+              accessibilityLabel={t('settings.analyticsTitle')}
               onValueChange={setAnalyticsConsent}
               value={analyticsConsent}
             />
@@ -139,7 +120,7 @@ export default function SettingsScreen() {
             }}
           >
             <AppText tone="secondary">{t('settings.versionLabel')}</AppText>
-            <AppText selectable>{Constants.expoConfig?.version ?? '1.0.0'}</AppText>
+            <AppText selectable>{Constants.expoConfig?.version ?? '2.0.0'}</AppText>
           </View>
           <Divider />
           <View style={{ gap: theme.spacing.sm }}>

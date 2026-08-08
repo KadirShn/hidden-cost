@@ -41,11 +41,10 @@ do not imply currency conversion.
 
 The result card is a compact single-page PDF layout produced by the same safe HTML pipeline.
 
-## Rewarded export boundary
+## Export access
 
-Phase 6 uses `PhaseSixExportAccessPolicy`, which grants every export as a free operation. It does not
-load an ad SDK. Phase 8 can replace this policy with a rewarded implementation while preserving the
-authorization for the duration of one export operation.
+`PhaseSixExportAccessPolicy` grants every export as a free operation. Version 2.0 does not load an
+advertising SDK or place an advertising gate in front of PDF and result-card sharing.
 
 ## Native verification checklist
 

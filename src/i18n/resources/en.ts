@@ -302,22 +302,6 @@ export const en = {
     openProject: 'Open project',
     saveError: 'The result could not be saved. Try again.',
   },
-  ads: {
-    sponsored: 'Sponsored',
-    privacySection: 'Ad privacy',
-    privacyOptionsTitle: 'Privacy options',
-    privacyOptionsBody: 'Reopen the Google UMP form to review your advertising privacy choices.',
-    openPrivacyOptions: 'Open privacy options',
-    privacyOptionsUnavailable: 'There is no form to reopen for this device and region.',
-    analyticsTitle: 'Anonymous usage analytics',
-    analyticsBody:
-      'Sends categorical usage events only; amounts, titles, notes, email, and free text are never sent.',
-    rewardedTitle: 'Export with an optional ad',
-    rewardedBody:
-      'You can choose to watch an ad before a PDF or advanced report export. If the ad cannot load, export continues for free.',
-    watchRewarded: 'Watch ad',
-    rewardCancelled: 'The ad was cancelled; your data and calculation were not changed.',
-  },
   privacy: {
     section: 'Your data and privacy',
     localDataTitle: 'Local data',
@@ -341,7 +325,7 @@ export const en = {
     termsTitle: 'Terms of use',
     disclaimerTitle: 'Legal disclaimer',
     privacyBody:
-      'Hidden Cost stores calculations on your device. Cloud backup and usage analytics are separate, optional choices. Analytics events contain no cost amount, project title, note, email, or user free text. Advertising privacy choices are managed through Google UMP.',
+      'Hidden Cost stores calculations on your device. Cloud backup and usage analytics are separate, optional choices. Analytics events contain no cost amount, project title, note, email, or user free text.',
     termsBody:
       'The application produces estimates from assumptions entered by the user. Accuracy and timeliness are not guaranteed. You must use the application lawfully and at your own responsibility.',
     disclaimerBody:
@@ -524,13 +508,17 @@ export const en = {
     themeSystem: 'System',
     themeLight: 'Light',
     themeDark: 'Dark',
+    analyticsSection: 'Privacy and analytics',
+    analyticsTitle: 'Anonymous usage analytics',
+    analyticsBody:
+      'Sends categorical usage events only; amounts, titles, notes, email, and free text are never sent.',
     accessibilitySection: 'Accessibility',
     reducedMotionTitle: 'Reduced motion',
     reducedMotionSystem: 'Animations respect your device motion preference.',
     aboutSection: 'Application',
     versionLabel: 'Version',
     phaseLabel: 'Current scope',
-    phaseValue: 'Phase 11 — Android internal testing preparation',
+    phaseValue: 'Version 2.0 — Ad-free release',
     developerSection: 'Developer tools',
     resetDatabaseTitle: 'Reset local database',
     resetDatabaseHelp: 'Available only in development. This permanently removes local projects.',

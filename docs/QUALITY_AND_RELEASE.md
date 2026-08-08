@@ -57,8 +57,7 @@ tombstones. CI provisions Java 21 explicitly.
 
 ## Android release and offline E2E
 
-The preview build uses only official AdMob test IDs and keeps Firebase disabled when service files
-are absent:
+The preview build keeps Firebase disabled when service files are absent:
 
 ```powershell
 $env:EXPO_PUBLIC_APP_ENV='preview'
@@ -83,15 +82,13 @@ at the end. The flow is Android-only because Maestro airplane-mode control is An
 
 - Sync network outages preserve pending work and process at most the configured batch size.
 - Simultaneous foreground/network triggers coalesce into one worker run.
-- Ad consent errors fail closed; rewarded/interstitial load failures return safe unavailable
-  outcomes and never block calculation/export fallback.
 - The offline integration test creates, calculates, saves, closes, and reopens SQLite data without
   initializing Firebase.
 
 ## Known limitations and manual gates
 
-- Real Firebase/AdMob configuration, App Check enforcement, production UMP messages, signing, and
-  store-console declarations are owner/operator tasks; credentials are intentionally absent.
+- Real Firebase configuration, App Check enforcement, signing, and store-console declarations are
+  owner/operator tasks; credentials are intentionally absent.
 - Inbound cloud restore and interactive conflict resolution are not implemented. Conflicting newer
   cloud revisions remain visible instead of being overwritten.
 - A signed production AAB and store launch cannot be validated without production identifiers and

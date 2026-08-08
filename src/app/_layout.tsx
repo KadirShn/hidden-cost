@@ -9,7 +9,6 @@ import { FatalErrorScreen } from '@/components/feedback/fatal-error-screen';
 import { RenderProfiler } from '@/components/performance/render-profiler';
 import { queryClient } from '@/data/query/query-client';
 import { RepositoryProvider } from '@/data/repositories/repository-provider';
-import { AdsProvider } from '@/features/ads/ads-provider';
 import { AppInitializationGate } from '@/features/app-initialization/app-initialization-gate';
 import { CloudBackupProvider } from '@/features/cloud-backup/cloud-backup-provider';
 import { ObservabilityProvider } from '@/features/observability/observability-provider';
@@ -46,16 +45,14 @@ export default function RootLayout() {
               <AppInitializationGate>
                 <RepositoryProvider>
                   <CloudBackupProvider>
-                    <AdsProvider>
-                      <RenderProfiler id="root_navigation">
-                        <Stack screenOptions={{ headerShown: false }}>
-                          <Stack.Screen name="index" />
-                          <Stack.Screen name="(onboarding)" />
-                          <Stack.Screen name="(tabs)" />
-                          <Stack.Screen name="(flow)" />
-                        </Stack>
-                      </RenderProfiler>
-                    </AdsProvider>
+                    <RenderProfiler id="root_navigation">
+                      <Stack screenOptions={{ headerShown: false }}>
+                        <Stack.Screen name="index" />
+                        <Stack.Screen name="(onboarding)" />
+                        <Stack.Screen name="(tabs)" />
+                        <Stack.Screen name="(flow)" />
+                      </Stack>
+                    </RenderProfiler>
                   </CloudBackupProvider>
                 </RepositoryProvider>
               </AppInitializationGate>

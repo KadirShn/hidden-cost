@@ -17,39 +17,3 @@ Object.defineProperty(globalThis, 'localStorage', {
 });
 
 jest.mock('expo-sqlite/localStorage/install', () => ({}));
-
-jest.mock('react-native-google-mobile-ads', () => ({
-  __esModule: true,
-  default: () => ({
-    initialize: async () => [],
-    setRequestConfiguration: async () => undefined,
-  }),
-  AdEventType: {
-    CLICKED: 'clicked',
-    CLOSED: 'closed',
-    ERROR: 'error',
-    LOADED: 'loaded',
-    OPENED: 'opened',
-  },
-  AdsConsent: {
-    gatherConsent: async () => undefined,
-    getConsentInfo: async () => ({
-      canRequestAds: false,
-      privacyOptionsRequirementStatus: 'NOT_REQUIRED',
-    }),
-    showPrivacyOptionsForm: async () => ({
-      canRequestAds: false,
-      privacyOptionsRequirementStatus: 'NOT_REQUIRED',
-    }),
-  },
-  AdsConsentPrivacyOptionsRequirementStatus: { REQUIRED: 'REQUIRED' },
-  InterstitialAd: { createForAdRequest: jest.fn() },
-  MaxAdContentRating: { PG: 'PG' },
-  RewardedAd: { createForAdRequest: jest.fn() },
-  RewardedAdEventType: { EARNED_REWARD: 'rewarded_earned_reward', LOADED: 'rewarded_loaded' },
-  TestIds: {
-    INTERSTITIAL: 'test-interstitial',
-    NATIVE: 'test-native',
-    REWARDED: 'test-rewarded',
-  },
-}));

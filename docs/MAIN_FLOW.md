@@ -41,9 +41,6 @@ material hidden costs, operating drivers, resale offsets, and incomplete inputs 
 financial recommendations. Every chart-like element has a text alternative; color is not the only
 differentiator.
 
-The reserved advertising container is inert and hidden from accessibility. No advertising SDK or
-credential is included.
-
 Scenario editing, comparisons, PDF, and result-card sharing are documented in
 [Scenarios, comparison, and export](EXPORT_AND_COMPARISON.md). Firebase backup remains optional and
 does not participate in calculation or local persistence.
