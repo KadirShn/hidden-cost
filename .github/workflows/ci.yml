@@ -67,7 +67,8 @@ jobs:
         env:
           EXPO_PUBLIC_APP_ENV: preview
           NODE_ENV: production
-      - run: ./gradlew --no-daemon :app:assembleRelease
+      # Prebuild's default 2 GB heap OOMs in D8 (mergeDexRelease); runners have 16 GB.
+      - run: ./gradlew --no-daemon "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g" :app:assembleRelease
         working-directory: android
         env:
           EXPO_PUBLIC_APP_ENV: preview
