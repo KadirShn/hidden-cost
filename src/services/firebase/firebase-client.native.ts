@@ -23,10 +23,7 @@ import {
   writeBatch,
 } from '@react-native-firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from '@react-native-firebase/functions';
-import {
-  fetchAndActivate,
-  getRemoteConfig,
-} from '@react-native-firebase/remote-config';
+import { fetchAndActivate, getRemoteConfig } from '@react-native-firebase/remote-config';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { runtimeConfig } from '@/config/runtime-config';

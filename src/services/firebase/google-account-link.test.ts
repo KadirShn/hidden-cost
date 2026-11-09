@@ -2,13 +2,17 @@ import { describe, expect, it, jest } from '@jest/globals';
 
 import { GoogleAccountLinkRestError, linkGoogleAccountWithRest } from './google-account-link';
 
+// `typeof fetch` merges DOM, Node and React Native overloads; jest.fn keeps only the last one,
+// which is not assignable back to `typeof fetch`. A single signature covering all three is.
+type FetchMock = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
+
 function response(body: object, ok = true): Response {
   return { ok, json: async () => body } as Response;
 }
 
 describe('linkGoogleAccountWithRest', () => {
   it('links the Google credential to the current Firebase UID', async () => {
-    const request = jest.fn<typeof fetch>(async () => response({ localId: 'anonymous-uid' }));
+    const request = jest.fn<FetchMock>(async () => response({ localId: 'anonymous-uid' }));
 
     await expect(
       linkGoogleAccountWithRest(
@@ -32,7 +36,7 @@ describe('linkGoogleAccountWithRest', () => {
   });
 
   it('rejects a response that does not preserve the current UID', async () => {
-    const request = jest.fn<typeof fetch>(async () => response({ localId: 'different-uid' }));
+    const request = jest.fn<FetchMock>(async () => response({ localId: 'different-uid' }));
 
     await expect(
       linkGoogleAccountWithRest(
@@ -48,7 +52,7 @@ describe('linkGoogleAccountWithRest', () => {
   });
 
   it('returns only the Firebase error code and never includes credential values', async () => {
-    const request = jest.fn<typeof fetch>(async () =>
+    const request = jest.fn<FetchMock>(async () =>
       response({ error: { message: 'FEDERATED_USER_ID_ALREADY_LINKED' } }, false),
     );
 
