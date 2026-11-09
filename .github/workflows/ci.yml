@@ -82,12 +82,21 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       # Non-blocking until the Maestro flow is fixed (onboarding-primary never shows on CI).
       # The release build above still fails the job.
-      - uses: reactivecircus/android-emulator-runner@v2
+      - id: e2e
+        uses: reactivecircus/android-emulator-runner@v2
         continue-on-error: true
         with:
           api-level: 35
           arch: x86_64
           profile: pixel_6
-          script: |
-            adb install -r android/app/build/outputs/apk/release/app-release.apk
-            $HOME/.maestro/bin/maestro test .maestro
+          script: bash scripts/ci/run-android-e2e.sh
+      - name: Upload e2e diagnostics
+        if: failure() || steps.e2e.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-e2e-diagnostics
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            e2e-artifacts/
+            ~/.maestro/tests/**
