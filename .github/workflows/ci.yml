@@ -59,18 +59,27 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
       - run: npm ci
       - run: npx expo prebuild --platform android --clean --no-install
         env:
           EXPO_PUBLIC_APP_ENV: preview
           NODE_ENV: production
-      - run: ./gradlew --no-daemon :app:assembleRelease
+      # Prebuild's default 2 GB heap OOMs in D8 (mergeDexRelease); runners have 16 GB.
+      - run: ./gradlew --no-daemon "-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g" :app:assembleRelease
         working-directory: android
         env:
           EXPO_PUBLIC_APP_ENV: preview
           NODE_ENV: production
       - run: curl -Ls "https://get.maestro.mobile.dev" | bash
+      # Without /dev/kvm access the emulator falls back to -accel off and never boots in time.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
