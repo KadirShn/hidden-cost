@@ -178,6 +178,7 @@ export const tr = {
   },
   forms: {
     invalidField: 'Bu alanı kontrol et.',
+    requiredField: 'Bu alan gerekli.',
     invalidNumber: 'Geçerli, negatif olmayan bir sayı gir.',
     invalidMoney: 'Geçerli, negatif olmayan bir tutar gir.',
     fixErrors: 'Devam etmeden önce bildirilen alanları kontrol et.',
@@ -194,11 +195,14 @@ export const tr = {
     saveError: 'Hesaplama kaydedilemedi. Taslağın bu cihazda korunuyor.',
     steps: {
       '0': { title: 'Temel bilgiler', body: 'Hesaplamayı adlandır; süreyi ve kullanımı belirle.' },
-      '1': { title: 'Satın alma fiyatı', body: 'Etiket fiyatını veya satın alma tutarını gir.' },
+      '1': {
+        title: 'Satın alma ve başlangıç',
+        body: 'Etiket fiyatını ve satın alırken bir kez ödenecek masrafları gir.',
+      },
       '2': { title: 'Finansman', body: 'Satın almayı kredilendireceksen finansmanı ekle.' },
       '3': {
-        title: 'İşletme maliyetleri',
-        body: 'Bakım ve yakıt giderlerini tek adımda tahmin et.',
+        title: 'Periyodik giderler',
+        body: 'Sigorta, vergi, bakım gibi düzenli giderleri ve kullanım maliyetini gir.',
       },
       '4': { title: 'Satış değeri', body: 'Sahiplik sonunda geri kazanılacak değeri tahmin et.' },
       '5': { title: 'Varsayımlar', body: 'Modeli incele ve önemli bağlam için not ekle.' },
@@ -214,9 +218,6 @@ export const tr = {
       annualInterestRate: 'Yıllık faiz oranı (%)',
       termMonths: 'Kredi süresi (ay)',
       loanFees: 'Kredi masrafları',
-      maintenanceAnnual: 'Yıllık bakım',
-      fuelConsumption: 'Yakıt tüketimi (L/100 km)',
-      fuelUnitPrice: 'Litre başına yakıt fiyatı',
       residualValue: 'Tahmini satış değeri',
       sellingCosts: 'Satış masrafları',
       notes: 'Notlar',
@@ -226,8 +227,6 @@ export const tr = {
       purchase: 'Toplam satın alma fiyatını gir. Kredi anaparası TCO’ya ikinci kez eklenmez.',
       financing: 'Yalnız faiz ve masraflar ek sahiplik maliyetidir.',
       term: 'Sıfır faizli kredi eşit anapara ödemeleriyle hesaplanır.',
-      maintenance: 'Tipik yıllık tahmini gir; aylık eşdeğere dönüştürülür.',
-      fuelConsumption: '100 km başına tüketilen litre.',
       residual: 'Satış değeri maliyeti azaltır; satış masrafları geri kazanılan değeri düşürür.',
       notes: 'İsteğe bağlı bağlam proje ile saklanır.',
     },
@@ -239,7 +238,77 @@ export const tr = {
       duration: 'Sahiplik: {{value}} ay',
       usage: 'Aylık kullanım: {{value}} {{unit}}',
       financing: 'Finansman: {{value}}',
+      initialCount: 'Tutar girilen başlangıç kalemleri: {{count}}',
+      recurringCount: 'Tutar girilen periyodik kalemler: {{count}}',
     },
+    usageFields: {
+      km: {
+        label: 'Aylık sürüş mesafesi (km)',
+        help: 'Kilometre başına maliyet ve yakıt bu değerden hesaplanır.',
+      },
+      hour: {
+        label: 'Aylık kullanım süresi (saat)',
+        help: 'Saat başına maliyet ve yakıt/enerji bu değerden hesaplanır.',
+      },
+      use: {
+        label: 'Aylık kullanım sayısı',
+        help: 'Kullanım başına maliyeti görmek için ayda kaç kez kullandığını gir.',
+      },
+      month: {
+        label: 'Aylık kullanım (ay)',
+        help: 'Her ay kullanılıyorsa 1 gir.',
+      },
+    },
+    frequencies: {
+      monthly: 'Aylık',
+      quarterly: '3 ayda bir',
+      semiannual: '6 ayda bir',
+      annual: 'Yıllık',
+    },
+    costRows: {
+      initialTitle: 'Başlangıç maliyetleri',
+      initialBody:
+        'Satın alırken bir kez ödenen masraflar. Bilmediğin kalemi 0 bırakabilirsin; hesaba katılmaz.',
+      recurringTitle: 'Düzenli giderler',
+      recurringBody:
+        'Her kalem için tutarı ve ne sıklıkla ödendiğini seç. 0 bırakılan kalemler hesaba katılmaz.',
+      addInitial: 'Başlangıç kalemi ekle',
+      addRecurring: 'Gider kalemi ekle',
+      label: 'Kalem adı',
+      amount: 'Tutar',
+      frequency: 'Sıklık',
+      frequencyTitle: '{{item}} ne sıklıkla ödeniyor?',
+      remove: 'Kalemi kaldır',
+      removeAccessible: '{{item}} kalemini kaldır',
+      empty: 'Henüz kalem yok. İhtiyacın olanı ekleyebilirsin.',
+    },
+    energy: {
+      fuel_distance: {
+        title: 'Yakıt',
+        consumption: 'Ortalama tüketim (L/100 km)',
+        consumptionHelp: '100 km’de tüketilen litre. Aylık mesafeyle çarpılarak hesaplanır.',
+        unitPrice: 'Litre başına yakıt fiyatı',
+      },
+      fuel_hourly: {
+        title: 'Yakıt',
+        consumption: 'Ortalama tüketim (L/saat)',
+        consumptionHelp: 'Motorun saatte tükettiği litre. Aylık kullanım saatiyle çarpılır.',
+        unitPrice: 'Litre başına yakıt fiyatı',
+      },
+      electric_power: {
+        title: 'Elektrik',
+        consumption: 'Ortalama güç tüketimi (W)',
+        consumptionHelp:
+          'Cihazın etiketindeki watt değeri. Aylık kullanım saatiyle kWh’e çevrilir.',
+        unitPrice: 'kWh başına elektrik fiyatı',
+      },
+    },
+  },
+  units: {
+    km: 'km',
+    hour: 'saat',
+    use: 'kullanım',
+    month: 'ay',
   },
   result: {
     title: 'Sonuç',
@@ -388,6 +457,7 @@ export const tr = {
       monthlyUsage: 'Aylık kullanım',
       maintenance: 'Yıllık bakım',
       fuelPrice: 'Yakıt birim fiyatı',
+      electricityPrice: 'Elektrik birim fiyatı',
       residualValue: 'Satış değeri',
       interestRate: 'Yıllık faiz oranı (%)',
       other: 'Diğer varsayım',

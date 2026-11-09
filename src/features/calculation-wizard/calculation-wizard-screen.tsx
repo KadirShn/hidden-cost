@@ -26,16 +26,20 @@ import { OfflineBanner } from '@/components/ui/offline-banner';
 import { StepIndicator } from '@/components/ui/step-indicator';
 import { TextField } from '@/components/ui/text-field';
 import { useProject, useSaveProjectBundle } from '@/data/query/project-hooks';
+import { useTemplate } from '@/data/query/template-hooks';
 import { useRepositories } from '@/data/repositories/repository-provider';
-import type { ProjectBundle } from '@/data/repositories/types';
+import type { ProjectBundle, TemplateDefinition } from '@/data/repositories/types';
 import { useSettings } from '@/features/settings/use-settings';
 import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useTheme } from '@/hooks/use-theme';
 import { ownershipMonthBucket } from '@/services/observability/analytics-contracts';
 import { telemetry } from '@/services/observability/telemetry-service';
 import { formatLocalizedMoneyInput } from '@/utils/format';
+import { parseLocalizedMoneyMinor } from '@/utils/parse-money';
 
+import { CostRowsEditor } from './cost-rows-editor';
 import { clearWizardDraft, readWizardDraft, writeWizardDraft } from './draft-store';
+import { getEnergyProfile } from './energy-profile';
 import { formToProjectBundle, projectBundleToForm } from './form-mapper';
 import { createWizardFormSchema, wizardStepFields, type WizardFormValues } from './form-schema';
 
@@ -119,7 +123,13 @@ function ControlledMoneyField({
   );
 }
 
-function WizardForm({ bundle }: { bundle: ProjectBundle }) {
+function WizardForm({
+  bundle,
+  template,
+}: {
+  bundle: ProjectBundle;
+  template: TemplateDefinition | null;
+}) {
   const { t } = useTranslation();
   const { locale } = useSettings();
   const theme = useTheme();
@@ -133,9 +143,18 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   const stepHeadingRef = useRef<Text>(null);
   const latestValues = useRef<WizardFormValues | undefined>(undefined);
   const schema = useMemo(() => createWizardFormSchema(locale), [locale]);
-  const storedDraft = readWizardDraft(settings, bundle.project.id);
+  const energyProfile = useMemo(
+    () => getEnergyProfile(bundle.project, bundle.costItems),
+    [bundle.costItems, bundle.project],
+  );
+  const usageUnit = bundle.project.usageUnit ?? 'use';
+  const [initialValues] = useState(
+    () =>
+      readWizardDraft(settings, bundle.project.id) ??
+      projectBundleToForm(bundle, template, energyProfile, locale),
+  );
   const form = useForm<WizardFormValues>({
-    defaultValues: storedDraft ?? projectBundleToForm(bundle, locale),
+    defaultValues: initialValues,
     resolver: zodResolver(schema),
     mode: 'onTouched',
   });
@@ -144,6 +163,11 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   const saveBundle = useSaveProjectBundle(bundle.project.id);
   const totalSteps = wizardStepFields.length;
   const currency = bundle.project.currency;
+  const countFilledRows = (name: 'initialCosts' | 'recurringCosts') =>
+    form.getValues(name).filter((row) => {
+      const minor = parseLocalizedMoneyMinor(row.amount, locale);
+      return minor !== null && minor !== '0';
+    }).length;
   const reviewPurchasePrice =
     formatLocalizedMoneyInput(form.getValues('purchasePrice'), locale) ??
     form.getValues('purchasePrice');
@@ -235,10 +259,13 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
   };
 
   const calculate = form.handleSubmit(async (validValues) => {
-    const nextBundle = formToProjectBundle(validValues, bundle, locale, {
-      maintenance: t('costItems.maintenance'),
-      fuel: t('costItems.fuel'),
-    });
+    const nextBundle = formToProjectBundle(
+      validValues,
+      bundle,
+      locale,
+      { item: (key) => t(`costItems.${key}`, { defaultValue: key }) },
+      energyProfile,
+    );
     await saveBundle.mutateAsync(nextBundle);
     void telemetry.track('calculation_completed', {
       ownership_month_bucket: ownershipMonthBucket(nextBundle.project.ownershipMonths),
@@ -291,19 +318,30 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           />
           <ControlledNumberField
             control={form.control}
-            label={t('wizard.fields.monthlyUsage', { unit: bundle.project.usageUnit })}
+            helperText={t(`wizard.usageFields.${usageUnit}.help`)}
+            label={t(`wizard.usageFields.${usageUnit}.label`)}
             name="monthlyUsage"
           />
         </View>
       ) : null}
       {step === 1 ? (
-        <ControlledMoneyField
-          control={form.control}
-          currency={currency}
-          helperText={t('wizard.help.purchase')}
-          label={t('wizard.fields.purchasePrice')}
-          name="purchasePrice"
-        />
+        <View style={{ gap: theme.spacing.lg }}>
+          <ControlledMoneyField
+            control={form.control}
+            currency={currency}
+            helperText={t('wizard.help.purchase')}
+            label={t('wizard.fields.purchasePrice')}
+            name="purchasePrice"
+          />
+          <CostRowsEditor
+            addLabel={t('wizard.costRows.addInitial')}
+            body={t('wizard.costRows.initialBody')}
+            control={form.control}
+            currency={currency}
+            name="initialCosts"
+            title={t('wizard.costRows.initialTitle')}
+          />
+        </View>
       ) : null}
       {step === 2 ? (
         <View style={{ gap: theme.spacing.lg }}>
@@ -359,25 +397,33 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
       ) : null}
       {step === 3 ? (
         <View style={{ gap: theme.spacing.lg }}>
-          <ControlledMoneyField
+          <CostRowsEditor
+            addLabel={t('wizard.costRows.addRecurring')}
+            body={t('wizard.costRows.recurringBody')}
             control={form.control}
             currency={currency}
-            helperText={t('wizard.help.maintenance')}
-            label={t('wizard.fields.maintenanceAnnual')}
-            name="maintenanceAnnual"
+            name="recurringCosts"
+            title={t('wizard.costRows.recurringTitle')}
           />
-          <ControlledNumberField
-            control={form.control}
-            helperText={t('wizard.help.fuelConsumption')}
-            label={t('wizard.fields.fuelConsumption')}
-            name="fuelConsumption"
-          />
-          <ControlledMoneyField
-            control={form.control}
-            currency={currency}
-            label={t('wizard.fields.fuelUnitPrice')}
-            name="fuelUnitPrice"
-          />
+          {energyProfile ? (
+            <Card>
+              <AppText accessibilityRole="header" variant="subtitle">
+                {t(`wizard.energy.${energyProfile.kind}.title`)}
+              </AppText>
+              <ControlledNumberField
+                control={form.control}
+                helperText={t(`wizard.energy.${energyProfile.kind}.consumptionHelp`)}
+                label={t(`wizard.energy.${energyProfile.kind}.consumption`)}
+                name="energyConsumption"
+              />
+              <ControlledMoneyField
+                control={form.control}
+                currency={currency}
+                label={t(`wizard.energy.${energyProfile.kind}.unitPrice`)}
+                name="energyUnitPrice"
+              />
+            </Card>
+          ) : null}
         </View>
       ) : null}
       {step === 4 ? (
@@ -425,8 +471,14 @@ function WizardForm({ bundle }: { bundle: ProjectBundle }) {
           <AppText selectable>
             {t('wizard.review.usage', {
               value: form.getValues('monthlyUsage'),
-              unit: bundle.project.usageUnit,
+              unit: t(`units.${usageUnit}`),
             })}
+          </AppText>
+          <AppText selectable>
+            {t('wizard.review.initialCount', { count: countFilledRows('initialCosts') })}
+          </AppText>
+          <AppText selectable>
+            {t('wizard.review.recurringCount', { count: countFilledRows('recurringCosts') })}
           </AppText>
           <AppText selectable>
             {t('wizard.review.financing', {
@@ -475,8 +527,9 @@ export function CalculationWizardScreen() {
   const { id = '' } = useLocalSearchParams<{ id: string }>();
   const { t } = useTranslation();
   const project = useProject(id);
+  const template = useTemplate(project.data?.project.templateId ?? '');
 
-  if (project.isPending) {
+  if (project.isPending || (project.data && template.isPending)) {
     return (
       <Screen>
         <LoadingSkeleton accessibilityLabel={t('common.loading')} height={240} />
@@ -496,5 +549,6 @@ export function CalculationWizardScreen() {
     );
   }
 
-  return <WizardForm bundle={project.data} />;
+  // A missing template is not fatal: saved cost lines are still editable without it.
+  return <WizardForm bundle={project.data} template={template.data ?? null} />;
 }
