@@ -91,14 +91,15 @@ export const seedTemplates: readonly TemplateDefinition[] = [
   },
   {
     id: 'electronics',
-    version: 1,
+    // Version 2 measures usage in hours so electricity can be derived from device wattage.
+    version: 2,
     titleKey: 'templates.electronics.title',
     descriptionKey: 'templates.electronics.description',
     icon: 'laptopcomputer',
     category: 'electronics',
     defaultCurrency: 'TRY',
     defaultOwnershipMonths: 36,
-    usageUnit: 'month',
+    usageUnit: 'hour',
     recommendedItems: [
       item('accessories', 'initial', 10),
       item('warranty', 'initial', 20),
@@ -108,7 +109,7 @@ export const seedTemplates: readonly TemplateDefinition[] = [
       item('electricity', 'usage', 60, undefined, 'kwh'),
     ],
     validation: { usagePerMonthMin: 0, ownershipMonthsMin: 1 },
-    helpTextKeys: ['templates.help.residual'],
+    helpTextKeys: ['templates.help.usage', 'templates.help.residual'],
     sortOrder: 40,
     isActive: true,
   },

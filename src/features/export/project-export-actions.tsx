@@ -69,7 +69,9 @@ export function ProjectExportActions({ bundle }: { bundle: ProjectBundle }) {
     assumptionsTitle: t('result.assumptionsTitle'),
     assumptions: [
       {
-        label: t('wizard.fields.monthlyUsage', { unit: bundle.project.usageUnit }),
+        label: t('wizard.fields.monthlyUsage', {
+          unit: t(`units.${bundle.project.usageUnit ?? 'use'}`),
+        }),
         value: formatNumber(bundle.project.usagePerMonth ?? 0, locale),
       },
       {

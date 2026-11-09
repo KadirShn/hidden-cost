@@ -29,6 +29,15 @@ Route modules contain only route composition or feature exports. Screen behavior
 - Money is normalized to integer minor-unit strings before entering the domain or repository.
 - A 600 ms debounced raw-form snapshot is saved through `AppSettingsRepository`.
 - Pending input is flushed when the app backgrounds, a step advances, or the wizard unmounts.
+- Upfront (step 2) and recurring (step 4) cost lines are built from the template's
+  `recommendedItems`, matched to saved items by key. Lines left at 0 are not persisted (or are
+  disabled when they already exist); users can add named custom lines and remove them, which
+  soft-deletes the saved item. Recurring lines carry an editable payment frequency.
+- Energy/fuel inputs depend on the category (`energy-profile.ts`): L/100 km for cars and
+  motorcycles, L/hour for boats, and device watts for electronics (usage in hours). Each is
+  converted to the engine's `consumptionPer100Units`. Subscriptions and custom projects have none.
+- Drafts are stored under `wizard-draft:v2:<projectId>`; drafts with the earlier field shape are
+  ignored.
 - Project and cost-item domain entities are saved together in one SQLite transaction.
 - A navigation guard warns while the latest draft write is pending.
 

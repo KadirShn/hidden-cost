@@ -4,11 +4,14 @@ import type { AppLocale } from '@/i18n';
 import { parseLocalizedNumber } from '@/utils/format';
 import { parseLocalizedMoneyMinor } from '@/utils/parse-money';
 
+export const costFrequencies = ['monthly', 'quarterly', 'semiannual', 'annual'] as const;
+export type CostFrequency = (typeof costFrequencies)[number];
+
 export const wizardStepFields = [
   ['title', 'ownershipMonths', 'monthlyUsage'],
-  ['purchasePrice'],
+  ['purchasePrice', 'initialCosts'],
   ['financingEnabled', 'financedAmount', 'annualInterestRate', 'termMonths', 'loanFees'],
-  ['maintenanceAnnual', 'fuelConsumption', 'fuelUnitPrice'],
+  ['recurringCosts', 'energyConsumption', 'energyUnitPrice'],
   ['residualValue', 'sellingCosts'],
   ['notes'],
   [],
@@ -39,6 +42,28 @@ const numberField = (
     }
   });
 
+/**
+ * One editable cost line. Template lines carry a `key` and a translated label; custom lines
+ * have an empty `key` and a user-entered `label`. `itemId` becomes the persisted cost item id.
+ */
+const costRowSchema = (locale: AppLocale) =>
+  z
+    .object({
+      itemId: z.string().min(1),
+      key: z.string(),
+      label: z.string().max(80),
+      frequency: z.enum(costFrequencies),
+      amount: moneyField(locale),
+      removable: z.boolean(),
+    })
+    .superRefine((row, context) => {
+      if (row.key === '' && row.label.trim().length === 0) {
+        context.addIssue({ code: 'custom', path: ['label'], message: 'required' });
+      }
+    });
+
+export type CostRowValues = z.infer<ReturnType<typeof costRowSchema>>;
+
 export function createWizardFormSchema(locale: AppLocale) {
   return z
     .object({
@@ -46,14 +71,15 @@ export function createWizardFormSchema(locale: AppLocale) {
       ownershipMonths: numberField(locale, { positive: true, max: 600, integer: true }),
       monthlyUsage: numberField(locale),
       purchasePrice: moneyField(locale, true),
+      initialCosts: z.array(costRowSchema(locale)).max(40),
       financingEnabled: z.boolean(),
       financedAmount: moneyField(locale),
       annualInterestRate: numberField(locale, { max: 1000 }),
       termMonths: numberField(locale, { max: 600, integer: true }),
       loanFees: moneyField(locale),
-      maintenanceAnnual: moneyField(locale),
-      fuelConsumption: numberField(locale, { max: 1000 }),
-      fuelUnitPrice: moneyField(locale),
+      recurringCosts: z.array(costRowSchema(locale)).max(40),
+      energyConsumption: numberField(locale, { max: 100000 }),
+      energyUnitPrice: moneyField(locale),
       residualValue: moneyField(locale),
       sellingCosts: moneyField(locale),
       notes: z.string().max(1000),
@@ -72,3 +98,16 @@ export function createWizardFormSchema(locale: AppLocale) {
 }
 
 export type WizardFormValues = z.infer<ReturnType<typeof createWizardFormSchema>>;
+
+/** Guards drafts persisted by earlier app versions, which used a different field shape. */
+export function isWizardFormValues(value: unknown): value is WizardFormValues {
+  if (!value || typeof value !== 'object') return false;
+  const draft = value as Partial<Record<keyof WizardFormValues, unknown>>;
+  return (
+    typeof draft.title === 'string' &&
+    Array.isArray(draft.initialCosts) &&
+    Array.isArray(draft.recurringCosts) &&
+    typeof draft.energyConsumption === 'string' &&
+    typeof draft.energyUnitPrice === 'string'
+  );
+}

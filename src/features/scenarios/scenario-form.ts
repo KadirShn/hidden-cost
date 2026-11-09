@@ -39,6 +39,16 @@ export type ScenarioFieldDefinition = {
   labelKey: string;
 };
 
+function findEnergyItem(bundle: ProjectBundle) {
+  return bundle.costItems.find(
+    (item) =>
+      item.type === 'usage' &&
+      (item.key === 'fuel' || item.key === 'electricity') &&
+      item.unitPriceMinor !== undefined &&
+      !item.deletedAt,
+  );
+}
+
 export function getScenarioFields(bundle: ProjectBundle): ScenarioFieldDefinition[] {
   const fields: ScenarioFieldDefinition[] = [
     {
@@ -49,7 +59,7 @@ export function getScenarioFields(bundle: ProjectBundle): ScenarioFieldDefinitio
     },
   ];
   const maintenance = bundle.costItems.find((item) => item.key === 'maintenance');
-  const fuel = bundle.costItems.find((item) => item.key === 'fuel');
+  const energy = findEnergyItem(bundle);
   if (maintenance) {
     fields.push({
       key: 'maintenanceAmount',
@@ -58,12 +68,15 @@ export function getScenarioFields(bundle: ProjectBundle): ScenarioFieldDefinitio
       labelKey: 'scenarios.fields.maintenance',
     });
   }
-  if (fuel) {
+  if (energy) {
     fields.push({
       key: 'fuelUnitPrice',
-      path: `costItem.${fuel.id}.unitPriceMinor`,
+      path: `costItem.${energy.id}.unitPriceMinor`,
       kind: 'money',
-      labelKey: 'scenarios.fields.fuelPrice',
+      labelKey:
+        energy.key === 'electricity'
+          ? 'scenarios.fields.electricityPrice'
+          : 'scenarios.fields.fuelPrice',
     });
   }
   if (bundle.project.residualValue?.mode === 'fixed') {
@@ -92,7 +105,7 @@ function baseValue(bundle: ProjectBundle, field: ScenarioFieldDefinition): strin
     case 'maintenanceAmount':
       return bundle.costItems.find((item) => item.key === 'maintenance')?.amountMinor ?? '0';
     case 'fuelUnitPrice':
-      return bundle.costItems.find((item) => item.key === 'fuel')?.unitPriceMinor ?? '0';
+      return findEnergyItem(bundle)?.unitPriceMinor ?? '0';
     case 'residualValue':
       return bundle.project.residualValue?.fixedAmountMinor ?? '0';
     case 'interestRate':

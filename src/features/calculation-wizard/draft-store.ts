@@ -1,14 +1,16 @@
 import type { AppSettingsRepository } from '@/data/repositories/types';
 
-import type { WizardFormValues } from './form-schema';
+import { isWizardFormValues, type WizardFormValues } from './form-schema';
 
-const keyFor = (projectId: string) => `wizard-draft:${projectId}`;
+const keyFor = (projectId: string) => `wizard-draft:v2:${projectId}`;
+const legacyKeyFor = (projectId: string) => `wizard-draft:${projectId}`;
 
 export function readWizardDraft(
   settings: AppSettingsRepository,
   projectId: string,
 ): WizardFormValues | null {
-  return settings.get<WizardFormValues>(keyFor(projectId));
+  const draft = settings.get<unknown>(keyFor(projectId));
+  return isWizardFormValues(draft) ? draft : null;
 }
 
 export function writeWizardDraft(
@@ -21,4 +23,5 @@ export function writeWizardDraft(
 
 export function clearWizardDraft(settings: AppSettingsRepository, projectId: string): void {
   settings.remove(keyFor(projectId));
+  settings.remove(legacyKeyFor(projectId));
 }
